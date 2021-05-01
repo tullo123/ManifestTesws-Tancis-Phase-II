@@ -1,0 +1,83 @@
+package com.ManifestTeswTancis.ServiceImpl;
+import com.ManifestTeswTancis.Entity.CustomClearanceEntity;
+import com.ManifestTeswTancis.Entity.Response.ResponseCustomClearance;
+import com.ManifestTeswTancis.Repository.CustomClearanceRepository;
+import com.ManifestTeswTancis.Service.CustomClearanceService;
+import com.ManifestTeswTancis.Util.DateFormatter;
+import com.ManifestTeswTancis.dtos.CustomClearanceDto;
+import com.ManifestTeswTancis.dtos.TeswsResponse;
+import org.springframework.stereotype.Service;
+import com.ManifestTeswTancis.Util.HttpCall;
+import com.ManifestTeswTancis.Util.HttpMessage;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import javax.transaction.Transactional;
+import java.io.IOException;
+import java.time.LocalDateTime;
+
+@Service
+public class CustomClearanceServiceImpl implements CustomClearanceService {
+
+    final
+    CustomClearanceRepository customClearanceRepository;
+
+    public CustomClearanceServiceImpl(CustomClearanceRepository customClearanceRepository) {
+        this.customClearanceRepository = customClearanceRepository;
+    }
+
+    @Transactional
+    @Override
+    public TeswsResponse customService(CustomClearanceDto customClearanceDto) {
+        TeswsResponse response = new TeswsResponse();
+        response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+        response.setRefId(customClearanceDto.getCommunicationAgreedId());
+        response.setDescription("Custom Clearance Received Successfully");
+        response.setCode(200);
+        response.setAckType("CUSTOM_CLEARANCE");
+
+        CustomClearanceEntity cu= new CustomClearanceEntity();
+        cu.setCommunicationAgreedId(customClearanceDto.getCommunicationAgreedId());
+        cu.setProcessingStatus("1");
+        cu.setVesselMaster(customClearanceDto.getVesselMaster());
+        cu.setVesselMasterAddress(customClearanceDto.getVesselMasterAddress());
+        cu.setAgentCode(customClearanceDto.getAgentCode());
+        cu.setAgentAddress(customClearanceDto.getAgentAddress());
+        cu.setVoyageNumber(customClearanceDto.getVoyageNumber());
+        cu.setMrn(customClearanceDto.getMrn());
+        cu.setCarrierId(customClearanceDto.getCarrierId());
+        cu.setCarrierName(customClearanceDto.getCarrierName());
+        cu.setTransportMeansName(customClearanceDto.getTransportMeansName());
+        cu.setTransportMeansNationality(customClearanceDto.getTransportMeansNationality());
+        cu.setVoyageNumberOutbound(customClearanceDto.getVoyageNumberOutbound());
+        cu.setTerminal(customClearanceDto.getTerminal());
+        cu.setDestinationPort(customClearanceDto.getDestinationPort());
+        cu.setNextPortOfCall(customClearanceDto.getNextPortOfCall());
+        cu.setPortOfCall(customClearanceDto.getPortOfCall());
+        cu.setTaxClearanceNumber(customClearanceDto.getTaxClearanceNumber());
+        cu.setEstimatedDatetimeOfArrival(customClearanceDto.getEstimatedDatetimeOfArrival());
+        cu.setEstimatedDatetimeOfDeparture(customClearanceDto.getEstimatedDatetimeOfDeparture());
+        cu.setActualDatetimeOfArrival(customClearanceDto.getActualDatetimeOfArrival());
+        cu.setClearanceRequestDate(customClearanceDto.getClearanceRequestDate());
+        customClearanceRepository.save(cu);
+        return response;
+    }
+
+    @Override
+    public String submitCustomClearanceNotice(CustomClearanceDto customClearanceDto) throws IOException {
+        ResponseCustomClearance returnValue = new ResponseCustomClearance();
+        returnValue.setCallId(customClearanceDto.getCommunicationAgreedId());
+        returnValue.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+        returnValue.setApprovalStatus("");
+        returnValue.setClearanceReference("");
+        returnValue.setComment("");
+        ObjectMapper mapper = new ObjectMapper();
+        String payload = mapper.writeValueAsString(returnValue);
+        HttpMessage httpMessage = new HttpMessage();
+        httpMessage.setContentType("application/json");
+        httpMessage.setMessageName("CUSTOM_CLEARANCE_NOTICE");
+        httpMessage.setPayload(payload);
+        httpMessage.setRecipient("SS");
+        HttpCall httpCall = new HttpCall();
+        return httpCall.httpRequest(httpMessage);
+    }
+}
