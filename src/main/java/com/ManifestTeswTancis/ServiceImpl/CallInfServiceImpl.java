@@ -2,8 +2,8 @@ package com.ManifestTeswTancis.ServiceImpl;
 
 import com.ManifestTeswTancis.dtos.TeswsResponse;
 import com.ManifestTeswTancis.Entity.ExImportManifest;
-import com.ManifestTeswTancis.Entity.Request.CallInfDetailsRequestModel;
-import com.ManifestTeswTancis.Entity.Response.CallInfRest;
+import com.ManifestTeswTancis.Request.CallInfDetailsRequestModel;
+import com.ManifestTeswTancis.Response.CallInfRest;
 import com.ManifestTeswTancis.Repository.ExImportManifestRepository;
 import com.ManifestTeswTancis.Service.CallInfService;
 import com.ManifestTeswTancis.Util.DateFormatter;

@@ -1,7 +1,7 @@
 package com.ManifestTeswTancis.controllers.api;
 import com.ManifestTeswTancis.dtos.ManifestDto;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
-import com.ManifestTeswTancis.Entity.Request.CallInfDetailsRequestModel;
+import com.ManifestTeswTancis.Request.CallInfDetailsRequestModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;

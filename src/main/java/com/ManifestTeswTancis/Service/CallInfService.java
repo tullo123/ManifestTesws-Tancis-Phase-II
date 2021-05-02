@@ -2,7 +2,7 @@ package com.ManifestTeswTancis.Service;
 
 import com.ManifestTeswTancis.dtos.TeswsResponse;
 import com.ManifestTeswTancis.Entity.ExImportManifest;
-import com.ManifestTeswTancis.Entity.Request.CallInfDetailsRequestModel;
+import com.ManifestTeswTancis.Request.CallInfDetailsRequestModel;
 
 import java.io.IOException;
 

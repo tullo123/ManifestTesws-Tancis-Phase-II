@@ -1,5 +1,5 @@
 package com.ManifestTeswTancis.Entity;
-import com.ManifestTeswTancis.Entity.Request.CallInfDetailsRequestModel;
+import com.ManifestTeswTancis.Request.CallInfDetailsRequestModel;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;

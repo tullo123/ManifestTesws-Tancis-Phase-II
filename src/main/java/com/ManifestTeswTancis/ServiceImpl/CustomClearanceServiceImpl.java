@@ -1,6 +1,6 @@
 package com.ManifestTeswTancis.ServiceImpl;
 import com.ManifestTeswTancis.Entity.CustomClearanceEntity;
-import com.ManifestTeswTancis.Entity.Response.ResponseCustomClearance;
+import com.ManifestTeswTancis.Response.ResponseCustomClearance;
 import com.ManifestTeswTancis.Repository.CustomClearanceRepository;
 import com.ManifestTeswTancis.Service.CustomClearanceService;
 import com.ManifestTeswTancis.Util.DateFormatter;
@@ -37,7 +37,7 @@ public class CustomClearanceServiceImpl implements CustomClearanceService {
 
         CustomClearanceEntity cu= new CustomClearanceEntity();
         cu.setCommunicationAgreedId(customClearanceDto.getCommunicationAgreedId());
-        cu.setProcessingStatus("1");
+        cu.setProcessingStatus("B");
         cu.setVesselMaster(customClearanceDto.getVesselMaster());
         cu.setVesselMasterAddress(customClearanceDto.getVesselMasterAddress());
         cu.setAgentCode(customClearanceDto.getAgentCode());

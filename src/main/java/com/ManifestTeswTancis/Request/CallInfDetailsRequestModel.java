@@ -1,4 +1,4 @@
-package com.ManifestTeswTancis.Entity.Request;
+package com.ManifestTeswTancis.Request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
