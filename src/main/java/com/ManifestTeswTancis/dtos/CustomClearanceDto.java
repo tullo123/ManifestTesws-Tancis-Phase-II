@@ -32,4 +32,5 @@ public class CustomClearanceDto {
      private String actualDatetimeOfArrival;
      private String actualDatetimeOfArrivalOuterAnchorage;
      private String clearanceRequestDate;
+     private String comments;
 }

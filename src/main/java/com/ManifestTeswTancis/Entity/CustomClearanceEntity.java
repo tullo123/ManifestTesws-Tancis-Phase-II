@@ -1,5 +1,4 @@
 package com.ManifestTeswTancis.Entity;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -87,4 +86,10 @@ public class CustomClearanceEntity implements Serializable {
 
     @Column(name="CREATED_DATE")
     private  String createDate;
+
+    @Column(name="COMMENTS")
+    private  String comments;
+
+
 }
+

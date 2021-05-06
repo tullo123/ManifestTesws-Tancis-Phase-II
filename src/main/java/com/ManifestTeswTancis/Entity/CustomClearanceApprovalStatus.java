@@ -1,5 +1,6 @@
 package com.ManifestTeswTancis.Entity;
 
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,8 @@ import java.time.LocalDateTime;
 @Table(name = "TANCISINT.CUSTOM_APPROVAL_STATUS")
 public class CustomClearanceApprovalStatus {
     @Id
-    @Column(name ="TPA_UID")
+    @NotNull
+    @Column(name ="TPA_UID", unique = true)
     private String communicationAgreedId;
 
     @Column(name ="MRN" )
