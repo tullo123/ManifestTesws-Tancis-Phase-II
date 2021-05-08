@@ -1,5 +1,7 @@
 package com.ManifestTeswTancis.ServiceImpl;
+import com.ManifestTeswTancis.Entity.CustomClearanceApprovalStatus;
 import com.ManifestTeswTancis.Entity.CustomClearanceEntity;
+import com.ManifestTeswTancis.Repository.CustomClearanceApprovalRepository;
 import com.ManifestTeswTancis.Repository.CustomClearanceRepository;
 import com.ManifestTeswTancis.Service.CustomClearanceService;
 import com.ManifestTeswTancis.Util.DateFormatter;
@@ -14,9 +16,12 @@ public class CustomClearanceServiceImpl implements CustomClearanceService {
 
     final
     CustomClearanceRepository customClearanceRepository;
+    final
+    CustomClearanceApprovalRepository customClearanceApprovalRepository;
 
-    public CustomClearanceServiceImpl(CustomClearanceRepository customClearanceRepository) {
+    public CustomClearanceServiceImpl(CustomClearanceRepository customClearanceRepository, CustomClearanceApprovalRepository customClearanceApprovalRepository) {
         this.customClearanceRepository = customClearanceRepository;
+        this.customClearanceApprovalRepository = customClearanceApprovalRepository;
     }
 
 
@@ -54,6 +59,13 @@ public class CustomClearanceServiceImpl implements CustomClearanceService {
         cu.setActualDatetimeOfArrival(customClearanceDto.getActualDatetimeOfArrival());
         cu.setClearanceRequestDate(customClearanceDto.getClearanceRequestDate());
         customClearanceRepository.save(cu);
+
+        CustomClearanceApprovalStatus cs= new CustomClearanceApprovalStatus();
+        cs.setCommunicationAgreedId(customClearanceDto.getCommunicationAgreedId());
+        cs.setMrn(customClearanceDto.getMrn());
+        cs.setVoyageNumber(customClearanceDto.getVoyageNumber());
+        customClearanceApprovalRepository.save(cs);
+
         return response;
     }
 

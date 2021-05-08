@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CustomClearanceRepository extends JpaRepository<CustomClearanceEntity,String > {
+    CustomClearanceEntity findFirstByCommunicationAgreedId(String communicationAgreedId);
 }
