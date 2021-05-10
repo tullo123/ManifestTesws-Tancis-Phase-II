@@ -3,11 +3,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -85,7 +88,8 @@ public class CustomClearanceEntity implements Serializable {
     private String clearanceRequestDate;
 
     @Column(name="CREATED_DATE")
-    private  String createDate;
+    @CreationTimestamp
+    private LocalDateTime createDate;
 
     @Column(name="COMMENTS")
     private  String comments;
