@@ -25,8 +25,8 @@ public class CustomClearanceApprovalStatus {
     @Column(name ="TPA_UID", unique = true)
     private String communicationAgreedId;
 
-    @Column(name ="MRN" )
-    private String mrn;
+    @Column(name ="TAX_CLEARANCE_NO" )
+    private String taxClearanceNumber;
 
 	@Column(name ="VOYAGE_NO")
     private String voyageNumber;

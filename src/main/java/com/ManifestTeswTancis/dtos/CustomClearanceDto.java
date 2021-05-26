@@ -16,7 +16,6 @@ public class CustomClearanceDto {
      private String agentCode;
      private String agentAddress;
      private String voyageNumber;
-     private String mrn;
      private String carrierId;
      private String carrierName;
      private String transportMeansName;

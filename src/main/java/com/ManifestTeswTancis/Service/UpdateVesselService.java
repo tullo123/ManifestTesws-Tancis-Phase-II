@@ -9,6 +9,4 @@ import java.io.IOException;
 @Service
 public interface UpdateVesselService {
      TeswsResponse updateCallInf(UpdateVesselDto updateVesselDto);
-
-     String submitCallInfoNotice(UpdateVesselDto updateVesselDto) throws IOException;
 }

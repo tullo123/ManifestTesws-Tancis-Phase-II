@@ -4,10 +4,8 @@ import com.ManifestTeswTancis.Entity.VesselBoardingNotificationEntity;
 import com.ManifestTeswTancis.Repository.VesselBoardingNotificationRepository;
 import com.ManifestTeswTancis.Service.VesselBoardingService;
 import com.ManifestTeswTancis.Util.DateFormatter;
-import com.ManifestTeswTancis.Util.HttpMessage;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
 import com.ManifestTeswTancis.dtos.VesselBoardingNotificationDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,20 +14,23 @@ import java.time.LocalDateTime;
 @Transactional
 public class VesselBoardingServiceImpl implements VesselBoardingService {
 
-    @Autowired
+    final
     VesselBoardingNotificationRepository vesselBoardingNotificationRepository;
+
+    public VesselBoardingServiceImpl(VesselBoardingNotificationRepository vesselBoardingNotificationRepository) {
+        this.vesselBoardingNotificationRepository = vesselBoardingNotificationRepository;
+    }
+
     @Override
     public TeswsResponse saveVesselBoarding(VesselBoardingNotificationDto vesselBoardingNotificationDto) {
         TeswsResponse response = new TeswsResponse();
         response.setAckType("VESSEL_BOARDING_NOTIFICATION");
         response.setCode(200);
         response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-        response.setDescription("Received Successfully");
+        response.setDescription("Vessel Boarding Notification Received Successfully");
+
         VesselBoardingNotificationEntity vb= new VesselBoardingNotificationEntity();
-        vb.setMrn(vesselBoardingNotificationDto.getMrn());
         vb.setActualDatetimeOfArrival(vesselBoardingNotificationDto.getActualDatetimeOfArrival());
-        vb.setSenderId(vesselBoardingNotificationDto.getSenderId());
-        vb.setReceiverId(vesselBoardingNotificationDto.getReceiverId());
         vb.setCommunicationAgreedId(vesselBoardingNotificationDto.getCommunicationAgreedId());
         vb.setVesselMaster(vesselBoardingNotificationDto.getVesselMaster());
         vb.setVesselMasterAddress(vesselBoardingNotificationDto.getVesselMasterAddress());
@@ -50,19 +51,9 @@ public class VesselBoardingServiceImpl implements VesselBoardingService {
         vb.setNextPortOfCall(vesselBoardingNotificationDto.getNextPortOfCall());
         vb.setEstimatedDatetimeOfArrival(vesselBoardingNotificationDto.getEstimatedDatetimeOfArrival());
         vb.setEstimatedDatetimeOfDeparture(vesselBoardingNotificationDto.getEstimatedDatetimeOfDeparture());
-        vb.setActualDatetimeOfArrivalOuterAnchorage(vesselBoardingNotificationDto.getActualDatetimeOfDepartureOuterAnchorage());
-        vb.setHandoverDatetime(vesselBoardingNotificationDto.getHandoverDatetime());
         vb.setActualDatetimeOfArrival(vesselBoardingNotificationDto.getActualDatetimeOfArrival());
-        vb.setActualDatetimeOfDeparture(vesselBoardingNotificationDto.getActualDatetimeOfDeparture());
-        vb.setActualDatetimeOfDepartureOuterAnchorage(vesselBoardingNotificationDto.getActualDatetimeOfArrivalOuterAnchorage());
         vb.setCustomOfficeCode(vesselBoardingNotificationDto.getCustomOfficeCode());
-        vb.setClearanceRequestDate(vesselBoardingNotificationDto.getClearanceRequestDate());
         vesselBoardingNotificationRepository.save(vb);
-
-        HttpMessage httpMessage = new HttpMessage();
-        httpMessage.setContentType("application/json");
-        httpMessage.setMessageName("VESSEL_BOARDING_NOTIFICATION");
-        httpMessage.setRecipient("SS");
         return response;
     }
 }

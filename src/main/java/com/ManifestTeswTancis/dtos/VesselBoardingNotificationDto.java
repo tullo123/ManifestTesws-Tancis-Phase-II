@@ -10,8 +10,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class VesselBoardingNotificationDto {
-	private String senderId;
-    private String receiverId;
     private String communicationAgreedId;
     private String vesselMaster;
     private String vesselMasterAddress;
@@ -32,13 +30,8 @@ public class VesselBoardingNotificationDto {
     private String nextPortOfCall;
     private String estimatedDatetimeOfArrival;
     private String estimatedDatetimeOfDeparture;
-    private String actualDatetimeOfArrivalOuterAnchorage;
-    private String handoverDatetime;
     private String actualDatetimeOfArrival;
-    private String actualDatetimeOfDeparture;
-    private String actualDatetimeOfDepartureOuterAnchorage;
     private String customOfficeCode;
-    private String mrn;
-    private String clearanceRequestDate;
+    private String actualDatetimeOfArrivalOuterAnchorage;
 
 }

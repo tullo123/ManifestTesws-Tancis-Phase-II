@@ -36,14 +36,12 @@ public class DeleteVesselServiceImpl implements DeleteVesselService {
             if(optional.isPresent()) {
                 ExImportManifest ex = new ExImportManifest();
                 ex.setProcessingStatus("X");
-                ex.setMrn(callInfCancelDto.getMrn());
-                ex.setCustomOfficeCode(callInfCancelDto.getCustomOfficeCode());
                 exImportManifestRepository.save(ex);
             }
         } catch (Exception e) {
             response.setDescription(e.getMessage());
             response.setCode(400);
-            System.err.println(e.getMessage());
+            System.err.println("vessel cancellation request with Mrn"+callInfCancelDto.getMrn()+" Not Found");
         }
         return response;
     }

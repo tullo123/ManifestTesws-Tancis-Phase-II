@@ -17,22 +17,13 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "TANCISEXT.EX_CL_VESSEL_BOARDING_NT")
+@Table(name = "TANCISINT.CM_CL_VESSEL_BOARDING_NT")
 public class VesselBoardingNotificationEntity implements Serializable {
 	private static final long serialVersionUID = -2013148464567364809L;
 
 	@Id
 	@NotNull
-	@Column(name = "MRN")
-	private String mrn;
-
-	@Column(name = "SENDER_ID")
-	private String senderId;
-
-	@Column(name = "RECEIVER_ID")
-	private String receiverId;
-
-	@Column(name = "TPA_UID  ")
+	@Column(name = "TPA_UID")
 	private String communicationAgreedId;
 
 	@Column(name = "VESSEL_MASTER")
@@ -95,22 +86,10 @@ public class VesselBoardingNotificationEntity implements Serializable {
 	@Column(name = "ACTUAL_ARRIVAL_ANCHORAGE")
 	private String actualDatetimeOfArrivalOuterAnchorage;
 
-	@Column(name = "HANDOVER_DATE_TIME")
-	private String handoverDatetime;
-
 	@Column(name = "ACTUAL_ARRIVAL_DT")
 	private String actualDatetimeOfArrival;
 
-	@Column(name = "DEPARTURE_DT")
-	private String actualDatetimeOfDeparture;
-
-	@Column(name = "ACTUAL_DEPARTURE_ANCHORAGE")
-	private String actualDatetimeOfDepartureOuterAnchorage;
-
 	@Column(name = "CUSTOMS_OFFICE_CD")
 	private String customOfficeCode;
-
-	@Column(name = "CLEARANCE_REQUEST_DT")
-	private String clearanceRequestDate;
 
 }

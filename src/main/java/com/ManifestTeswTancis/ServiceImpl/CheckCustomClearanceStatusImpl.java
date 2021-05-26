@@ -45,13 +45,13 @@ public class CheckCustomClearanceStatusImpl {
                 CustomClearanceEntity cs=customClearanceRepository.findFirstByCommunicationAgreedId(ca.getCommunicationAgreedId());
                 if(cs.getProcessingStatus().equals(ClearanceStatus.APPROVED)){
                     ResponseCustomClearance responseCustomClearance= new ResponseCustomClearance();
-                    responseCustomClearance.setCallId(cs.getCommunicationAgreedId());
+                    responseCustomClearance.setCommunicationAgreedId(cs.getCommunicationAgreedId());
                     responseCustomClearance.setClearanceReference(cs.getTaxClearanceNumber());
                     responseCustomClearance.setApprovalStatus(getStatus(cs.getProcessingStatus()));
                     responseCustomClearance.setComment(cs.getComments());
                     responseCustomClearance.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     customClearanceApprovalRepository.save(ca);
-                    String response = sendApprovedToTesws(responseCustomClearance);
+                    String response = sendApprovalNoticeToTesws(responseCustomClearance);
                     System.out.println("***************** Approval Notice Response ******************\n" + response);
                 }
             }
@@ -70,7 +70,7 @@ public class CheckCustomClearanceStatusImpl {
 
 
 
-    private String sendApprovedToTesws(ResponseCustomClearance responseCustomClearance) {
+    private String sendApprovalNoticeToTesws(ResponseCustomClearance responseCustomClearance) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String payload = mapper.writeValueAsString(responseCustomClearance);

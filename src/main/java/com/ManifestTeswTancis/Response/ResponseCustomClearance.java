@@ -10,7 +10,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class ResponseCustomClearance {
-    private String callId;
+    private String communicationAgreedId;
     private String clearanceReference;
     private String approvalStatus;
     private String comment;

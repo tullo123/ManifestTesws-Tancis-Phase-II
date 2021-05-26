@@ -37,13 +37,12 @@ public class CustomClearanceServiceImpl implements CustomClearanceService {
 
         CustomClearanceEntity cu= new CustomClearanceEntity();
         cu.setCommunicationAgreedId(customClearanceDto.getCommunicationAgreedId());
-        cu.setProcessingStatus("B");
+        cu.setProcessingStatus("A");
         cu.setVesselMaster(customClearanceDto.getVesselMaster());
         cu.setVesselMasterAddress(customClearanceDto.getVesselMasterAddress());
         cu.setAgentCode(customClearanceDto.getAgentCode());
         cu.setAgentAddress(customClearanceDto.getAgentAddress());
         cu.setVoyageNumber(customClearanceDto.getVoyageNumber());
-        cu.setMrn(customClearanceDto.getMrn());
         cu.setCarrierId(customClearanceDto.getCarrierId());
         cu.setCarrierName(customClearanceDto.getCarrierName());
         cu.setTransportMeansName(customClearanceDto.getTransportMeansName());
@@ -62,7 +61,7 @@ public class CustomClearanceServiceImpl implements CustomClearanceService {
 
         CustomClearanceApprovalStatus cs= new CustomClearanceApprovalStatus();
         cs.setCommunicationAgreedId(customClearanceDto.getCommunicationAgreedId());
-        cs.setMrn(customClearanceDto.getMrn());
+        cs.setTaxClearanceNumber(customClearanceDto.getTaxClearanceNumber());
         cs.setVoyageNumber(customClearanceDto.getVoyageNumber());
         customClearanceApprovalRepository.save(cs);
 

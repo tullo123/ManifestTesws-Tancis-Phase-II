@@ -6,11 +6,8 @@ import com.ManifestTeswTancis.Service.UpdateVesselService;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
 import com.ManifestTeswTancis.dtos.UpdateVesselDto;
 import com.ManifestTeswTancis.Util.DateFormatter;
-import com.ManifestTeswTancis.Util.HttpCall;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import com.ManifestTeswTancis.Util.HttpMessage;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -77,22 +74,14 @@ try {
             ex.setEstimatedDatetimeOfDeparture(DateFormatter.getDateFromLocalDateTime(updateVesselDto.getEstimatedDatetimeOfDeparture()));
             exImportManifestRepository.save(ex);
         }
-} catch (Exception e) {
-    response.setDescription(e.getMessage());
-    response.setCode(400);
-    System.err.println(e.getMessage());
-}
+            } catch (Exception e) {
+                response.setDescription(e.getMessage());
+                response.setCode(400);
+                System.err.println(e.getMessage());
+            }
 
-        return response;
+           return response;
     }
-    @Override
-    public String submitCallInfoNotice(UpdateVesselDto updateVesselDto) throws IOException {
-        HttpMessage httpMessage = new HttpMessage();
-        httpMessage.setContentType("application/json");
-        httpMessage.setMessageName("VESSEL_CALL_UPDATE");
-        httpMessage.setRecipient("SS");
-        HttpCall httpCall = new HttpCall();
-        return httpCall.httpRequest(httpMessage);
-    }
+
 
 }

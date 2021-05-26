@@ -42,9 +42,6 @@ public class CustomClearanceEntity implements Serializable {
     @Column(name="VOYAGE_NO")
     private String voyageNumber;
 
-    @Column(name="MRN")
-    private String mrn;
-
     @Column(name="CARRIER_ID")
     private String carrierId;
 

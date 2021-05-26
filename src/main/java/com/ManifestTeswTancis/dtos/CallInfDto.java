@@ -22,6 +22,7 @@ public class CallInfDto implements Serializable{
 	private String vesselMasterAddress;
 	private String agentCode;
 	private String agentAddress;
+	private String callSign;
 	private String terminalOperatorCode;
 	private String transportStageType;
 	private String voyageNumber;
