@@ -2,5 +2,6 @@ package com.ManifestTeswTancis.Util;
 
 public interface ClearanceStatus {
     String APPROVED="D";
-    String SUBMITTED="B";
+    String RECEIVED="B";
+    String REJECTED="R";
 }

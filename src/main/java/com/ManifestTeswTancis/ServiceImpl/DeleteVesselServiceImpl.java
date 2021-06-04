@@ -5,14 +5,12 @@ import com.ManifestTeswTancis.Service.DeleteVesselService;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.CallInfCancelDto;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
-import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-@DynamicUpdate
 public class DeleteVesselServiceImpl implements DeleteVesselService {
     final
     ExImportManifestRepository exImportManifestRepository;
@@ -26,13 +24,13 @@ public class DeleteVesselServiceImpl implements DeleteVesselService {
     public TeswsResponse deleteVesselInfo(CallInfCancelDto callInfCancelDto) {
         TeswsResponse response = new TeswsResponse();
         response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-       response.setRefId(callInfCancelDto.getControlReferenceNumber());
-        response.setDescription("Cancellation of vessel call received successfully");
-        response.setAckType("VESSEL_CALL_DELETE");
+       response.setRefId(callInfCancelDto.getCancelRef());
+        response.setDescription("Vessel Cancellation Notice received successfully");
+        response.setAckType("VESSEL_CANCELLATION_NOTICE");
 
         try {
             Optional<ExImportManifest> optional = exImportManifestRepository
-                    .findFirstByMrn(callInfCancelDto.getMrn());
+                    .findFirstByCommunicationAgreedId(callInfCancelDto.getCommunicationAgreedId());
             if(optional.isPresent()) {
                 ExImportManifest ex = new ExImportManifest();
                 ex.setProcessingStatus("X");
@@ -41,7 +39,7 @@ public class DeleteVesselServiceImpl implements DeleteVesselService {
         } catch (Exception e) {
             response.setDescription(e.getMessage());
             response.setCode(400);
-            System.err.println("vessel cancellation request with Mrn"+callInfCancelDto.getMrn()+" Not Found");
+            System.err.println("CommunicationAgreedId:"+callInfCancelDto.getCommunicationAgreedId()+" Not Found");
         }
         return response;
     }

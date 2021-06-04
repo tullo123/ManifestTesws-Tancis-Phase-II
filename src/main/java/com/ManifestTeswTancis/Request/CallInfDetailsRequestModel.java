@@ -56,5 +56,7 @@ public class CallInfDetailsRequestModel {
 	private Double carWeightLoaded;
 	private Double carWeightAtDischarge;
 	private Double carWeightAtDestination;
+	private boolean ballast;
+	private boolean outwardCargo;
 
 }

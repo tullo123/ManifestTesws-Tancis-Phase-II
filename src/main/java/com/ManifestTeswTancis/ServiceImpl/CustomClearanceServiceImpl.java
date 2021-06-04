@@ -31,7 +31,7 @@ public class CustomClearanceServiceImpl implements CustomClearanceService {
         TeswsResponse response = new TeswsResponse();
         response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
         response.setRefId(customClearanceDto.getCommunicationAgreedId());
-        response.setDescription("Custom Clearance Received Successfully");
+        response.setDescription("Custom Clearance Request Received Successfully");
         response.setCode(200);
         response.setAckType("CUSTOM_CLEARANCE");
 

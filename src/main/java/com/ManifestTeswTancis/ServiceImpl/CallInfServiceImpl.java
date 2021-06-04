@@ -51,6 +51,11 @@ public  class CallInfServiceImpl implements CallInfService {
 				if (exImportManifest.getModeOfTransport().contentEquals("1")) {
 						exImportManifest.setModeOfTransport("10");
 				}
+				if(exImportManifest.getBallast().contentEquals("TRUE")){
+					exImportManifest.setBallast("Y");
+				}else if(exImportManifest.getBallast().contentEquals("FALSE")){
+					exImportManifest.setBallast("N");
+				} else exImportManifest.setBallast("N");
 
 				storedCallInfDetails = exImportManifestRepository.save(exImportManifest);
 				//statusServiceImp.save(exImportManifest, callInfDetails.getControlReferenceNumber(), true);

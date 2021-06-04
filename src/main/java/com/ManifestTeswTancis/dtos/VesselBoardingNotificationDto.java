@@ -33,5 +33,4 @@ public class VesselBoardingNotificationDto {
     private String actualDatetimeOfArrival;
     private String customOfficeCode;
     private String actualDatetimeOfArrivalOuterAnchorage;
-
 }

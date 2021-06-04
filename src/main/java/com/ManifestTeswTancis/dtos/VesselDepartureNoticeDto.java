@@ -32,5 +32,4 @@ public class VesselDepartureNoticeDto implements Serializable {
 	private String actualDatetimeOfDeparture;
 	private String actualDatetimeOfDepartureOuterAnchorage;
 	private String handoverDatetime;
-
 }

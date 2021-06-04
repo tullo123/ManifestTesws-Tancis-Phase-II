@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -19,6 +21,7 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 @Entity
+@DynamicUpdate //added 28-May-2021
 @Table(name = "TANCISEXT.EX_MF_IMPORT_MANIFEST")
 public class ExImportManifest implements Serializable {
 	private static final long serialVersionUID = 3455649652992287788L;
@@ -166,6 +169,9 @@ public class ExImportManifest implements Serializable {
 
 	@Column(name = "EXPECTED_ARRIVAL_DT")
 	private Date estimatedDatetimeOfArrival;
+
+	@Column(name = "IN_BALLAST_YN")
+	private String ballast;
 
 	public ExImportManifest(CallInfDetailsRequestModel callInfDetails) {
 		this.customOfficeCode = callInfDetails.getCustomOfficeCode();

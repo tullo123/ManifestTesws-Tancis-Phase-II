@@ -16,5 +16,4 @@ public class DoctorTest implements Serializable {
 	private String requirement;
 	private String result;
 	private String passFail;
-
 }

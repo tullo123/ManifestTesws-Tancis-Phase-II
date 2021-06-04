@@ -4,6 +4,7 @@ import com.ManifestTeswTancis.Entity.CustomClearanceApprovalStatus;
 import com.ManifestTeswTancis.Entity.CustomClearanceEntity;
 import com.ManifestTeswTancis.Repository.CustomClearanceApprovalRepository;
 import com.ManifestTeswTancis.Repository.CustomClearanceRepository;
+import com.ManifestTeswTancis.Response.CustomClearanceStatus;
 import com.ManifestTeswTancis.Response.ResponseCustomClearance;
 import com.ManifestTeswTancis.Util.ClearanceStatus;
 import com.ManifestTeswTancis.Util.DateFormatter;
@@ -46,27 +47,69 @@ public class CheckCustomClearanceStatusImpl {
                 if(cs.getProcessingStatus().equals(ClearanceStatus.APPROVED)){
                     ResponseCustomClearance responseCustomClearance= new ResponseCustomClearance();
                     responseCustomClearance.setCommunicationAgreedId(cs.getCommunicationAgreedId());
-                    responseCustomClearance.setClearanceReference(cs.getTaxClearanceNumber());
+                    responseCustomClearance.setClearanceRef(cs.getTaxClearanceNumber());
                     responseCustomClearance.setApprovalStatus(getStatus(cs.getProcessingStatus()));
                     responseCustomClearance.setComment(cs.getComments());
                     responseCustomClearance.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     customClearanceApprovalRepository.save(ca);
                     String response = sendApprovalNoticeToTesws(responseCustomClearance);
                     System.out.println("***************** Approval Notice Response ******************\n" + response);
+
+                }else if(cs.getProcessingStatus().equals(ClearanceStatus.RECEIVED)){
+                    CustomClearanceStatus customClearanceStatus= new CustomClearanceStatus();
+                    customClearanceStatus.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                    customClearanceStatus.setCommunicationAgreedId(cs.getCommunicationAgreedId());
+                    customClearanceStatus.setStatus(getStatus(cs.getProcessingStatus()));
+                    customClearanceApprovalRepository.save(ca);
+                    String response = sendStatusNoticeToTesws(customClearanceStatus);
+                    System.out.println("***************** Status Notice Response ******************\n" + response);
+
+                }else if (cs.getProcessingStatus().equals(ClearanceStatus.REJECTED)){
+                    CustomClearanceStatus customClearanceStatus= new CustomClearanceStatus();
+                    customClearanceStatus.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                    customClearanceStatus.setCommunicationAgreedId(cs.getCommunicationAgreedId());
+                    customClearanceStatus.setStatus(getStatus(cs.getProcessingStatus()));
+                    customClearanceApprovalRepository.save(ca);
+                    String response = sendStatusNoticeToTesws(customClearanceStatus);
+                    System.out.println("***************** Status Notice Response ******************\n" + response);
+
                 }
             }
         }
 
     }
 
-    private String getStatus(String processingStatus) {
-        if(processingStatus.contentEquals("D")){
-            return "A";
-        }else if (processingStatus.contentEquals("R")){
-            return "R";
+        private String sendStatusNoticeToTesws(CustomClearanceStatus customClearanceStatus) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                String payload = mapper.writeValueAsString(customClearanceStatus);
+                System.out.println("------ Status notice payload ------------\n"+payload);
+                HttpMessage httpMessage = new HttpMessage();
+                httpMessage.setContentType("application/json");
+                httpMessage.setPayload(payload);
+                httpMessage.setMessageName("CUSTOM_CLEARANCE_STATUS");
+                httpMessage.setRecipient("SS");
+                HttpCall httpCall = new HttpCall();
+                return httpCall.httpRequest(httpMessage);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return "Failed";
         }
-        else return processingStatus;
-    }
+
+
+
+        private String getStatus(String processingStatus) {
+            if(processingStatus.contentEquals("D")){
+                return "A";
+            }else if (processingStatus.contentEquals("R")){
+                return "REJECTED";
+            } else if (processingStatus.contentEquals("B")){
+                return "RECEIVED";
+            }
+            else return processingStatus;
+        }
 
 
 
@@ -83,10 +126,10 @@ public class CheckCustomClearanceStatusImpl {
             HttpCall httpCall = new HttpCall();
             return httpCall.httpRequest(httpMessage);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "Failed";
         }
-        return "Failed";
-    }
 
 }

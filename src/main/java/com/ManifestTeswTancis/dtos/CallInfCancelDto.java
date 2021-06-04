@@ -10,8 +10,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class CallInfCancelDto {
-    private String communicationAgreedId;
-    private String mrn;
-    private String customOfficeCode;
-    private String controlReferenceNumber;
+     private String cancelRef;
+     private String communicationAgreedId;
+     private String voyageNumber;
+     private String transportMeansId;
+     private String transportMeansName;
+     private String transportMeansNationality;
+     private String approvalStatus;
+     private String approvalComment;
+     private String noticeDt;
 }

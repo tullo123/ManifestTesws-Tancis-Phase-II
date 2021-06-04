@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @ToString
 @Entity
+@DynamicUpdate
 @Table(name = "TANCISINT.CUSTOM_APPROVAL_STATUS")
 public class CustomClearanceApprovalStatus {
     @Id
@@ -41,4 +43,13 @@ public class CustomClearanceApprovalStatus {
 	@Column(name ="UPDATED_AT" )
     @CreationTimestamp
     private LocalDateTime updatedAt;
+
+	@Column(name="RECEIVED_NOTICE_SENT")
+    private boolean receivedNoticeSent;
+
+	@Column(name="RECEIVED_NOTICE_DT")
+    private String receivedNoticeDt;
+
+	@Column(name="RECEIVED_STATUS")
+    private String receivedStatus;
 }
