@@ -32,7 +32,7 @@ public class DeleteVesselServiceImpl implements DeleteVesselService {
             Optional<ExImportManifest> optional = exImportManifestRepository
                     .findFirstByCommunicationAgreedId(callInfCancelDto.getCommunicationAgreedId());
             if(optional.isPresent()) {
-                ExImportManifest ex = new ExImportManifest();
+                ExImportManifest ex = optional.get();
                 ex.setProcessingStatus("X");
                 exImportManifestRepository.save(ex);
             }

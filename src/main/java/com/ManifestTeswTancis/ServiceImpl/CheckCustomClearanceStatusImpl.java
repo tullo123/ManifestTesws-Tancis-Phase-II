@@ -83,7 +83,7 @@ public class CheckCustomClearanceStatusImpl {
             ObjectMapper mapper = new ObjectMapper();
             try {
                 String payload = mapper.writeValueAsString(customClearanceStatus);
-                System.out.println("------ Status notice payload ------------\n"+payload);
+                System.out.println("********** Status notice payload ***********\n"+payload);
                 HttpMessage httpMessage = new HttpMessage();
                 httpMessage.setContentType("application/json");
                 httpMessage.setPayload(payload);
@@ -117,7 +117,7 @@ public class CheckCustomClearanceStatusImpl {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String payload = mapper.writeValueAsString(responseCustomClearance);
-            System.out.println("------ Approval notice payload ------------\n"+payload);
+            System.out.println("************ Approval notice payload ************\n"+payload);
             HttpMessage httpMessage = new HttpMessage();
             httpMessage.setContentType("application/json");
             httpMessage.setPayload(payload);

@@ -48,7 +48,10 @@ public  class ManifestController  implements ManifestApi {
 	final
 	VesselDepartureService vesselDepartureService;
 
-	public ManifestController(LiquidBulkDischargeSequenceUpdateService liquidBulkDischargeSequenceUpdateService, ExImportManifestService exImportManifestService, DeleteVesselService deleteVesselService, LiquidBulkDischargeSequenceService liquidBulkDischargeSequenceService, LiquidBulkQualityReportService liquidBulkQualityReportService, CallInfService callInfService, VesselDepartureService vesselDepartureService, UpdateVesselService updateVesselService, CustomClearanceService customClearanceService, HeaderServiceImpl headerServiceImpl, PortClearanceService portClearanceService, VesselBoardingService vesselBoardingService) {
+	final
+	VesselTrackingService vesselTrackingService;
+
+	public ManifestController(LiquidBulkDischargeSequenceUpdateService liquidBulkDischargeSequenceUpdateService, ExImportManifestService exImportManifestService, DeleteVesselService deleteVesselService, LiquidBulkDischargeSequenceService liquidBulkDischargeSequenceService, LiquidBulkQualityReportService liquidBulkQualityReportService, CallInfService callInfService, VesselDepartureService vesselDepartureService, UpdateVesselService updateVesselService, CustomClearanceService customClearanceService, HeaderServiceImpl headerServiceImpl, PortClearanceService portClearanceService, VesselBoardingService vesselBoardingService, VesselTrackingService vesselTrackingService) {
 		this.liquidBulkDischargeSequenceUpdateService = liquidBulkDischargeSequenceUpdateService;
 		this.exImportManifestService = exImportManifestService;
 		this.deleteVesselService = deleteVesselService;
@@ -61,6 +64,7 @@ public  class ManifestController  implements ManifestApi {
 		this.headerServiceImpl = headerServiceImpl;
 		this.portClearanceService = portClearanceService;
 		this.vesselBoardingService = vesselBoardingService;
+		this.vesselTrackingService = vesselTrackingService;
 	}
 
 	@Override
@@ -142,6 +146,12 @@ public  class ManifestController  implements ManifestApi {
 		TeswsResponse response = liquidBulkQualityReportService.saveLiquidBulkQualityReport(liquidBulkQualityReportDto);
 		return ResponseEntity.ok(response);
 
+	}
+
+	@Override
+	public ResponseEntity<TeswsResponse> vesselTracking(@Valid VesselTrackingNotice vesselTrackingNotice) {
+		TeswsResponse response =vesselTrackingService.vesselTracking(vesselTrackingNotice);
+		return ResponseEntity.ok(response);
 	}
 
 }

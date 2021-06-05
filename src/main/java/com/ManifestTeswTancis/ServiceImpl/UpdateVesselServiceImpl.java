@@ -10,7 +10,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class UpdateVesselServiceImpl implements UpdateVesselService {
     final
     ExImportManifestRepository exImportManifestRepository;
@@ -35,7 +38,7 @@ try {
         Optional<ExImportManifest> optional = exImportManifestRepository
                 .findFirstByCommunicationAgreedId(updateVesselDto.getCommunicationAgreedId());
         if(optional.isPresent()) {
-            ExImportManifest ex = new ExImportManifest();
+            ExImportManifest ex = optional.get();
             ex.setCommunicationAgreedId(updateVesselDto.getCommunicationAgreedId());
             ex.setControlReferenceNumber(updateVesselDto.getControlReferenceNumber());
             ex.setTerminalOperatorCode(updateVesselDto.getTerminalOperatorCode());
