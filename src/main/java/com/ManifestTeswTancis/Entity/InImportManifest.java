@@ -159,4 +159,10 @@ public class InImportManifest implements Serializable {
 
     @Column(name = "IN_BALLAST_YN")
     private String ballast;
+
+    @Column(name="BOARDING_YN")
+    private String boardingYn;
+
+    @Column(name="BOARDING_DT")
+    private Date boardingDt;
 }

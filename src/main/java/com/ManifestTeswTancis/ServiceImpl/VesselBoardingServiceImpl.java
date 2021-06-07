@@ -1,7 +1,7 @@
 package com.ManifestTeswTancis.ServiceImpl;
 
-import com.ManifestTeswTancis.Entity.VesselBoardingNotificationEntity;
-import com.ManifestTeswTancis.Repository.VesselBoardingNotificationRepository;
+import com.ManifestTeswTancis.Entity.InImportManifest;
+import com.ManifestTeswTancis.Repository.InImportManifestRepository;
 import com.ManifestTeswTancis.Service.VesselBoardingService;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
@@ -10,50 +10,41 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Service
 @Transactional
 public class VesselBoardingServiceImpl implements VesselBoardingService {
-
     final
-    VesselBoardingNotificationRepository vesselBoardingNotificationRepository;
+    InImportManifestRepository inImportManifestRepository;
 
-    public VesselBoardingServiceImpl(VesselBoardingNotificationRepository vesselBoardingNotificationRepository) {
-        this.vesselBoardingNotificationRepository = vesselBoardingNotificationRepository;
+    public VesselBoardingServiceImpl(InImportManifestRepository inImportManifestRepository) {
+        this.inImportManifestRepository = inImportManifestRepository;
     }
 
     @Override
     public TeswsResponse saveVesselBoarding(VesselBoardingNotificationDto vesselBoardingNotificationDto) {
         TeswsResponse response = new TeswsResponse();
         response.setAckType("VESSEL_BOARDING_NOTIFICATION");
+        response.setRefId(vesselBoardingNotificationDto.getCommunicationAgreedId());
         response.setCode(200);
         response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-        response.setDescription("Vessel Boarding Notification Received Successfully");
+        response.setDescription("Vessel Boarding Notice Received Successfully");
 
-        VesselBoardingNotificationEntity vb= new VesselBoardingNotificationEntity();
-        vb.setActualDatetimeOfArrival(vesselBoardingNotificationDto.getActualDatetimeOfArrival());
-        vb.setCommunicationAgreedId(vesselBoardingNotificationDto.getCommunicationAgreedId());
-        vb.setVesselMaster(vesselBoardingNotificationDto.getVesselMaster());
-        vb.setVesselMasterAddress(vesselBoardingNotificationDto.getVesselMasterAddress());
-        vb.setAgentCode(vesselBoardingNotificationDto.getAgentCode());
-        vb.setAgentAddress(vesselBoardingNotificationDto.getAgentAddress());
-        vb.setVoyageNumber(vesselBoardingNotificationDto.getVoyageNumber());
-        vb.setModeOfTransport(vesselBoardingNotificationDto.getModeOfTransport());
-        vb.setCarrierId(vesselBoardingNotificationDto.getCarrierId());
-        vb.setCarrierName(vesselBoardingNotificationDto.getCarrierName());
-        vb.setTransportMeansId(vesselBoardingNotificationDto.getTransportMeansId());
-        vb.setTransportMeansName(vesselBoardingNotificationDto.getTransportMeansName());
-        vb.setTransportMeansNationality(vesselBoardingNotificationDto.getTransportMeansNationality());
-        vb.setVoyageNumberOutbound(vesselBoardingNotificationDto.getVoyageNumberOutbound());
-        vb.setTerminalOperatorCode(vesselBoardingNotificationDto.getTerminalOperatorCode());
-        vb.setTerminal(vesselBoardingNotificationDto.getTerminal());
-        vb.setDestinationPort(vesselBoardingNotificationDto.getDestinationPort());
-        vb.setPortOfCall(vesselBoardingNotificationDto.getPortOfCall());
-        vb.setNextPortOfCall(vesselBoardingNotificationDto.getNextPortOfCall());
-        vb.setEstimatedDatetimeOfArrival(vesselBoardingNotificationDto.getEstimatedDatetimeOfArrival());
-        vb.setEstimatedDatetimeOfDeparture(vesselBoardingNotificationDto.getEstimatedDatetimeOfDeparture());
-        vb.setActualDatetimeOfArrival(vesselBoardingNotificationDto.getActualDatetimeOfArrival());
-        vb.setCustomOfficeCode(vesselBoardingNotificationDto.getCustomOfficeCode());
-        vesselBoardingNotificationRepository.save(vb);
+        try{
+            Optional<InImportManifest> optional=inImportManifestRepository.
+                    findFirstByCommunicationAgreedId(vesselBoardingNotificationDto.getCommunicationAgreedId());
+            if(optional.isPresent()){
+                InImportManifest inImportManifest=optional.get();
+                inImportManifest.setBoardingYn("Y");
+                inImportManifest.setBoardingDt(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
+                inImportManifestRepository.save(inImportManifest);
+            }
+
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+
         return response;
     }
 }
