@@ -48,8 +48,8 @@ public class CustomClearanceApprovalStatus {
     private boolean receivedNoticeSent;
 
 	@Column(name="RECEIVED_NOTICE_DT")
-    private String receivedNoticeDt;
+    private String noticeDate;
 
-	@Column(name="RECEIVED_STATUS")
-    private String receivedStatus;
+	@Column(name="RECEIVED_FAILED_STATUS")
+    private String receivedFailedStatus;
 }

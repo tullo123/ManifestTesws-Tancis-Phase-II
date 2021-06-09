@@ -38,7 +38,7 @@ public class CheckCustomClearanceStatusImpl {
     @Transactional
     @Scheduled(fixedRate=180000)
     public void CheckCustomClearanceStatus(){
-        List<CustomClearanceApprovalStatus> status=customClearanceApprovalRepository.findByApprovedStatusFalse();
+        List<CustomClearanceApprovalStatus> status=customClearanceApprovalRepository.findFirstByApprovedStatusFalseOrReceivedNoticeSentFalse();
         System.out.println("****************** Checking for approved Custom Clearance ******************");
         for(CustomClearanceApprovalStatus ca: status){
             if(!ca.isApprovedStatus()){
@@ -52,6 +52,7 @@ public class CheckCustomClearanceStatusImpl {
                         responseCustomClearance.setApprovalStatus(getStatus(cs.getProcessingStatus()));
                         responseCustomClearance.setComment(cs.getComments());
                         responseCustomClearance.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                        ca.setApprovedStatus(true);
                         customClearanceApprovalRepository.save(ca);
                         String response = sendApprovalNoticeToTesws(responseCustomClearance);
                         System.out.println("***************** Approval Notice Response ******************\n" + response);
@@ -64,6 +65,9 @@ public class CheckCustomClearanceStatusImpl {
                         customClearanceStatus.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                         customClearanceStatus.setCommunicationAgreedId(cs.getCommunicationAgreedId());
                         customClearanceStatus.setStatus(getStatus(cs.getProcessingStatus()));
+                        ca.setReceivedNoticeSent(true);
+                        ca.setReceivedFailedStatus(getStatus(cs.getProcessingStatus()));
+                        ca.setNoticeDate(customClearanceStatus.getNoticeDate());
                         customClearanceApprovalRepository.save(ca);
                         String response = sendStatusNoticeToTesws(customClearanceStatus);
                         System.out.println("***************** Status Notice Response ******************\n" + response);

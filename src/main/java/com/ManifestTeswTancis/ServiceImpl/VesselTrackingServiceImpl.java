@@ -1,6 +1,6 @@
 package com.ManifestTeswTancis.ServiceImpl;
-import com.ManifestTeswTancis.Entity.InImportManifest;
-import com.ManifestTeswTancis.Repository.InImportManifestRepository;
+import com.ManifestTeswTancis.Entity.ExImportManifest;
+import com.ManifestTeswTancis.Repository.ExImportManifestRepository;
 import com.ManifestTeswTancis.Service.VesselTrackingService;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
@@ -14,10 +14,10 @@ import java.util.Optional;
 @Transactional
 public class VesselTrackingServiceImpl implements VesselTrackingService {
     final
-    InImportManifestRepository InImportManifestRepository;
+    ExImportManifestRepository exImportManifestRepository;
 
-    public VesselTrackingServiceImpl(InImportManifestRepository InImportManifestRepository) {
-        this.InImportManifestRepository = InImportManifestRepository;
+    public VesselTrackingServiceImpl(ExImportManifestRepository exImportManifestRepository) {
+        this.exImportManifestRepository = exImportManifestRepository;
     }
 
     @Override
@@ -27,23 +27,25 @@ public class VesselTrackingServiceImpl implements VesselTrackingService {
         response.setRefId(vesselTrackingNotice.getCommunicationAgreedId());
         response.setCode(200);
         response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-        response.setDescription("Vessel Tracking Notice Received Successfully");
+        response.setDescription("Vessel Tracking Received Successfully");
 
         try {
-            Optional<InImportManifest> optional = InImportManifestRepository
-                    .findFirstByCommunicationAgreedId(vesselTrackingNotice.getCommunicationAgreedId());
+            Optional<ExImportManifest> optional=exImportManifestRepository.
+                    findFirstByCommunicationAgreedId(vesselTrackingNotice.getCommunicationAgreedId());
             if (optional.isPresent()) {
-                InImportManifest inImportManifest = optional.get();
+                ExImportManifest inImportManifest=optional.get();
                 inImportManifest.setActualDateTimeOfArrival(DateFormatter.getDateFromLocalDateTime
                         (vesselTrackingNotice.getActualDatetimeOfArrival()));
                 inImportManifest.setActualDatetimeOfDeparture(DateFormatter.getDateFromLocalDateTime
                         (vesselTrackingNotice.getActualDatetimeOfDeparture()));
-                InImportManifestRepository.save(inImportManifest);
+                exImportManifestRepository.save(inImportManifest);
             }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        } catch (Exception e) {
+            response.setDescription(e.getMessage());
+            e.printStackTrace();
+        }
+
         return response;
     }
 }

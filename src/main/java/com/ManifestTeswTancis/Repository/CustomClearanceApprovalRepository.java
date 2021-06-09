@@ -8,4 +8,5 @@ import java.util.List;
 public interface CustomClearanceApprovalRepository extends JpaRepository<CustomClearanceApprovalStatus, String> {
     List<CustomClearanceApprovalStatus> findByApprovedStatusFalse();
 
+    List<CustomClearanceApprovalStatus> findFirstByApprovedStatusFalseOrReceivedNoticeSentFalse();
 }

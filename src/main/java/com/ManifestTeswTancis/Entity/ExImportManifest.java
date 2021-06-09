@@ -1,19 +1,21 @@
 package com.ManifestTeswTancis.Entity;
 import com.ManifestTeswTancis.Request.CallInfDetailsRequestModel;
 import com.ManifestTeswTancis.Util.DateFormatter;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -73,9 +75,6 @@ public class ExImportManifest implements Serializable {
 	@Column(name = "VESSEL_NAME")
 	private String transportMeansName;
 
-	@Column(name = "FIRST_REGISTER_DT")
-	private Date mrnDate;
-
 	@Column(name = "NEXT_ARRIVAL_PORT_CD")
 	private String nextPortOfCall;
 
@@ -83,6 +82,9 @@ public class ExImportManifest implements Serializable {
 	private Date actualDateTimeOfArrival;
 
 	@Column(name = "DEPARTURE_DT")
+	private Date actualDatetimeOfDeparture;
+
+	@Column(name = "EXPECTED_DEPARTURE_DT")
 	private Date estimatedDatetimeOfDeparture;
 
 	@Column(name = "NATIONALITY")
@@ -97,18 +99,20 @@ public class ExImportManifest implements Serializable {
 	@Column(name = "PROCESSING_STATUS")
 	private String processingStatus;
 
-	@Column(name = "FIRST_REGISTER_DT", insertable = false, updatable = false)
-	private Date firstRegisterDate;
+	@Column(name = "FIRST_REGISTER_DT")
+	@CreationTimestamp
+	private LocalDateTime firstRegisterDate;
 
 	@Column(name = "FIRST_REGISTER_ID")
 	private String firstRegisterId;
 
 	@Column(name = "LAST_UPDATE_DT")
-	private Date lastUpdateDate;
+	@UpdateTimestamp
+	private LocalDateTime lastUpdateDate;
 
-	@JsonFormat(pattern = "dd/MM/yyyy")
-	@Column(name = "PROCESSING_DT", insertable = false, updatable = false)
-	private Date processingDate;
+	@Column(name = "PROCESSING_DT")
+	@CreationTimestamp
+	private LocalDateTime processingDate;
 
 	@Column(name = "PROCESSING_ID")
 	private String processingId;
@@ -173,14 +177,18 @@ public class ExImportManifest implements Serializable {
 	@Column(name = "IN_BALLAST_YN")
 	private String ballast;
 
+	@Column(name="BOARDING_YN")
+	private String boardingYn;
+
+	@Column(name="BOARDING_DT")
+	private Date boardingDt;
+
 	public ExImportManifest(CallInfDetailsRequestModel callInfDetails) {
 		this.customOfficeCode = callInfDetails.getCustomOfficeCode();
 		this.controlReferenceNumber = callInfDetails.getControlReferenceNumber();
-		//this.applicationReference = callInfDetails.;
 		this.terminalOperatorCode = callInfDetails.getTerminalOperatorCode();
 		this.terminal = callInfDetails.getTerminal();
 		this.communicationAgreedId = callInfDetails.getCommunicationAgreedId();
-		//this.messageFunction = callInfDetails.;
 		this.transportMeansId = callInfDetails.getTransportMeansId();
 		this.modeOfTransport = callInfDetails.getModeOfTransport();
 		this.voyageNumber = callInfDetails.getVoyageNumber();
@@ -188,18 +196,14 @@ public class ExImportManifest implements Serializable {
 		this.carrierName = callInfDetails.getCarrierName();
 		this.transportMeansName = callInfDetails.getTransportMeansName();
 		this.callSign=callInfDetails.getCallSign();
-		//this.mrnDate = mrnDate;
 		this.nextPortOfCall = callInfDetails.getNextPortOfCall();
 		this.actualDateTimeOfArrival = DateFormatter.getDateFromLocalDateTime(callInfDetails.getActualDatetimeOfArrival());
-		this.estimatedDatetimeOfDeparture = DateFormatter.getDateFromLocalDateTime(callInfDetails.getActualDatetimeOfDeparture());
+		this.actualDatetimeOfDeparture = DateFormatter.getDateFromLocalDateTime(callInfDetails.getActualDatetimeOfDeparture());
 		this.transportMeansNationality = callInfDetails.getTransportMeansNationality();
 		this.destinationPort = callInfDetails.getDestinationPort();
 		this.portOfCall = callInfDetails.getPortOfCall();
 		this.processingStatus = "1";
-//		this.firstRegisterDate = callInfDetails.get;
 		this.firstRegisterId = callInfDetails.getCarrierName();
-		//this.lastUpdateDate = lastUpdateDate;
-		//this.processingDate = processingDate;
 		this.processingId = "SYSTEM";
 		this.carQuantityLoaded = callInfDetails.getCarQuantityLoaded();
 		this.carWeightLoaded = callInfDetails.getCarWeightLoaded();

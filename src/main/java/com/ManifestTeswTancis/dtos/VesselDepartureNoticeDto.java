@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,7 +32,7 @@ public class VesselDepartureNoticeDto implements Serializable {
 	private String transportMeansNationality;
 	private String rotationNumber;
 	private String nextPortOfCall;
-	private String actualDatetimeOfDeparture;
+	private LocalDateTime actualDatetimeOfDeparture;
 	private String actualDatetimeOfDepartureOuterAnchorage;
 	private String handoverDatetime;
 }

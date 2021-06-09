@@ -1,7 +1,7 @@
 package com.ManifestTeswTancis.ServiceImpl;
 
-import com.ManifestTeswTancis.Entity.InImportManifest;
-import com.ManifestTeswTancis.Repository.InImportManifestRepository;
+import com.ManifestTeswTancis.Entity.ExImportManifest;
+import com.ManifestTeswTancis.Repository.ExImportManifestRepository;
 import com.ManifestTeswTancis.Service.VesselBoardingService;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
@@ -16,10 +16,10 @@ import java.util.Optional;
 @Transactional
 public class VesselBoardingServiceImpl implements VesselBoardingService {
     final
-    InImportManifestRepository inImportManifestRepository;
+    ExImportManifestRepository exImportManifestRepository;
 
-    public VesselBoardingServiceImpl(InImportManifestRepository inImportManifestRepository) {
-        this.inImportManifestRepository = inImportManifestRepository;
+    public VesselBoardingServiceImpl(ExImportManifestRepository exImportManifestRepository) {
+        this.exImportManifestRepository = exImportManifestRepository;
     }
 
     @Override
@@ -32,16 +32,17 @@ public class VesselBoardingServiceImpl implements VesselBoardingService {
         response.setDescription("Vessel Boarding Notice Received Successfully");
 
         try{
-            Optional<InImportManifest> optional=inImportManifestRepository.
+            Optional<ExImportManifest> optional=exImportManifestRepository.
                     findFirstByCommunicationAgreedId(vesselBoardingNotificationDto.getCommunicationAgreedId());
             if(optional.isPresent()){
-                InImportManifest inImportManifest=optional.get();
+                ExImportManifest inImportManifest=optional.get();
                 inImportManifest.setBoardingYn("Y");
                 inImportManifest.setBoardingDt(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
-                inImportManifestRepository.save(inImportManifest);
+                exImportManifestRepository.save(inImportManifest);
             }
 
             }catch (Exception e) {
+            response.setDescription(e.getMessage());
                 e.printStackTrace();
             }
 
