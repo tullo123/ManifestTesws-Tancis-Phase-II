@@ -39,7 +39,7 @@ public class CheckCustomClearanceStatusImpl {
     @Scheduled(fixedRate=180000)
     public void CheckCustomClearanceStatus(){
         List<CustomClearanceApprovalStatus> status=customClearanceApprovalRepository.findFirstByApprovedStatusFalseOrReceivedNoticeSentFalse();
-        System.out.println("****************** Checking for approved Custom Clearance ******************");
+        System.out.println("****************** Checking for approved /received Custom Clearance ******************");
         for(CustomClearanceApprovalStatus ca: status){
             if(!ca.isApprovedStatus()){
                 System.out.println("************ Approving custom clearance with CallId"+ca.getCommunicationAgreedId()+"*************");

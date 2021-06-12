@@ -1,5 +1,7 @@
 package com.ManifestTeswTancis.ServiceImpl;
 
+import com.ManifestTeswTancis.Entity.ExportManifest;
+import com.ManifestTeswTancis.Repository.ExportManifestRepository;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
 import com.ManifestTeswTancis.Entity.ExImportManifest;
 import com.ManifestTeswTancis.Request.CallInfDetailsRequestModel;
@@ -23,14 +25,17 @@ import java.util.Optional;
 
 @Service
 public  class CallInfServiceImpl implements CallInfService {
+	final
+	ExportManifestRepository exportManifestRepository;
 	private final ExImportManifestRepository exImportManifestRepository;
 	private final ManifestStatusServiceImp statusServiceImp;
 
 	@Autowired
 	public CallInfServiceImpl(ExImportManifestRepository exImportManifestRepository,
-							  ManifestStatusServiceImp statusServiceImp) {
+							  ManifestStatusServiceImp statusServiceImp, ExportManifestRepository exportManifestRepository) {
 		this.exImportManifestRepository = exImportManifestRepository;
 		this.statusServiceImp = statusServiceImp;
+		this.exportManifestRepository = exportManifestRepository;
 	}
 
 	@Override
@@ -44,25 +49,28 @@ public  class CallInfServiceImpl implements CallInfService {
 		Optional<ExImportManifest> optional = exImportManifestRepository
 				.findFirstByCommunicationAgreedId(callInfDetails.getCommunicationAgreedId());
 		if(!optional.isPresent()) {
-			ExImportManifest storedCallInfDetails =null;
+			ExImportManifest storedCallInfDetails=null;
 			try {
 				ExImportManifest exImportManifest = new ExImportManifest(callInfDetails);
+				ExportManifest exportManifest=new ExportManifest(callInfDetails);
 				exImportManifest.setMrn(generateMrn(exImportManifest.getCarrierId()));
+				exportManifest.setMrnOut(generatemrnOut(exportManifest.getCarrierId()));
+				if(exportManifest.getModeOfTransport().contentEquals("1")){
+					exportManifest.setModeOfTransport("10");
+				}
+				exportManifest.setBallast("N");
+				exportManifestRepository.save(exportManifest);
+
 				if (exImportManifest.getModeOfTransport().contentEquals("1")) {
 						exImportManifest.setModeOfTransport("10");
 				}
-				if(exImportManifest.getBallast().contentEquals("TRUE")){
-					exImportManifest.setBallast("Y");
-				}else if(exImportManifest.getBallast().contentEquals("FALSE")){
-					exImportManifest.setBallast("N");
-				} else exImportManifest.setBallast("N");
-
+				 exImportManifest.setBallast("N");
 				storedCallInfDetails = exImportManifestRepository.save(exImportManifest);
-				//statusServiceImp.save(exImportManifest, callInfDetails.getControlReferenceNumber(), true);
+				statusServiceImp.save(exImportManifest, callInfDetails.getControlReferenceNumber(), true);
 
 				if(storedCallInfDetails != null) {
-					submitCallInfoNotice(storedCallInfDetails);
-					statusServiceImp.save(exImportManifest, callInfDetails.getControlReferenceNumber(), true);
+					submitCallInfoNotice(storedCallInfDetails,exportManifest);
+					//statusServiceImp.save(exImportManifest, callInfDetails.getControlReferenceNumber(), true);
 				}
 
 			} catch (Exception e) {
@@ -78,12 +86,15 @@ public  class CallInfServiceImpl implements CallInfService {
 
 	}
 
+
+
 	@Override
-	public String submitCallInfoNotice(ExImportManifest storedCallInfDetails) throws IOException {
+	public String submitCallInfoNotice(ExImportManifest storedCallInfDetails, ExportManifest exportManifest) throws IOException {
 		CallInfRest returnValue = new CallInfRest();
 		returnValue.setCommunicationAgreedId(storedCallInfDetails.getCommunicationAgreedId());
 		returnValue.setCustomOfficeCode(storedCallInfDetails.getCustomOfficeCode());
 		returnValue.setMrn(storedCallInfDetails.getMrn());
+		returnValue.setMrnOut(exportManifest.getMrnOut());
 		returnValue.setMrnDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
 		ObjectMapper mapper = new ObjectMapper();
 		String payload = mapper.writeValueAsString(returnValue);
@@ -105,5 +116,13 @@ public  class CallInfServiceImpl implements CallInfService {
 		DateFormat df = new SimpleDateFormat("yy");
 		String prefix = df.format(Calendar.getInstance().getTime());
 		return prefix + carrierCode + suffix;
+	}
+
+     private String generatemrnOut(String carrierId) {
+		Object nextval = exImportManifestRepository.getNextValue();
+		String suffix = String.format("%06d", Long.valueOf(nextval.toString()));
+		DateFormat df = new SimpleDateFormat("yy");
+		String prefix = df.format(Calendar.getInstance().getTime());
+		return prefix + carrierId + suffix;
 	}
 }

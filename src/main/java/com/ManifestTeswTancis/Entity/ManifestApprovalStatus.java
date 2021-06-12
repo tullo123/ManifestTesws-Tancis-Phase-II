@@ -67,4 +67,7 @@ public class ManifestApprovalStatus {
 	@UpdateTimestamp
 	private LocalDateTime updatedAt;
 
+	@Column(name="EXPORT_MRN")
+	private String mrnOut;
+
 }

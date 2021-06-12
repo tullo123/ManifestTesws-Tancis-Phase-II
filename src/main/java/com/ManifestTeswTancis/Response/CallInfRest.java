@@ -11,6 +11,7 @@ import lombok.ToString;
 @ToString
 public class CallInfRest {
 	private String mrn;
+	private String mrnOut;
 	private String mrnDate;
 	private String customOfficeCode;
 	private String communicationAgreedId;

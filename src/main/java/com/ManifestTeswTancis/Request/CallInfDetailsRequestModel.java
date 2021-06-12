@@ -22,6 +22,7 @@ public class CallInfDetailsRequestModel {
 	private String agentAddress;
 	private String terminalOperatorCode;
 	private String voyageNumber;
+	private String voyageNumberOutbound;
 	private String modeOfTransport;
 	private String callSign;
 	private String carrierId;
@@ -56,7 +57,7 @@ public class CallInfDetailsRequestModel {
 	private Double carWeightLoaded;
 	private Double carWeightAtDischarge;
 	private Double carWeightAtDestination;
-	private boolean ballast;
+	private String ballast;
 	private boolean outwardCargo;
 
 }
