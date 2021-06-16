@@ -1,6 +1,7 @@
 package com.ManifestTeswTancis.ServiceImpl;
 
 import com.ManifestTeswTancis.Entity.ExImportManifest;
+import com.ManifestTeswTancis.Entity.ExportManifest;
 import com.ManifestTeswTancis.Entity.ManifestApprovalStatus;
 import com.ManifestTeswTancis.Repository.ManifestApprovalStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class ManifestStatusServiceImp {
 		this.statusRepository = statusRepository;
 	}
 
-	public ManifestApprovalStatus save(ExImportManifest exImportManifest, String refId, boolean mrn) {
+	public ManifestApprovalStatus save(ExImportManifest exImportManifest, String refId, boolean mrn, ExportManifest exportManifest) {
 		ManifestApprovalStatus statusEntity=new ManifestApprovalStatus();
 		Optional<ManifestApprovalStatus> statusEntityo=statusRepository.findFirstByMrn(exImportManifest.getMrn());
 		if (statusEntityo.isPresent()) {
@@ -34,6 +35,8 @@ public class ManifestStatusServiceImp {
 			statusEntity.setMrn(exImportManifest.getMrn());
 			statusEntity.setTransportMeansId(exImportManifest.getTransportMeansId());
 			statusEntity.setVoyageNumber(exImportManifest.getVoyageNumber());
+			statusEntity.setMrnOut(exportManifest.getMrnOut());
+			statusEntity.setControlReferenceNumber(exImportManifest.getControlReferenceNumber());
 		}
 		return statusRepository.save(statusEntity);
 	}

@@ -64,7 +64,8 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				if(!vehicleMap.isEmpty()){
 					saveVehicles(vehicleMap, msnMap, infEntity.getMrn());
 				}
-				statusServiceImp.save(infEntity, manifestDto.getControlReferenceNumber(), false);
+				//statusServiceImp.save(infEntity, manifestDto.getControlReferenceNumber(), false);
+				// 12-june-2021 this line was commented
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

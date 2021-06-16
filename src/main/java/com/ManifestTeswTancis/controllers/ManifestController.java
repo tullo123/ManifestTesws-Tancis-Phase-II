@@ -5,6 +5,7 @@ import com.ManifestTeswTancis.dtos.TeswsResponse;
 import com.ManifestTeswTancis.Request.CallInfDetailsRequestModel;
 import com.ManifestTeswTancis.ServiceImpl.HeaderServiceImpl;
 import com.ManifestTeswTancis.controllers.api.ManifestApi;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,7 +52,19 @@ public  class ManifestController  implements ManifestApi {
 	final
 	VesselTrackingService vesselTrackingService;
 
-	public ManifestController(LiquidBulkDischargeSequenceUpdateService liquidBulkDischargeSequenceUpdateService, ExImportManifestService exImportManifestService, DeleteVesselService deleteVesselService, LiquidBulkDischargeSequenceService liquidBulkDischargeSequenceService, LiquidBulkQualityReportService liquidBulkQualityReportService, CallInfService callInfService, VesselDepartureService vesselDepartureService, UpdateVesselService updateVesselService, CustomClearanceService customClearanceService, HeaderServiceImpl headerServiceImpl, PortClearanceService portClearanceService, VesselBoardingService vesselBoardingService, VesselTrackingService vesselTrackingService) {
+	final
+	FreePartiqueService freePartiqueService;
+
+	final
+	UpdateFreePartiqueService updateFreePartiqueService;
+
+	final
+	VesselDocumentationService vesselDocumentationService;
+
+	final
+	VesselDocumentationUpdateService vesselDocumentationUpdateService;
+
+	public ManifestController(LiquidBulkDischargeSequenceUpdateService liquidBulkDischargeSequenceUpdateService, ExImportManifestService exImportManifestService, DeleteVesselService deleteVesselService, LiquidBulkDischargeSequenceService liquidBulkDischargeSequenceService, LiquidBulkQualityReportService liquidBulkQualityReportService, CallInfService callInfService, VesselDepartureService vesselDepartureService, UpdateVesselService updateVesselService, CustomClearanceService customClearanceService, HeaderServiceImpl headerServiceImpl, PortClearanceService portClearanceService, VesselBoardingService vesselBoardingService, VesselTrackingService vesselTrackingService, FreePartiqueService freePartiqueService, UpdateFreePartiqueService updateFreePartiqueService, VesselDocumentationService vesselDocumentationService, VesselDocumentationUpdateService vesselDocumentationUpdateService) {
 		this.liquidBulkDischargeSequenceUpdateService = liquidBulkDischargeSequenceUpdateService;
 		this.exImportManifestService = exImportManifestService;
 		this.deleteVesselService = deleteVesselService;
@@ -65,6 +78,10 @@ public  class ManifestController  implements ManifestApi {
 		this.portClearanceService = portClearanceService;
 		this.vesselBoardingService = vesselBoardingService;
 		this.vesselTrackingService = vesselTrackingService;
+		this.freePartiqueService = freePartiqueService;
+		this.updateFreePartiqueService = updateFreePartiqueService;
+		this.vesselDocumentationService = vesselDocumentationService;
+		this.vesselDocumentationUpdateService = vesselDocumentationUpdateService;
 	}
 
 	@Override
@@ -151,6 +168,30 @@ public  class ManifestController  implements ManifestApi {
 	@Override
 	public ResponseEntity<TeswsResponse> vesselTracking(@Valid VesselTrackingNotice vesselTrackingNotice) {
 		TeswsResponse response =vesselTrackingService.vesselTracking(vesselTrackingNotice);
+		return ResponseEntity.ok(response);
+	}
+
+	@Override
+	public ResponseEntity<TeswsResponse> freePartique(@Valid FreePratiqueReport freePratiqueReport) {
+		TeswsResponse response= freePartiqueService.freePartique(freePratiqueReport);
+		return ResponseEntity.ok(response);
+	}
+
+	@Override
+	public ResponseEntity<TeswsResponse> updateFreePartiqueReport(@Valid FreePratiqueReport freePratiqueReport) {
+		TeswsResponse response=updateFreePartiqueService.updateFreePartiqueReport(freePratiqueReport);
+		return ResponseEntity.ok(response);
+	}
+
+	@Override
+	public ResponseEntity<TeswsResponse> vesselDocumentation(@Valid VesselDocumentation vesselDocumentation) {
+		TeswsResponse response=vesselDocumentationService.vesselDocumentationReceiving(vesselDocumentation);
+		return ResponseEntity.ok(response);
+	}
+
+	@Override
+	public ResponseEntity<TeswsResponse> vesselDocumentationUpdate(@Valid VesselDocumentation vesselDocumentation) {
+		TeswsResponse response=vesselDocumentationUpdateService.vesselDocumentationUpdate(vesselDocumentation);
 		return ResponseEntity.ok(response);
 	}
 

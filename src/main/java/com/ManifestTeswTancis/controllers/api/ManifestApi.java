@@ -85,6 +85,26 @@ public interface ManifestApi {
             consumes = { MediaType.APPLICATION_JSON_VALUE })
     ResponseEntity<TeswsResponse> vesselTracking(@RequestBody @Valid VesselTrackingNotice vesselTrackingNotice);
 
+    @RequestMapping(value = "freePratiqueReport/v1", method = RequestMethod.POST,
+            produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = { MediaType.APPLICATION_JSON_VALUE })
+    ResponseEntity<TeswsResponse> freePartique(@RequestBody @Valid FreePratiqueReport freePratiqueReport);
+
+    @RequestMapping(value = "update/freePratiqueReport/v1", method = RequestMethod.POST,
+            produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = { MediaType.APPLICATION_JSON_VALUE })
+    ResponseEntity<TeswsResponse> updateFreePartiqueReport(@RequestBody @Valid FreePratiqueReport freePratiqueReport);
+
+    @RequestMapping(value = "vesselDocumentation/v1", method = RequestMethod.POST,
+            produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = { MediaType.APPLICATION_JSON_VALUE })
+    ResponseEntity<TeswsResponse> vesselDocumentation(@RequestBody @Valid VesselDocumentation vesselDocumentation);
+
+    @RequestMapping(value = "vesselDocumentation/update/v1", method = RequestMethod.POST,
+            produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = { MediaType.APPLICATION_JSON_VALUE })
+    ResponseEntity<TeswsResponse> vesselDocumentationUpdate(@RequestBody @Valid VesselDocumentation vesselDocumentation);
+
 
 
 }

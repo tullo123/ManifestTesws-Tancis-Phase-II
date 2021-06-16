@@ -66,7 +66,7 @@ public  class CallInfServiceImpl implements CallInfService {
 				}
 				 exImportManifest.setBallast("N");
 				storedCallInfDetails = exImportManifestRepository.save(exImportManifest);
-				statusServiceImp.save(exImportManifest, callInfDetails.getControlReferenceNumber(), true);
+				statusServiceImp.save(exImportManifest, callInfDetails.getControlReferenceNumber(), true, exportManifest);
 
 				if(storedCallInfDetails != null) {
 					submitCallInfoNotice(storedCallInfDetails,exportManifest);
