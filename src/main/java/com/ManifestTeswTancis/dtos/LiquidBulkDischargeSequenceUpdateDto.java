@@ -1,6 +1,7 @@
 package com.ManifestTeswTancis.dtos;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,14 +17,13 @@ public class LiquidBulkDischargeSequenceUpdateDto implements Serializable {
 	private String refNo;
 	private String voyageNo;
 	private String mrn;
-	private String call_id;
+	private String communicationAgreedId;
 	private String vesselName;
 	private String imoNo;
+	private String callSign;
 	private String destinationPort;
-	private String refdt;
-	private Integer blQnt;
-	private String product;
-	private String controlReferenceNumber;
+	private LocalDateTime refDate;
+	private Double blQnt;
+	private String oilType;
 	private List<PumpingSequenceDto> pumpingSequence;
-
 }

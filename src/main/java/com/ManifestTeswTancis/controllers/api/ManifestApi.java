@@ -80,6 +80,11 @@ public interface ManifestApi {
             consumes = { MediaType.APPLICATION_JSON_VALUE })
     ResponseEntity<TeswsResponse> saveLiquidBulkQualityReport(@RequestBody LiquidBulkQualityReportDto liquidBulkQualityReportDto);
 
+    @RequestMapping(value = "/saveLiquidBulkDischargeSequenceUpdate/final/v1", method = RequestMethod.POST,
+            produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = { MediaType.APPLICATION_JSON_VALUE })
+    ResponseEntity<TeswsResponse> finalDischargeSequence(@RequestBody LiquidBulkDischargeSequenceUpdateDto liquidBulkDischargeSequenceUpdateDto);
+
     @RequestMapping(value = "vessel/tracking/notice/v1", method = RequestMethod.POST,
             produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE })
