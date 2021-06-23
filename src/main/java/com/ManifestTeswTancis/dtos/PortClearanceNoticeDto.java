@@ -11,18 +11,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 public class PortClearanceNoticeDto implements Serializable {
-
 	private static final long serialVersionUID = 9099012099890704114L;
-
-	private String callId;
-
-	private String clearanceReference;
-
+	private String communicationAgreedId;
+	private String clearanceRef;
 	private String approvalStatus;
-
 	private String comment;
-
 	private String noticeDate;
-	
-
 }

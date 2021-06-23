@@ -17,6 +17,7 @@ public class CallInfDetailsRequestModel {
 	private String vesselMaster;
 	private String vesselMasterAddress;
 	private String agentCode;
+	private String applicationReferenceNumber;
 	private LocalDateTime processingDate;
 	private LocalDateTime lastUpdateDate;
 	private String agentAddress;

@@ -4,7 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -19,11 +23,11 @@ public class PortClearanceNoticeEntity implements Serializable {
 	private static final long serialVersionUID = -6358058296981557909L;
 	
     @Id
-	@Column(name = "CALL_ID")
-	private String callId;
+	@Column(name = "TPA_UID")
+	private String communicationAgreedId;
 
 	@Column(name = "CLEARANCE_REFERENCE")
-	private String clearanceReference;
+	private String clearanceRef;
 
 	@Column(name = "APPROVAL_STATUS")
 	private String approvalStatus;
@@ -33,5 +37,19 @@ public class PortClearanceNoticeEntity implements Serializable {
 
 	@Column(name = "NOTICE_DATE")
 	private String noticeDate;
+
+	@Column(name="FIRST_REGISTER_DT")
+	@CreationTimestamp
+	private LocalDateTime firstRegisterDate;
+
+	@Column(name = "FIRST_REGISTER_ID")
+	private String firstRegisterId;
+
+	@Column(name = "LAST_UPDATE_DT")
+	@UpdateTimestamp
+	private LocalDateTime lastUpdateDate;
+
+	@Column(name = "LAST_UPDATE_ID")
+	private String lastUpdateId;
 
 }

@@ -3,10 +3,8 @@ import com.ManifestTeswTancis.Entity.PortClearanceNoticeEntity;
 import com.ManifestTeswTancis.Repository.PortClearanceNoticeRepository;
 import com.ManifestTeswTancis.Service.PortClearanceService;
 import com.ManifestTeswTancis.Util.DateFormatter;
-import com.ManifestTeswTancis.Util.HttpMessage;
 import com.ManifestTeswTancis.dtos.PortClearanceNoticeDto;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -15,30 +13,41 @@ import java.time.LocalDateTime;
 @Transactional
 public class PortClearanceServiceImpl implements PortClearanceService {
 
-    @Autowired
+    final
     PortClearanceNoticeRepository portClearanceNoticeRepository;
+
+    public PortClearanceServiceImpl(PortClearanceNoticeRepository portClearanceNoticeRepository) {
+        this.portClearanceNoticeRepository = portClearanceNoticeRepository;
+    }
+
     @Override
     public TeswsResponse savePortClearanceNotice(PortClearanceNoticeDto portClearanceNoticeDto) {
         TeswsResponse response = new TeswsResponse();
         response.setAckType("PORT_CLEARANCE_NOTICE");
         response.setCode(200);
+        response.setRefId(portClearanceNoticeDto.getCommunicationAgreedId());
         response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-        response.setDescription("Received Successfully");
+        response.setDescription("Port Clearance Notice Received Successfully");
 
-        PortClearanceNoticeEntity portClearanceNoticeEntity= new PortClearanceNoticeEntity();
-        portClearanceNoticeEntity.setCallId(portClearanceNoticeDto.getCallId());
-        portClearanceNoticeEntity.setApprovalStatus(portClearanceNoticeDto.getApprovalStatus());
-        portClearanceNoticeEntity.setClearanceReference(portClearanceNoticeDto.getClearanceReference());
-        portClearanceNoticeEntity.setComment(portClearanceNoticeDto.getComment());
-        portClearanceNoticeEntity.setNoticeDate(portClearanceNoticeDto.getNoticeDate());
-        portClearanceNoticeRepository.save(portClearanceNoticeEntity);
+        try{
+            PortClearanceNoticeEntity portClearanceNoticeEntity= new PortClearanceNoticeEntity();
+            if(portClearanceNoticeDto.getApprovalStatus().contentEquals("APPROVED")) {
+                portClearanceNoticeEntity.setCommunicationAgreedId(portClearanceNoticeDto.getCommunicationAgreedId());
+                portClearanceNoticeEntity.setApprovalStatus(portClearanceNoticeDto.getApprovalStatus());
+                portClearanceNoticeEntity.setClearanceRef(portClearanceNoticeDto.getClearanceRef());
+                portClearanceNoticeEntity.setComment(portClearanceNoticeDto.getComment());
+                portClearanceNoticeEntity.setNoticeDate(portClearanceNoticeDto.getNoticeDate());
+                portClearanceNoticeEntity.setFirstRegisterId("TESWS");
+                portClearanceNoticeEntity.setLastUpdateId("TESWS");
+                portClearanceNoticeRepository.save(portClearanceNoticeEntity);
+            }
 
-        HttpMessage httpMessage = new HttpMessage();
-        httpMessage.setContentType("application/json");
-        httpMessage.setMessageName("CUSTOMS_VESSEL_REFERENCE");
-        httpMessage.setRecipient("SS");
+        } catch (Exception e) {
+            response.setDescription(e.getMessage());
+            e.printStackTrace();
+        }
+
         return response;
     }
-
 
 }

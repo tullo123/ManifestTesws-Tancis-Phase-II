@@ -40,7 +40,7 @@ public class ExImportManifest implements Serializable {
 	private String controlReferenceNumber;
 
 	@Column(name = "APPLICATION_REFERENCE_NO")
-	private Integer applicationReference;
+	private String applicationReferenceNumber;
 
 	@Column(name = "TERMINAL_OPERATOR_CD")
 	private String terminalOperatorCode;
@@ -105,6 +105,9 @@ public class ExImportManifest implements Serializable {
 
 	@Column(name = "FIRST_REGISTER_ID")
 	private String firstRegisterId;
+
+	@Column(name = "LAST_UPDATE_ID")
+	private String lastUpdateId;
 
 	@Column(name = "LAST_UPDATE_DT")
 	@UpdateTimestamp
@@ -203,8 +206,10 @@ public class ExImportManifest implements Serializable {
 		this.destinationPort = callInfDetails.getDestinationPort();
 		this.portOfCall = callInfDetails.getPortOfCall();
 		this.processingStatus = "1";
+		this.applicationReferenceNumber=callInfDetails.getApplicationReferenceNumber();
 		this.firstRegisterId = callInfDetails.getCarrierName();
 		this.processingId = "SYSTEM";
+		this.lastUpdateId ="SYSTEM";
 		this.carQuantityLoaded = callInfDetails.getCarQuantityLoaded();
 		this.carWeightLoaded = callInfDetails.getCarWeightLoaded();
 		this.cnQuantityLoaded = callInfDetails.getCnQuantityLoaded();

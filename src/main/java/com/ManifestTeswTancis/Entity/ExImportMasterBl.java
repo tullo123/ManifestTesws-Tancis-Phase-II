@@ -6,8 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -159,10 +162,27 @@ public class ExImportMasterBl {
 	@Column(name="CONSOLIDATED_STATUS")
 	private String consolidatedStatus;
 
+	@Column(name="FIRST_REGISTER_DT")
+	@CreationTimestamp
+	private LocalDateTime firstRegisterDate;
+
+	@Column(name = "FIRST_REGISTER_ID")
+	private String firstRegisterId;
+
+	@Column(name = "LAST_UPDATE_DT")
+	@UpdateTimestamp
+	private LocalDateTime lastUpdateDate;
+
+	@Column(name = "LAST_UPDATE_ID")
+	private String lastUpdateId;
+
+
 	public ExImportMasterBl(BillOfLadingDto billOfLadingDto) {
 		this.masterBillOfLading = billOfLadingDto.getMasterBillOfLading();
 		this.tasacControlNumber = billOfLadingDto.getTasacControlNumber();
 		this.tradeType = billOfLadingDto.getTradeType();
+		this.firstRegisterId="SYSTEM";
+		this.lastUpdateId="SYSTEM";
 		this.shippingAgentCode = billOfLadingDto.getShippingAgentCode();
 		this.forwarderCode = billOfLadingDto.getForwarderCode();
 		this.forwarderName = billOfLadingDto.getForwarderName();

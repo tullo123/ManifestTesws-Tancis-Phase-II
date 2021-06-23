@@ -37,7 +37,7 @@ public class CustomClearanceServiceImpl implements CustomClearanceService {
 
         CustomClearanceEntity cu= new CustomClearanceEntity();
         cu.setCommunicationAgreedId(customClearanceDto.getCommunicationAgreedId());
-        cu.setProcessingStatus("A");
+        cu.setProcessingStatus("B");
         cu.setVesselMaster(customClearanceDto.getVesselMaster());
         cu.setVesselMasterAddress(customClearanceDto.getVesselMasterAddress());
         cu.setAgentCode(customClearanceDto.getAgentCode());
