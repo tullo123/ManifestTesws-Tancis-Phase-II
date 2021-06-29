@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -84,13 +85,25 @@ public class CustomClearanceEntity implements Serializable {
     @Column(name="CLEARANCE_REQUEST_DT")
     private String clearanceRequestDate;
 
-    @Column(name="CREATED_DATE")
+    @Column(name = "CREATED_DATE")
     @CreationTimestamp
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
+
+    @Column(name="FIRST_REGISTER_DT")
+    @CreationTimestamp
+    private LocalDateTime firstRegisterDate;
+
+    @Column(name = "FIRST_REGISTER_ID")
+    private String firstRegisterId;
+
+    @Column(name = "LAST_UPDATE_DT")
+    @UpdateTimestamp
+    private LocalDateTime lastUpdateDate;
+
+    @Column(name = "LAST_UPDATE_ID")
+    private String lastUpdateId;
 
     @Column(name="COMMENTS")
     private  String comments;
-
-
 }
 
