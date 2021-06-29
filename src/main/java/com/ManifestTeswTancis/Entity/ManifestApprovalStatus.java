@@ -50,7 +50,7 @@ public class ManifestApprovalStatus {
 	private boolean mrnStatusFeedback;
 	
 	@Column(name = "PROCESSING_DT")
-	private Date approvedDate;
+	private String approvalDt;
 	
 	@Column(name = "CONTROL_REFERENCE_NO")
 	private String controlReferenceNumber;

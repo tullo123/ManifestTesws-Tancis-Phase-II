@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -41,7 +42,7 @@ public class CustomClearanceApprovalStatus {
     private LocalDateTime createdAt;
 
 	@Column(name ="UPDATED_AT" )
-    @CreationTimestamp
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
 	@Column(name="RECEIVED_NOTICE_SENT")

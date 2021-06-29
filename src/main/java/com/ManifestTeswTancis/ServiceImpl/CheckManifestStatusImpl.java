@@ -63,9 +63,14 @@ public class CheckManifestStatusImpl {
 						manifestNotice.setMessageReferenceNumber(callInf.getControlReferenceNumber());
 						manifestNotice.setApprovalDt(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
 						manifestNotice.setMrn(mf.getMrn());
+						if (mf.getMrn()!=null && mf.getMrnOut()!=null){
+							mf.setMrnStatus(true); }
 						manifestNotice.setApprovalStatus(getStatus(callInf.getProcessingStatus()));
 						manifestNotice.setBls(getManifestNoticeBl(mf.getMrn()));
 						mf.setApprovedStatus(true);
+						mf.setApprovedNoticeStatus(true);
+						mf.setProcessingStatus(getStatus(callInf.getProcessingStatus()));
+						mf.setApprovalDt(manifestNotice.getApprovalDt());
 						statusRepository.save(mf);
 						String response = sendApprovedToTesws(manifestNotice);
 						System.out.println("***************** Approval Notice Response ******************\n" + response);
@@ -82,6 +87,7 @@ public class CheckManifestStatusImpl {
 						submittedManifestStatus.setVoyageNumber(callInf.getVoyageNumber());
 						submittedManifestStatus.setCustomOfficeCode(callInf.getCustomOfficeCode());
 						submittedManifestStatus.setStatus(getStatus(callInf.getProcessingStatus()));
+						mf.setProcessingStatus(getStatus(callInf.getProcessingStatus()));
 						statusRepository.save(mf);
 						String response = submittedManifestStatusToTesws(submittedManifestStatus);
 						System.out.println("***************** Approval Notice Response ******************\n" + response);
