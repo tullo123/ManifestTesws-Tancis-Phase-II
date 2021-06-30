@@ -96,10 +96,10 @@ public  class CallInfServiceImpl implements CallInfService {
 		returnValue.setMrn(storedCallInfDetails.getMrn());
 		returnValue.setMrnOut(exportManifest.getMrnOut());
 		returnValue.setMrnDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+
 		ObjectMapper mapper = new ObjectMapper();
 		String payload = mapper.writeValueAsString(returnValue);
-		System.out.println(payload);
-
+		System.out.println("--------------- Custom Vessel Reference ---------------\n"+payload);
 		HttpMessage httpMessage = new HttpMessage();
 		httpMessage.setContentType("application/json");
 		httpMessage.setMessageName("CUSTOMS_VESSEL_REFERENCE");
