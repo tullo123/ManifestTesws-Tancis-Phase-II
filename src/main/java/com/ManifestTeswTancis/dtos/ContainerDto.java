@@ -39,6 +39,5 @@ public class ContainerDto {
 	private Double maximumTemperature;
 	private String amendSerialNumber;
 	List<SealNumberDto> sealNumbers;
-	//private SealNumberDto[] sealNumbers;
 
 }

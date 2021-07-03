@@ -48,6 +48,9 @@ public class ExImportMasterBl {
 	@Column(name = "SHIPPING_AGENT_CD")
 	private String shippingAgentCode;
 
+	@Column(name = "SHIPPING_MARKS")
+	private String marksNumbers;
+
 	@Column(name = "FORWARDER_CD")
 	private String forwarderCode;
 
@@ -181,8 +184,8 @@ public class ExImportMasterBl {
 		this.masterBillOfLading = billOfLadingDto.getMasterBillOfLading();
 		this.tasacControlNumber = billOfLadingDto.getTasacControlNumber();
 		this.tradeType = billOfLadingDto.getTradeType();
-		this.firstRegisterId="SYSTEM";
-		this.lastUpdateId="SYSTEM";
+		this.firstRegisterId="TESWS";
+		this.lastUpdateId="TESWS";
 		this.shippingAgentCode = billOfLadingDto.getShippingAgentCode();
 		this.forwarderCode = billOfLadingDto.getForwarderCode();
 		this.forwarderName = billOfLadingDto.getForwarderName();
@@ -207,6 +210,7 @@ public class ExImportMasterBl {
 		this.freightCharge = billOfLadingDto.getFreightCharge();
 		this.freightCurrency = billOfLadingDto.getFreightCurrency();
 		this.blType = (billOfLadingDto.getHouseBillOfLading() != null)?"C":"S";
+		this.marksNumbers =billOfLadingDto.getMarksNumbers();
 	}
 
 }

@@ -19,6 +19,10 @@ public class BillOfLadingDto {
 	   private String placeOfDestination;
 	   private String placeOfDelivery;
 	   private String portOfLoading;
+	   private Integer goodsItemNo;
+	   private String marksNumbers;
+	   private String blPackingType;
+	   private String blDescription;
 	   private String crn;
 	   private String msn;
 	   private String mrn;
@@ -76,6 +80,7 @@ public class BillOfLadingDto {
 	   private String  notifyTwoTin;
 	   private String blType;
 	   private String consolidatedStatus;
+	   private List<BlSummary>blSummary;
 	   private List<GoodsDto> goodDetails;
 
 }

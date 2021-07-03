@@ -6,8 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -114,6 +117,36 @@ public class ExImportHouseBl {
 	@Column(name = "OIL_TYPE")
 	private String oilType;
 
+	@Column(name = "FIRST_REGISTER_DT")
+	@CreationTimestamp
+	private LocalDateTime firstRegisterDate;
+
+	@Column(name = "FIRST_REGISTER_ID")
+	private String firstRegisterId;
+
+	@Column(name = "LAST_UPDATE_ID")
+	private String lastUpdateId;
+
+	@Column(name = "LAST_UPDATE_DT")
+	@UpdateTimestamp
+	private LocalDateTime lastUpdateDate;
+
+	@Column(name = "INVOICE_VALUE")
+	private Double invoiceValue;
+
+	@Column(name = "INVOICE_CURRENCY")
+	private String invoiceCurrency;
+
+	@Column(name = "FREIGHT_CHARGE")
+	private Double freightCharge;
+
+	@Column(name = "FREIGHT_CURRENCY")
+	private String freightCurrency;
+
+	@Column(name = "DESTINATION_PLACE")
+	private String placeOfDestination;
+
+
 	public ExImportHouseBl(BillOfLadingDto billOfLadingDto) {
 		this.houseBillOfLading = billOfLadingDto.getHouseBillOfLading();
 		this.masterBillOfLading = billOfLadingDto.getMasterBillOfLading();
@@ -130,7 +163,13 @@ public class ExImportHouseBl {
 		this.notifyTel = billOfLadingDto.getNotifyTel();
 		this.notifyAddress = billOfLadingDto.getNotifyAddress();
 		this.notifyTin = billOfLadingDto.getNotifyTin();
+		this.lastUpdateId = "TESWS";
+		this.firstRegisterId ="TESWS";
+		this.invoiceValue =billOfLadingDto.getInvoiceValue();
+		this.invoiceCurrency=billOfLadingDto.getInvoiceCurrency();
+		this.freightCharge=billOfLadingDto.getFreightCharge();
+		this.freightCurrency=billOfLadingDto.getFreightCurrency();
+		this.placeOfDestination = billOfLadingDto.getPlaceOfDestination();
 	}
-
 
 }

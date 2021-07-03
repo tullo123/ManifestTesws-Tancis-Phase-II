@@ -22,17 +22,20 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 	private final ExImportBlContainerRepository exImportBlContainerRepository;
 	private final EdNoticeRepository edNoticeRepository;
 	private final ManifestStatusServiceImp statusServiceImp;
+	final
+	BlGoodItemsRepository blGoodItemsRepository;
 
 	@Autowired
 	public ExImportManifestServiceImp(ExImportManifestRepository exImportManifestRepository, ExImportMasterBlRepository exImportMasterBlRepository,
 									  ExImportHouseBlRepository exImportHouseBlRepository, ExImportBlContainerRepository exImportBlContainerRepository,
-									  EdNoticeRepository edNoticeRepository, ManifestStatusServiceImp statusServiceImp) {
+									  EdNoticeRepository edNoticeRepository, ManifestStatusServiceImp statusServiceImp, BlGoodItemsRepository blGoodItemsRepository) {
 		this.exImportManifestRepository = exImportManifestRepository;
 		this.exImportMasterBlRepository = exImportMasterBlRepository;
 		this.exImportHouseBlRepository = exImportHouseBlRepository;
 		this.exImportBlContainerRepository = exImportBlContainerRepository;
 		this.edNoticeRepository = edNoticeRepository;
 		this.statusServiceImp = statusServiceImp;
+		this.blGoodItemsRepository = blGoodItemsRepository;
 	}
 
 	@Override
@@ -82,7 +85,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		Optional<EdNoticeEntity> optional = edNoticeRepository.findByDocumentNumber(exImportManifest.getMrn());
 		if(!optional.isPresent()) {
 			System.out.println(
-					"******************************************************createEdNotice START************************************************************");
+					"#-------------------------createEdNotice START --------------------------#");
 			TimeUnit.SECONDS.sleep(10);
 			edNotice.setDocumentCode("CUSMAN201");
 			edNotice.setDocumentNumber(exImportManifest.getMrn());
@@ -94,7 +97,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			edNotice.setDocumentFunctionType("9");
 			edNotice.setCustomsOfficeCode(exImportManifest.getCustomOfficeCode());
 			System.out.println(
-					"***************************************************************************************************************************************");
+					"#----------------------------------------------------------#");
 			TimeUnit.SECONDS.sleep(10);
 			edNotice.setReceiverId("INTERNAL");
 			edNotice.setSenderId("EXTERNAL");
@@ -105,7 +108,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			edNotice.setProcessingStatus("N");
 			edNoticeRepository.save(edNotice);
 			System.out.println(
-					"******************************************************createEdNotice END***************************************************************");
+					"#------------------------createEdNotice END ----------------#");
 			TimeUnit.SECONDS.sleep(10);
 		}
 		else {
@@ -160,7 +163,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				cnEn.setMrn(mrn);
 				cnEn.setContainerNo(container.getContainerNo());
 				cnEn.setContainerSize(container.getContainerSize());
-				cnEn.setTypeOfContainer(container.getTypeOfContainer()); //02-03-2021 Added.Container Type
+				cnEn.setTypeOfContainer(container.getTypeOfContainer());
 
 				Set<String> mblset = blMap.keySet();
 				Iterator iter = mblset.iterator();
@@ -183,6 +186,8 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				cnEn.setVolumeUnit(fixUnit(container.getVolumeUnit()));
 				cnEn.setMaximumTemperature(container.getMaximumTemperature());
 				cnEn.setMinimumTemperature(container.getMinimumTemperature());
+				cnEn.setFirstRegisterId("TESWS");
+				cnEn.setLastUpdateId("TESWS");
 
 				if(container.getTemperatureType() != null) {
 					cnEn.setReferPlugYn(container.getTemperatureType().contentEquals("1")?"Y":"N");
@@ -207,7 +212,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 							}
 						} else {
 							if (l == 0) {
-								cnEn.setSealNumberOne(sealNumber.getSealNumber());
+								cnEn.setSealNumber(sealNumber.getSealNumber());
 								l++;
 							} else if (l == 1) {
 								cnEn.setSealNumberTwo(sealNumber.getSealNumber());
@@ -252,11 +257,13 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				System.out.println("msn ="+msn+" and Master ="+bl.getMasterBillOfLading());
 				String hsn = String.format("%03d", j);
 				saveHouseBl(bl, mrn, msn, hsn, containerBlMap, vehicleMap, msnMap);
+				saveGoodsItems(bl);
 				j++;
 
 			}
 		}
 	}
+
 
 	private void saveMasterBl(
 			BillOfLadingDto bl,
@@ -268,6 +275,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		BlMeasurement blMeasurement = getBlMeasurement(bl, msn, "   ", containerBlMap,vehicleMap,msnMap);
 		System.out.println("generated msn:" + msn);
 		ExImportMasterBl exImportMasterBl = new ExImportMasterBl(bl);
+		BlSummary blSummary = new BlSummary();
 		exImportMasterBl.setMrn(mrn);
 		exImportMasterBl.setMsn(msn);
 		exImportMasterBl.setAuditStatus("NA");
@@ -280,16 +288,18 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportMasterBl.setTradeType(getTradeType(bl));
 		exImportMasterBl.setBlPackage(blMeasurement.getPkQuantity());
 		exImportMasterBl.setPackageUnit(blMeasurement.getPkType());
-		exImportMasterBl.setGrossWeight(blMeasurement.getGrossWeight());
+		//exImportMasterBl.setGrossWeight(blMeasurement.getGrossWeight());
+		exImportMasterBl.setGrossWeight(blSummary.getBlGrossWeight());
 		exImportMasterBl.setGrossWeightUnit(blMeasurement.getWeightUnit());
-		exImportMasterBl.setNetWeight(blMeasurement.getNetWeight());
+		exImportMasterBl.setNetWeight(blSummary.getBlNetWeight());
+		//exImportMasterBl.setNetWeight(blMeasurement.getNetWeight());
 		exImportMasterBl.setNetWeightUnit(blMeasurement.getWeightUnit());
 		exImportMasterBl.setVolume(blMeasurement.getVolume());
 		exImportMasterBl.setVolumeUnit(blMeasurement.getVolumeUnit());
-		exImportMasterBl.setPackingType(blMeasurement.getPackingType());
+		exImportMasterBl.setPackingType(bl.getBlPackingType());
 		exImportMasterBl.setOilType(blMeasurement.getOilType());
 		exImportMasterBl.setImdgclass(blMeasurement.getImdgClass());
-		exImportMasterBl.setDescription(blMeasurement.getDescription());
+		exImportMasterBl.setDescription(bl.getBlDescription());
 		exImportMasterBlRepository.save(exImportMasterBl);
 
 	}
@@ -305,6 +315,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			Map<String, Map<String, String>> msnMap) {
 
 		BlMeasurement blMeasurement = getBlMeasurement(bl,msn,hsn,containerBlMap,vehicleMap,msnMap);
+		BlSummary blSummary = new BlSummary();
 		ExImportHouseBl exImportHouseBl = new ExImportHouseBl(bl);
 		exImportHouseBl.setMrn(mrn);
 		exImportHouseBl.setMsn(msn);
@@ -312,16 +323,17 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportHouseBl.setTradeType((getTradeType(bl)));
 		exImportHouseBl.setBlPackage(blMeasurement.getPkQuantity());
 		exImportHouseBl.setPackageUnit(blMeasurement.getPkType());
-		exImportHouseBl.setGrossWeight(blMeasurement.getGrossWeight());
-		exImportHouseBl.setGrossWeightUnit(blMeasurement.getWeightUnit());
-		exImportHouseBl.setNetWeight(blMeasurement.getNetWeight());
+		//exImportHouseBl.setGrossWeight(blMeasurement.getGrossWeight());
+		exImportHouseBl.setGrossWeight(blSummary.getBlGrossWeight());
+		//exImportHouseBl.setGrossWeightUnit(blMeasurement.getWeightUnit());
+		exImportHouseBl.setNetWeight(blSummary.getBlNetWeight());
 		exImportHouseBl.setNetWeightUnit(blMeasurement.getWeightUnit());
 		exImportHouseBl.setVolumeUnit(blMeasurement.getVolumeUnit());
 		exImportHouseBl.setVolume(blMeasurement.getVolume());
-		exImportHouseBl.setPackingType(blMeasurement.getPackingType());
+		exImportHouseBl.setPackingType(bl.getBlPackingType());
 		exImportHouseBl.setOilType(blMeasurement.getOilType());
 		exImportHouseBl.setImdgclass(blMeasurement.getImdgClass());
-		exImportHouseBl.setDescription(blMeasurement.getDescription());
+		exImportHouseBl.setDescription(bl.getBlDescription());
 
 		exImportHouseBlRepository.save(exImportHouseBl);
 
@@ -415,16 +427,72 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 	}
 
 	private String getTradeType(BillOfLadingDto billOfLadingDto){
-		String destination = billOfLadingDto.getPlaceOfDestination();
-		if(destination != null && destination.startsWith("TZ")) {
+		String tradeType = billOfLadingDto.getTradeType();
+		if(tradeType != null && tradeType.equalsIgnoreCase("IMPORT")) {
 			return "IM";
 		}
-				if(destination != null && destination.startsWith("ZNZ")) {
-					return "TS";
+		else if (tradeType != null && tradeType.equalsIgnoreCase("TRANSIT")) {
+			return "TR";
+		} else if (tradeType != null && tradeType.equalsIgnoreCase("TRANSSHIPMENT")) {
+			return "TS";
+		} else if (tradeType != null && tradeType.equalsIgnoreCase("EXPRESS")) {
+			return "XE";
+		} else if (tradeType != null && tradeType.equalsIgnoreCase("EXPORT")) {
+			return "EX";
 
-				}else {
-					return "TR";
-				}
+		} else {
+			return billOfLadingDto.getTradeType();
+		}
 
+	}
+	private void saveGoodsItems(BillOfLadingDto bl) {
+		BlGoodItemsEntity blGoodItemsEntity= new BlGoodItemsEntity();
+		blGoodItemsEntity.setMrn(bl.getMrn());
+		blGoodItemsEntity.setHouseBillOfLading(bl.getHouseBillOfLading());
+		blGoodItemsEntity.setMasterBillOfLading(bl.getMasterBillOfLading());
+		blGoodItemsEntity.setGoodsItemNo(bl.getGoodsItemNo());
+		blGoodItemsEntity.setLastUpdateId("TESWS");
+		blGoodItemsEntity.setFirstRegisterId("TESWS");
+		for(GoodsDto goodsDto: bl.getGoodDetails()){
+			blGoodItemsEntity.setDescription(goodsDto.getDescription());
+			blGoodItemsEntity.setPackageType(goodsDto.getPackageType());
+			blGoodItemsEntity.setPackingType(goodsDto.getPackingType());
+			blGoodItemsEntity.setPackageQuantity(goodsDto.getPackageQuantity());
+			blGoodItemsEntity.setOilType(goodsDto.getOilType());
+			blGoodItemsEntity.setInvoiceValue(goodsDto.getInvoiceValue());
+			blGoodItemsEntity.setInvoiceCurrency(goodsDto.getInvoiceCurrency());
+			blGoodItemsEntity.setFreightCharge(goodsDto.getFreightCharge());
+			blGoodItemsEntity.setFreightCurrency(goodsDto.getFreightCurrency());
+			blGoodItemsEntity.setGrossWeight(goodsDto.getGrossWeight());
+			blGoodItemsEntity.setGrossWeightUnit("KG");
+			blGoodItemsEntity.setNetWeight(goodsDto.getNetWeight());
+			blGoodItemsEntity.setNetWeightUnit("KG");
+			blGoodItemsEntity.setVolume(goodsDto.getVolume());
+			blGoodItemsEntity.setVolumeUnit(goodsDto.getVolumeUnit());
+			blGoodItemsEntity.setLength(goodsDto.getLength());
+			blGoodItemsEntity.setLengthUnit(goodsDto.getLengthUnit());
+			blGoodItemsEntity.setWidth(goodsDto.getWidth());
+			blGoodItemsEntity.setWidthUnit(goodsDto.getWidthUnit());
+			blGoodItemsEntity.setHeight(goodsDto.getHeight());
+			blGoodItemsEntity.setHeightUnit(goodsDto.getHeightUnit());
+			blGoodItemsEntity.setMarksNumbers(goodsDto.getMarksNumbers());
+			blGoodItemsEntity.setVehicleVIN(goodsDto.getVehicleVIN());
+			blGoodItemsEntity.setVehicleModel(goodsDto.getVehicleModel());
+			blGoodItemsEntity.setVehicleMake(goodsDto.getVehicleMake());
+			blGoodItemsEntity.setVehicleOwnDrive(goodsDto.getVehicleOwnDrive());
+			blGoodItemsEntity.setClassCode(goodsDto.getDangerousGoodInformation().getClassCode());
+			blGoodItemsEntity.setFlashpointValue(goodsDto.getDangerousGoodInformation().getFlashpointValue());
+			blGoodItemsEntity.setShipmFlashptValue(goodsDto.getDangerousGoodInformation().getShipmFlashptValue());
+			blGoodItemsEntity.setShipmFlashptUnit(goodsDto.getDangerousGoodInformation().getShipmFlashptUnit());
+			blGoodItemsEntity.setPackingGroup(goodsDto.getDangerousGoodInformation().getPackingGroup());
+			blGoodItemsEntity.setMarPolCategory(goodsDto.getDangerousGoodInformation().getMarPolCategory());
+			blGoodItemsEntity.setImdgpage(goodsDto.getDangerousGoodInformation().getImdgpage());
+			blGoodItemsEntity.setImdgclass(goodsDto.getDangerousGoodInformation().getImdgclass());
+			blGoodItemsEntity.setUnnumber(goodsDto.getDangerousGoodInformation().getUnnumber());
+			blGoodItemsEntity.setTremcard(goodsDto.getDangerousGoodInformation().getTremcard());
+			blGoodItemsEntity.setMfag(goodsDto.getDangerousGoodInformation().getMfag());
+			blGoodItemsEntity.setEms(goodsDto.getDangerousGoodInformation().getEms());
+		}
+		blGoodItemsRepository.save(blGoodItemsEntity);
 	}
 }

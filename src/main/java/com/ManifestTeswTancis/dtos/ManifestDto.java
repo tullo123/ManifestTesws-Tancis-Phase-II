@@ -39,6 +39,7 @@ public class ManifestDto {
 	private String nextPortOfCall;
 	private String terminal;
 	private String terminalOperator;
+	private List<ManifestSummary>manifestSummary;
 	private Date estimatedDatetimeOfDeparture;
 	private Date estimatedDatetimeOfArrival;
 	List<BillOfLadingDto> consignments;

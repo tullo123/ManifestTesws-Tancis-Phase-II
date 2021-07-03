@@ -6,8 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -48,7 +51,7 @@ public class ExImportBlContainer {
 	private String typeOfContainer;
 
 	@Column(name = "SEAL_NO_1")
-	private String sealNumberOne;
+	private String sealNumber;
 
 	@Column(name = "SEAL_NO_2")
 	private String sealNumberTwo;
@@ -91,5 +94,19 @@ public class ExImportBlContainer {
 
 	@Column(name = "TASAC_CONTROL_NUMBER")
 	private String tasacControlNumber;
+
+	@Column(name = "FIRST_REGISTER_DT")
+	@CreationTimestamp
+	private LocalDateTime firstRegisterDate;
+
+	@Column(name = "FIRST_REGISTER_ID")
+	private String firstRegisterId;
+
+	@Column(name = "LAST_UPDATE_ID")
+	private String lastUpdateId;
+
+	@Column(name = "LAST_UPDATE_DT")
+	@UpdateTimestamp
+	private LocalDateTime lastUpdateDate;
 
 }
