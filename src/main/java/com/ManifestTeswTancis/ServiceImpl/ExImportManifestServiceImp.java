@@ -492,6 +492,9 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			blGoodItemsEntity.setTremcard(goodsDto.getDangerousGoodInformation().getTremcard());
 			blGoodItemsEntity.setMfag(goodsDto.getDangerousGoodInformation().getMfag());
 			blGoodItemsEntity.setEms(goodsDto.getDangerousGoodInformation().getEms());
+			for(GoodPlacementDto containerDto: goodsDto.getPlacements()){
+				blGoodItemsEntity.setContainerNo(containerDto.getContainerNo());
+			}
 		}
 		blGoodItemsRepository.save(blGoodItemsEntity);
 	}

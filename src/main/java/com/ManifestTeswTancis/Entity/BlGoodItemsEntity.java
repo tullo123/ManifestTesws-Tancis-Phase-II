@@ -33,7 +33,7 @@ public class BlGoodItemsEntity {
     @Column(name = "HOUSE_BL_NO")
     private String houseBillOfLading;
 
-    @Column(name = "GOOD_ITE_NO")
+    @Column(name = "GOOD_ITEM_NO")
     private Integer goodsItemNo;
 
     @Column(name = "GOOD_DESCRIPTIONS")
@@ -149,6 +149,9 @@ public class BlGoodItemsEntity {
 
     @Column(name ="EMS")
     private String ems;
+
+    @Column(name = "CONTAINER_NO")
+    private String containerNo;
 
     @Column(name="FIRST_REGISTER_DT")
     @CreationTimestamp
