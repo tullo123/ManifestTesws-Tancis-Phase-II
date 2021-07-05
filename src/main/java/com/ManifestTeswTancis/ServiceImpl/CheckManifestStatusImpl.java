@@ -51,10 +51,10 @@ public class CheckManifestStatusImpl {
 	@Scheduled(fixedRate = 120000)
 	public void checkManifestStatus() {
 		List<ManifestApprovalStatus> manifestStatusEntities = statusRepository.findByApprovedStatusFalse();
-			System.err.println("*********************** Checking for any approved manifest ******************************");
+			System.err.println("--------------- Checking for any approved manifest ---------------");
 		for (ManifestApprovalStatus mf : manifestStatusEntities) {
 			if (!mf.isApprovedStatus()) {
-				System.err.println("*********************** Approving Manifest with Voyage No. " + mf.getVoyageNumber()+ "************************");
+				System.err.println("--------------- Approving Manifest with Voyage No. " + mf.getVoyageNumber()+ "---------------");
 				ExImportManifest callInf = exImportManifestRepository.findByMrn(mf.getMrn());
 				switch (callInf.getProcessingStatus()) {
 					case ManifestStatus.APPROVED: {
@@ -73,7 +73,7 @@ public class CheckManifestStatusImpl {
 						mf.setApprovalDt(manifestNotice.getApprovalDt());
 						statusRepository.save(mf);
 						String response = sendApprovedToTesws(manifestNotice);
-						System.out.println("***************** Approval Notice Response ******************\n" + response);
+						System.out.println("--------------- Approval Notice Response ---------------\n" + response);
 
 						break;
 					}
@@ -90,7 +90,7 @@ public class CheckManifestStatusImpl {
 						mf.setProcessingStatus(getStatus(callInf.getProcessingStatus()));
 						statusRepository.save(mf);
 						String response = submittedManifestStatusToTesws(submittedManifestStatus);
-						System.out.println("***************** Approval Notice Response ******************\n" + response);
+						System.out.println("--------------- Approval Notice Response --------------\n" + response);
 
 						break;
 					}
@@ -134,7 +134,7 @@ public class CheckManifestStatusImpl {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			String payload = mapper.writeValueAsString(manifestNotice);
-			System.out.println("------ Approval notice payload ------------\n"+payload);
+			System.out.println("----------- Approval notice payload ------------\n"+payload);
 			HttpMessage httpMessage = new HttpMessage();
 			httpMessage.setContentType("application/json");
 			httpMessage.setPayload(payload);
@@ -166,7 +166,7 @@ public class CheckManifestStatusImpl {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			String payload = mapper.writeValueAsString(submittedManifestStatus);
-			System.out.println("------ Manifest Status notice payload ------------\n"+payload);
+			System.out.println("----------- Manifest Status notice payload ------------\n"+payload);
 			HttpMessage httpMessage = new HttpMessage();
 			httpMessage.setContentType("application/json");
 			httpMessage.setPayload(payload);

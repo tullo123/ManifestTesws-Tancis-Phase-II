@@ -5,11 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class DangerousGoodInformation {
+public class DangerousGoodInformation implements Serializable {
     private String classCode;
     private String description;
     private String flashpointValue;

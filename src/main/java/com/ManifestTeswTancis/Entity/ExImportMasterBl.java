@@ -93,23 +93,23 @@ public class ExImportMasterBl {
 	@Column(name = "NOTIFY_ADDRESS")
 	private String notifyAddress;
 
-	@Column(name = "NOTIFY_TIN ") // field in entity must match to fields in DB
+	@Column(name = "NOTIFY_TIN ")
 	private String notifyTin;
 
 	@Column(name = "GOODS_DESCRIPTION")
-	private String description;
+	private String blDescription;
 
 	@Column(name = "IMDG_CD")
 	private String imdgclass;
 
 	@Column(name = "BL_GROSS_WEIGHT")
-	private Double grossWeight;
+	private Double blGrossWeight;
 
 	@Column(name = "GROSS_WEIGHT_UNIT")
 	private String grossWeightUnit;
 
 	@Column(name = "BL_NET_WEIGHT")
-	private Double netWeight;
+	private Double blNetWeight;
 
 	@Column(name = "NET_WEIGHT_UNIT")
 	private String netWeightUnit;
@@ -121,7 +121,7 @@ public class ExImportMasterBl {
 	private String volumeUnit;
 
 	@Column(name = "PACKING_TYPE")
-	private String packingType;
+	private String blPackingType;
 
 	@Column(name = "OIL_TYPE")
 	private String oilType;

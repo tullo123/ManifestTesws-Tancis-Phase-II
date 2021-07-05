@@ -39,10 +39,10 @@ public class CheckCustomClearanceStatusImpl {
     @Scheduled(fixedRate=180000)
     public void CheckCustomClearanceStatus(){
         List<CustomClearanceApprovalStatus> status=customClearanceApprovalRepository.findFirstByApprovedStatusFalseOrReceivedNoticeSentFalse();
-        System.out.println("****************** Checking for approved /received Custom Clearance ******************");
+        System.out.println("--------------- Checking for approved /received Custom Clearance ---------------");
         for(CustomClearanceApprovalStatus ca: status){
             if(!ca.isApprovedStatus()){
-                System.out.println("************ Approving custom clearance with CallId"+ca.getCommunicationAgreedId()+"*************");
+                System.out.println("---------- Approving custom clearance with CallId"+ca.getCommunicationAgreedId()+"----------");
                 CustomClearanceEntity cs=customClearanceRepository.findFirstByCommunicationAgreedId(ca.getCommunicationAgreedId());
                 switch (cs.getProcessingStatus()) {
                     case ClearanceStatus.APPROVED: {
@@ -55,7 +55,7 @@ public class CheckCustomClearanceStatusImpl {
                         ca.setApprovedStatus(true);
                         customClearanceApprovalRepository.save(ca);
                         String response = sendApprovalNoticeToTesws(responseCustomClearance);
-                        System.out.println("***************** Approval Notice Response ******************\n" + response);
+                        System.out.println("--------------- Approval Notice Response --------------\n" + response);
 
                         break;
                     }
@@ -70,7 +70,7 @@ public class CheckCustomClearanceStatusImpl {
                         ca.setNoticeDate(customClearanceStatus.getNoticeDate());
                         customClearanceApprovalRepository.save(ca);
                         String response = sendStatusNoticeToTesws(customClearanceStatus);
-                        System.out.println("***************** Status Notice Response ******************\n" + response);
+                        System.out.println("--------------- Status Notice Response ---------------\n" + response);
 
                         break;
                     }

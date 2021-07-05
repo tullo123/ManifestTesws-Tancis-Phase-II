@@ -5,12 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ContainerDto {
+public class ContainerDto implements Serializable {
 	private String containerNo;
 	private String masterBillOfLading;
 	private String houseBillOfLading;

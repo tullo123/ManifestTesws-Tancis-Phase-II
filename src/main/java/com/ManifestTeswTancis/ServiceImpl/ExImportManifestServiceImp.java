@@ -289,17 +289,17 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportMasterBl.setBlPackage(blMeasurement.getPkQuantity());
 		exImportMasterBl.setPackageUnit(blMeasurement.getPkType());
 		//exImportMasterBl.setGrossWeight(blMeasurement.getGrossWeight());
-		exImportMasterBl.setGrossWeight(blSummary.getBlGrossWeight());
+		exImportMasterBl.setBlGrossWeight(blSummary.getBlGrossWeight());
 		exImportMasterBl.setGrossWeightUnit(blMeasurement.getWeightUnit());
-		exImportMasterBl.setNetWeight(blSummary.getBlNetWeight());
+		exImportMasterBl.setBlNetWeight(blSummary.getBlNetWeight());
 		//exImportMasterBl.setNetWeight(blMeasurement.getNetWeight());
 		exImportMasterBl.setNetWeightUnit(blMeasurement.getWeightUnit());
 		exImportMasterBl.setVolume(blMeasurement.getVolume());
 		exImportMasterBl.setVolumeUnit(blMeasurement.getVolumeUnit());
-		exImportMasterBl.setPackingType(bl.getBlPackingType());
+		exImportMasterBl.setBlPackingType(bl.getBlPackingType());
 		exImportMasterBl.setOilType(blMeasurement.getOilType());
 		exImportMasterBl.setImdgclass(blMeasurement.getImdgClass());
-		exImportMasterBl.setDescription(bl.getBlDescription());
+		exImportMasterBl.setBlDescription(bl.getBlDescription());
 		exImportMasterBlRepository.save(exImportMasterBl);
 
 	}

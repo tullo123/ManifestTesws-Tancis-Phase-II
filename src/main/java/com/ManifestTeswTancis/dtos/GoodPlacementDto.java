@@ -1,23 +1,16 @@
 package com.ManifestTeswTancis.dtos;
 
-public class GoodPlacementDto {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.io.Serializable;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class GoodPlacementDto implements Serializable {
 	private String containerNo;
-	
-	public GoodPlacementDto() {
-		
-	}
-
-	public String getContainerNo() {
-		return containerNo;
-	}
-
-	public void setContainerNo(String containerNo) {
-		this.containerNo = containerNo;
-	}
-
-	@Override
-	public String toString() {
-		return "GoodPlacementDto [containerNo=" + containerNo + "]";
-	}
-	
 }
