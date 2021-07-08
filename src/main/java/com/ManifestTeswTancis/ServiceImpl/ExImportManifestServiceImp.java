@@ -79,44 +79,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		return responseData;
 	}
 
-	private void createEdNotice(ExImportManifest exImportManifest) throws InterruptedException {
 
-		EdNoticeEntity edNotice = new EdNoticeEntity();
-		Optional<EdNoticeEntity> optional = edNoticeRepository.findByDocumentNumber(exImportManifest.getMrn());
-		if(!optional.isPresent()) {
-			System.out.println(
-					"#-------------------------createEdNotice START --------------------------#");
-			TimeUnit.SECONDS.sleep(10);
-			edNotice.setDocumentCode("CUSMAN201");
-			edNotice.setDocumentNumber(exImportManifest.getMrn());
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-			LocalDateTime now = LocalDateTime.now();
-			String strDate = dtf.format(now);
-			edNotice.setCreateDate(strDate);
-			edNotice.setSequenceNumber(1);
-			edNotice.setDocumentFunctionType("9");
-			edNotice.setCustomsOfficeCode(exImportManifest.getCustomOfficeCode());
-			System.out.println(
-					"#----------------------------------------------------------#");
-			TimeUnit.SECONDS.sleep(10);
-			edNotice.setReceiverId("INTERNAL");
-			edNotice.setSenderId("EXTERNAL");
-			edNotice.setDocumentType("D");
-			edNotice.setOriginalDocumentCode("CUSMAN201");
-			edNotice.setOriginalDocumentNumber(exImportManifest.getMrn());
-			edNotice.setTransferType("E");
-			edNotice.setProcessingStatus("N");
-			edNoticeRepository.save(edNotice);
-			System.out.println(
-					"#------------------------createEdNotice END ----------------#");
-			TimeUnit.SECONDS.sleep(10);
-		}
-		else {
-			System.out.println("Manifest with This Mrn already submitted to TANCIS INTERNAL.");
-		}
-
-
-	}
 
 	private void saveVehicles(Map<String, Map<String, String>> vehicleMap,
 							  Map<String, Map<String, String>> msnHsnMap, String mrn){
@@ -257,7 +220,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				System.out.println("msn ="+msn+" and Master ="+bl.getMasterBillOfLading());
 				String hsn = String.format("%03d", j);
 				saveHouseBl(bl, mrn, msn, hsn, containerBlMap, vehicleMap, msnMap);
-				saveGoodsItems(bl);
 				j++;
 
 			}
@@ -275,6 +237,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		BlMeasurement blMeasurement = getBlMeasurement(bl, msn, "   ", containerBlMap,vehicleMap,msnMap);
 		System.out.println("generated msn:" + msn);
 		ExImportMasterBl exImportMasterBl = new ExImportMasterBl(bl);
+		GoodItemsEntity goodItemsEntity = new GoodItemsEntity(bl);
 		BlSummary blSummary = new BlSummary();
 		exImportMasterBl.setMrn(mrn);
 		exImportMasterBl.setMsn(msn);
@@ -301,6 +264,9 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportMasterBl.setImdgclass(blMeasurement.getImdgClass());
 		exImportMasterBl.setBlDescription(bl.getBlDescription());
 		exImportMasterBlRepository.save(exImportMasterBl);
+
+		goodItemsEntity.setMrn(mrn);
+		blGoodItemsRepository.save(goodItemsEntity);
 
 	}
 
@@ -445,57 +411,40 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		}
 
 	}
-	private void saveGoodsItems(BillOfLadingDto bl) {
-		BlGoodItemsEntity blGoodItemsEntity= new BlGoodItemsEntity();
-		blGoodItemsEntity.setMrn(bl.getMrn());
-		blGoodItemsEntity.setHouseBillOfLading(bl.getHouseBillOfLading());
-		blGoodItemsEntity.setMasterBillOfLading(bl.getMasterBillOfLading());
-		blGoodItemsEntity.setGoodsItemNo(bl.getGoodsItemNo());
-		blGoodItemsEntity.setLastUpdateId("TESWS");
-		blGoodItemsEntity.setFirstRegisterId("TESWS");
-		for(GoodsDto goodsDto: bl.getGoodDetails()){
-			blGoodItemsEntity.setDescription(goodsDto.getDescription());
-			blGoodItemsEntity.setPackageType(goodsDto.getPackageType());
-			blGoodItemsEntity.setPackingType(goodsDto.getPackingType());
-			blGoodItemsEntity.setPackageQuantity(goodsDto.getPackageQuantity());
-			blGoodItemsEntity.setOilType(goodsDto.getOilType());
-			blGoodItemsEntity.setInvoiceValue(goodsDto.getInvoiceValue());
-			blGoodItemsEntity.setInvoiceCurrency(goodsDto.getInvoiceCurrency());
-			blGoodItemsEntity.setFreightCharge(goodsDto.getFreightCharge());
-			blGoodItemsEntity.setFreightCurrency(goodsDto.getFreightCurrency());
-			blGoodItemsEntity.setGrossWeight(goodsDto.getGrossWeight());
-			blGoodItemsEntity.setGrossWeightUnit("KG");
-			blGoodItemsEntity.setNetWeight(goodsDto.getNetWeight());
-			blGoodItemsEntity.setNetWeightUnit("KG");
-			blGoodItemsEntity.setVolume(goodsDto.getVolume());
-			blGoodItemsEntity.setVolumeUnit(goodsDto.getVolumeUnit());
-			blGoodItemsEntity.setLength(goodsDto.getLength());
-			blGoodItemsEntity.setLengthUnit(goodsDto.getLengthUnit());
-			blGoodItemsEntity.setWidth(goodsDto.getWidth());
-			blGoodItemsEntity.setWidthUnit(goodsDto.getWidthUnit());
-			blGoodItemsEntity.setHeight(goodsDto.getHeight());
-			blGoodItemsEntity.setHeightUnit(goodsDto.getHeightUnit());
-			blGoodItemsEntity.setMarksNumbers(goodsDto.getMarksNumbers());
-			blGoodItemsEntity.setVehicleVIN(goodsDto.getVehicleVIN());
-			blGoodItemsEntity.setVehicleModel(goodsDto.getVehicleModel());
-			blGoodItemsEntity.setVehicleMake(goodsDto.getVehicleMake());
-			blGoodItemsEntity.setVehicleOwnDrive(goodsDto.getVehicleOwnDrive());
-			blGoodItemsEntity.setClassCode(goodsDto.getDangerousGoodInformation().getClassCode());
-			blGoodItemsEntity.setFlashpointValue(goodsDto.getDangerousGoodInformation().getFlashpointValue());
-			blGoodItemsEntity.setShipmFlashptValue(goodsDto.getDangerousGoodInformation().getShipmFlashptValue());
-			blGoodItemsEntity.setShipmFlashptUnit(goodsDto.getDangerousGoodInformation().getShipmFlashptUnit());
-			blGoodItemsEntity.setPackingGroup(goodsDto.getDangerousGoodInformation().getPackingGroup());
-			blGoodItemsEntity.setMarPolCategory(goodsDto.getDangerousGoodInformation().getMarPolCategory());
-			blGoodItemsEntity.setImdgpage(goodsDto.getDangerousGoodInformation().getImdgpage());
-			blGoodItemsEntity.setImdgclass(goodsDto.getDangerousGoodInformation().getImdgclass());
-			blGoodItemsEntity.setUnnumber(goodsDto.getDangerousGoodInformation().getUnnumber());
-			blGoodItemsEntity.setTremcard(goodsDto.getDangerousGoodInformation().getTremcard());
-			blGoodItemsEntity.setMfag(goodsDto.getDangerousGoodInformation().getMfag());
-			blGoodItemsEntity.setEms(goodsDto.getDangerousGoodInformation().getEms());
-			for(GoodPlacementDto containerDto: goodsDto.getPlacements()){
-				blGoodItemsEntity.setContainerNo(containerDto.getContainerNo());
-			}
+	private void createEdNotice(ExImportManifest exImportManifest) throws InterruptedException {
+
+		EdNoticeEntity edNotice = new EdNoticeEntity();
+		Optional<EdNoticeEntity> optional = edNoticeRepository.findByDocumentNumber(exImportManifest.getMrn());
+		if(!optional.isPresent()) {
+			System.out.println(
+					"#---------------CreateEdNotice START ---------------#");
+			TimeUnit.SECONDS.sleep(10);
+			edNotice.setDocumentCode("CUSMAN201");
+			edNotice.setDocumentNumber(exImportManifest.getMrn());
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+			LocalDateTime now = LocalDateTime.now();
+			String strDate = dtf.format(now);
+			edNotice.setCreateDate(strDate);
+			edNotice.setSequenceNumber(1);
+			edNotice.setDocumentFunctionType("9");
+			edNotice.setCustomsOfficeCode(exImportManifest.getCustomOfficeCode());
+			edNotice.setReceiverId("INTERNAL");
+			edNotice.setSenderId("EXTERNAL");
+			edNotice.setDocumentType("D");
+			edNotice.setOriginalDocumentCode("CUSMAN201");
+			edNotice.setOriginalDocumentNumber(exImportManifest.getMrn());
+			edNotice.setTransferType("E");
+			edNotice.setProcessingStatus("N");
+			edNoticeRepository.save(edNotice);
+			System.out.println(
+					"#---------------CreateEdNotice END ---------------#");
+			TimeUnit.SECONDS.sleep(10);
 		}
-		blGoodItemsRepository.save(blGoodItemsEntity);
+		else {
+			System.out.println("Manifest with This Mrn already submitted to TANCIS INTERNAL.");
+		}
+
+
 	}
+
 }
