@@ -263,10 +263,46 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportMasterBl.setOilType(blMeasurement.getOilType());
 		exImportMasterBl.setImdgclass(blMeasurement.getImdgClass());
 		exImportMasterBl.setBlDescription(bl.getBlDescription());
-		exImportMasterBlRepository.save(exImportMasterBl);
+		if(bl.getGoodDetails()!=null){
+		goodItemsEntity.setMasterBillOfLading(bl.getMasterBillOfLading());
+		goodItemsEntity.setHouseBillOfLading(bl.getHouseBillOfLading());
+			for(GoodsDto goodsDto:bl.getGoodDetails()){
+				goodItemsEntity.setPackageType(goodsDto.getPackageType());
+				goodItemsEntity.setDescription(goodsDto.getDescription());
+				goodItemsEntity.setGoodsItemNo(goodsDto.getGoodsItemNo());
+				goodItemsEntity.setPackingType(goodsDto.getPackingType());
+				goodItemsEntity.setPackageQuantity(goodsDto.getPackageQuantity());
+				goodItemsEntity.setOilType(goodsDto.getOilType());
+				goodItemsEntity.setInvoiceValue(goodsDto.getInvoiceValue());
+				goodItemsEntity.setInvoiceCurrency(goodsDto.getInvoiceCurrency());
+				goodItemsEntity.setFreightCharge(goodsDto.getFreightCharge());
+				goodItemsEntity.setFreightCurrency(goodsDto.getFreightCurrency());
+				goodItemsEntity.setGrossWeight(goodsDto.getGrossWeight());
+				goodItemsEntity.setGrossWeightUnit(fixUnit(goodsDto.getGrossWeightUnit()));
+				goodItemsEntity.setNetWeight(goodsDto.getNetWeight());
+				goodItemsEntity.setNetWeightUnit(fixUnit(goodsDto.getNetWeightUnit()));
+				goodItemsEntity.setVolume(goodItemsEntity.getVolume());
+				goodItemsEntity.setVolumeUnit(fixUnit(goodsDto.getVolumeUnit()));
+				goodItemsEntity.setLength(goodsDto.getLength());
+				goodItemsEntity.setLengthUnit(goodsDto.getLengthUnit());
+				goodItemsEntity.setWidth(goodsDto.getWidth());
+				goodItemsEntity.setWidthUnit(goodsDto.getWidthUnit());
+				goodItemsEntity.setHeight(goodsDto.getHeight());
+				goodItemsEntity.setHeightUnit(goodsDto.getHeightUnit());
+				goodItemsEntity.setMarksNumbers(goodsDto.getMarksNumbers());
+				goodItemsEntity.setVehicleVIN(goodsDto.getVehicleVIN());
+				goodItemsEntity.setVehicleModel(goodsDto.getVehicleModel());
+				goodItemsEntity.setVehicleMake(goodsDto.getVehicleMake());
+				goodItemsEntity.setVehicleOwnDrive(goodsDto.getVehicleOwnDrive());
+				goodItemsEntity.setFirstRegisterId("TESWS");
+				goodItemsEntity.setLastUpdateId("TESWS");
+				goodItemsEntity.setMrn(mrn);
+			}
+			exImportMasterBlRepository.save(exImportMasterBl);
+			blGoodItemsRepository.save(goodItemsEntity);
+		}
 
-		goodItemsEntity.setMrn(mrn);
-		blGoodItemsRepository.save(goodItemsEntity);
+
 
 	}
 
@@ -446,5 +482,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 
 
 	}
+	}
 
-}
+
+

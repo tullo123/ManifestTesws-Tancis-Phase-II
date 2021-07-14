@@ -3,6 +3,7 @@ package com.ManifestTeswTancis.Entity;
 import com.ManifestTeswTancis.dtos.BillOfLadingDto;
 import com.ManifestTeswTancis.dtos.GoodPlacementDto;
 import com.ManifestTeswTancis.dtos.GoodsDto;
+import com.ManifestTeswTancis.idEntities.GoodItemsId;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,10 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -26,6 +24,7 @@ import java.time.LocalDateTime;
 @Entity
 @DynamicUpdate
 @Table(name ="TANCISINT.CM_MF_IMPORT_GOODS_ITEMS")
+@IdClass(GoodItemsId.class)
 public class GoodItemsEntity implements Serializable {
     @Id
     @Column(name = "MRN")
@@ -38,6 +37,7 @@ public class GoodItemsEntity implements Serializable {
     @Column(name = "HOUSE_BL_NO")
     private String houseBillOfLading;
 
+    @NotNull
     @Column(name = "GOOD_ITEM_NO")
     private Integer goodsItemNo;
 
