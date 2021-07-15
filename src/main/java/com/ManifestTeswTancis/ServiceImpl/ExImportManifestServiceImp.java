@@ -297,6 +297,12 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				goodItemsEntity.setFirstRegisterId("TESWS");
 				goodItemsEntity.setLastUpdateId("TESWS");
 				goodItemsEntity.setMrn(mrn);
+				if(goodsDto.getPlacements().isEmpty() || goodsDto.getPlacements()==null){
+					goodItemsEntity.setContainerNo("LOOSE");
+				}
+				for(GoodPlacementDto containerDto: goodsDto.getPlacements()){
+					goodItemsEntity.setContainerNo(containerDto.getContainerNo());
+				}
 			}
 			exImportMasterBlRepository.save(exImportMasterBl);
 			blGoodItemsRepository.save(goodItemsEntity);
