@@ -10,7 +10,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class CallInfRest {
-	private String mrn;
+	private String mrnIn;
 	private String mrnOut;
 	private String mrnDate;
 	private String customOfficeCode;

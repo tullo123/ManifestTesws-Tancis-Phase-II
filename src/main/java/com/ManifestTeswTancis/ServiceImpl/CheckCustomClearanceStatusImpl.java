@@ -24,7 +24,7 @@ import java.util.List;
 @Component
 @Service
 public class CheckCustomClearanceStatusImpl {
-    @Value("http://tesws-test.gov.go.tz:8062/message-api/stakeholder")
+    @Value("http://196.192.79.121:8062/message-api/stakeholder")
     private String teswsFowardUrl;
 
     final CustomClearanceRepository customClearanceRepository;

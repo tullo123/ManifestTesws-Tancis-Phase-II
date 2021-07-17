@@ -93,7 +93,7 @@ public  class CallInfServiceImpl implements CallInfService {
 		CallInfRest returnValue = new CallInfRest();
 		returnValue.setCommunicationAgreedId(storedCallInfDetails.getCommunicationAgreedId());
 		returnValue.setCustomOfficeCode(storedCallInfDetails.getCustomOfficeCode());
-		returnValue.setMrn(storedCallInfDetails.getMrn());
+		returnValue.setMrnIn(storedCallInfDetails.getMrn());
 		returnValue.setMrnOut(exportManifest.getMrnOut());
 		returnValue.setMrnDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
 
