@@ -8,6 +8,7 @@ import com.ManifestTeswTancis.dtos.TeswsResponse;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -29,24 +30,27 @@ public class PortClearanceServiceImpl implements PortClearanceService {
         response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
         response.setDescription("Port Clearance Notice Received Successfully");
 
+        PortClearanceNoticeEntity portClearanceNoticeEntity= new PortClearanceNoticeEntity();
         try{
-            PortClearanceNoticeEntity portClearanceNoticeEntity= new PortClearanceNoticeEntity();
-            if(portClearanceNoticeDto.getApprovalStatus().contentEquals("APPROVED")) {
-                portClearanceNoticeEntity.setCommunicationAgreedId(portClearanceNoticeDto.getCommunicationAgreedId());
-                portClearanceNoticeEntity.setApprovalStatus(portClearanceNoticeDto.getApprovalStatus());
-                portClearanceNoticeEntity.setClearanceRef(portClearanceNoticeDto.getClearanceRef());
-                portClearanceNoticeEntity.setComment(portClearanceNoticeDto.getComment());
-                portClearanceNoticeEntity.setNoticeDate(portClearanceNoticeDto.getNoticeDate());
-                portClearanceNoticeEntity.setFirstRegisterId("TESWS");
-                portClearanceNoticeEntity.setLastUpdateId("TESWS");
-                portClearanceNoticeRepository.save(portClearanceNoticeEntity);
+            Optional<PortClearanceNoticeEntity> optional=portClearanceNoticeRepository.
+                    findByCommunicationAgreedId(portClearanceNoticeDto.getCommunicationAgreedId());
+            if(!optional.isPresent() && portClearanceNoticeDto.getApprovalStatus().contentEquals("APPROVED")) {
+                    portClearanceNoticeEntity.setCommunicationAgreedId(portClearanceNoticeDto.getCommunicationAgreedId());
+                    portClearanceNoticeEntity.setApprovalStatus(portClearanceNoticeDto.getApprovalStatus());
+                    portClearanceNoticeEntity.setClearanceRef(portClearanceNoticeDto.getClearanceRef());
+                    portClearanceNoticeEntity.setComment(portClearanceNoticeDto.getComment());
+                    portClearanceNoticeEntity.setNoticeDate(portClearanceNoticeDto.getNoticeDate());
+                    portClearanceNoticeEntity.setFirstRegisterId("TESWS");
+                    portClearanceNoticeEntity.setLastUpdateId("TESWS");
+                    portClearanceNoticeRepository.save(portClearanceNoticeEntity);
+                } else if(optional.isPresent() || !portClearanceNoticeDto.getApprovalStatus().contentEquals("APPROVED")){
+                System.out.println("Port Clearance Notice Not Accepted");
             }
 
         } catch (Exception e) {
             response.setDescription(e.getMessage());
             e.printStackTrace();
         }
-
         return response;
     }
 

@@ -208,8 +208,8 @@ public class ExImportManifest implements Serializable {
 		this.processingStatus = "1";
 		this.applicationReferenceNumber=callInfDetails.getApplicationReferenceNumber();
 		this.firstRegisterId = callInfDetails.getCarrierName();
-		this.processingId = "SYSTEM";
-		this.lastUpdateId ="SYSTEM";
+		this.processingId = "TESWS";
+		this.lastUpdateId ="TESWS";
 		this.carQuantityLoaded = callInfDetails.getCarQuantityLoaded();
 		this.carWeightLoaded = callInfDetails.getCarWeightLoaded();
 		this.cnQuantityLoaded = callInfDetails.getCnQuantityLoaded();

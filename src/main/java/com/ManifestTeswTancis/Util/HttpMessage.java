@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HttpMessage {
-   private String teswsEndpointUrl = "http://tesws-test.gov.go.tz:8062/message-api/stakeholder";
+   private String teswsEndpointUrl = "http://196.192.79.121:8062/message-api/stakeholder";
    private String contentType;
    private String messageName;
    private String recipient;
