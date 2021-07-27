@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -101,7 +103,7 @@ public class ExImportAmendBl implements Serializable {
 	@Column(name = "NOTIFY_ADDRESS")
 	private String notifyAddress;
 
-	@Column(name = "NOTIFY_TIN ") // field in entity must match to fields in DB
+	@Column(name = "NOTIFY_TIN ")
 	private String notifyTin;
 
 	@Column(name = "GOODS_DESCRIPTION")
@@ -165,12 +167,14 @@ public class ExImportAmendBl implements Serializable {
 	private String firstRegisterId;
 
 	@Column(name = "FIRST_REGISTER_DT")
+	@CreationTimestamp
 	private Date firstRegisterDate;
 
 	@Column(name = "LAST_UPDATE_ID")
 	private String lastUpdateId;
 	
-	@Column(name="LAST_UPDATE_DT")              
+	@Column(name="LAST_UPDATE_DT")
+	@UpdateTimestamp
 	private Date lastUpdateDate;
 
 	@Column(name="DECL_YN")           

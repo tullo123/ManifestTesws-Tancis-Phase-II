@@ -9,4 +9,8 @@ public interface CustomClearanceApprovalRepository extends JpaRepository<CustomC
     List<CustomClearanceApprovalStatus> findByApprovedStatusFalse();
 
     List<CustomClearanceApprovalStatus> findFirstByApprovedStatusFalseOrReceivedNoticeSentFalse();
+
+    List<CustomClearanceApprovalStatus> findByApprovedStatusFalseOrReceivedNoticeSentFalse();
+
+    List<CustomClearanceApprovalStatus> findByReceivedNoticeSentFalse();
 }

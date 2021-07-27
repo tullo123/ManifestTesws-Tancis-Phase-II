@@ -1,7 +1,7 @@
 package com.ManifestTeswTancis.ServiceImpl;
 import com.ManifestTeswTancis.Entity.ExImportManifest;
 import com.ManifestTeswTancis.Repository.ExImportManifestRepository;
-import com.ManifestTeswTancis.Service.DeleteVesselService;
+import com.ManifestTeswTancis.Service.VesselCancellationService;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.CallInfCancelDto;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
@@ -11,17 +11,17 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class DeleteVesselServiceImpl implements DeleteVesselService {
+public class VesselCancellationServiceImpl implements VesselCancellationService {
     final
     ExImportManifestRepository exImportManifestRepository;
 
-    public DeleteVesselServiceImpl(ExImportManifestRepository exImportManifestRepository) {
+    public VesselCancellationServiceImpl(ExImportManifestRepository exImportManifestRepository) {
         this.exImportManifestRepository = exImportManifestRepository;
     }
 
     @Override
     @Transactional
-    public TeswsResponse deleteVesselInfo(CallInfCancelDto callInfCancelDto) {
+    public TeswsResponse cancelVesselInfo(CallInfCancelDto callInfCancelDto) {
         TeswsResponse response = new TeswsResponse();
         response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
        response.setRefId(callInfCancelDto.getCancelRef());

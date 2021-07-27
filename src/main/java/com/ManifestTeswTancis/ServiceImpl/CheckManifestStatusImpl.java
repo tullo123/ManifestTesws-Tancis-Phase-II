@@ -1,6 +1,5 @@
 package com.ManifestTeswTancis.ServiceImpl;
 
-import com.ManifestTeswTancis.Response.SubmittedManifestStatus;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.*;
 import com.ManifestTeswTancis.dtos.ManifestNoticeBl;
@@ -48,7 +47,7 @@ public class CheckManifestStatusImpl {
 	}
 
 	@Transactional
-	@Scheduled(fixedRate = 120000)
+	@Scheduled(fixedRate = 150000)
 	public void checkManifestStatus() {
 		List<ManifestApprovalStatus> manifestStatusEntities = statusRepository.findByApprovedStatusFalse();
 			System.err.println("--------------- Checking for any approved manifest ---------------");
@@ -56,44 +55,24 @@ public class CheckManifestStatusImpl {
 			if (!mf.isApprovedStatus()) {
 				System.err.println("--------------- Approving Manifest with Voyage No. " + mf.getVoyageNumber()+ "---------------");
 				ExImportManifest callInf = exImportManifestRepository.findByMrn(mf.getMrn());
-				switch (callInf.getProcessingStatus()) {
-					case ManifestStatus.APPROVED: {
-						ManifestNotice manifestNotice = new ManifestNotice();
-						manifestNotice.setCall_id(callInf.getCommunicationAgreedId());
-						manifestNotice.setMessageReferenceNumber(callInf.getControlReferenceNumber());
-						manifestNotice.setApprovalDt(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-						manifestNotice.setMrn(mf.getMrn());
-						if (mf.getMrn()!=null && mf.getMrnOut()!=null){
-							mf.setMrnStatus(true); }
-						manifestNotice.setApprovalStatus(getStatus(callInf.getProcessingStatus()));
-						manifestNotice.setBls(getManifestNoticeBl(mf.getMrn()));
-						mf.setApprovedStatus(true);
-						mf.setApprovedNoticeStatus(true);
-						mf.setProcessingStatus(getStatus(callInf.getProcessingStatus()));
-						mf.setApprovalDt(manifestNotice.getApprovalDt());
-						statusRepository.save(mf);
-						String response = sendApprovedToTesws(manifestNotice);
-						System.out.println("--------------- Approval Notice Response ---------------\n" + response);
-
-						break;
+				if (ManifestStatus.APPROVED.equals(callInf.getProcessingStatus())) {
+					ManifestNotice manifestNotice = new ManifestNotice();
+					manifestNotice.setCall_id(callInf.getCommunicationAgreedId());
+					manifestNotice.setMessageReferenceNumber(callInf.getControlReferenceNumber());
+					manifestNotice.setApprovalDt(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+					manifestNotice.setMrn(mf.getMrn());
+					if (mf.getMrn() != null && mf.getMrnOut() != null) {
+						mf.setMrnStatus(true);
 					}
-					case ManifestStatus.RECEIVED:
-					case ManifestStatus.REJECTED: {
-						SubmittedManifestStatus submittedManifestStatus = new SubmittedManifestStatus();
-						submittedManifestStatus.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-						submittedManifestStatus.setCommunicationAgreedId(callInf.getCommunicationAgreedId());
-						submittedManifestStatus.setControlReferenceNumber(callInf.getControlReferenceNumber());
-						submittedManifestStatus.setApplicationReference(callInf.getApplicationReferenceNumber());
-						submittedManifestStatus.setVoyageNumber(callInf.getVoyageNumber());
-						submittedManifestStatus.setCustomOfficeCode(callInf.getCustomOfficeCode());
-						submittedManifestStatus.setStatus(getStatus(callInf.getProcessingStatus()));
-						mf.setProcessingStatus(getStatus(callInf.getProcessingStatus()));
-						statusRepository.save(mf);
-						String response = submittedManifestStatusToTesws(submittedManifestStatus);
-						System.out.println("--------------- Approval Notice Response --------------\n" + response);
-
-						break;
-					}
+					manifestNotice.setApprovalStatus(getStatus(callInf.getProcessingStatus()));
+					manifestNotice.setBls(getManifestNoticeBl(mf.getMrn()));
+					mf.setApprovedStatus(true);
+					mf.setApprovedNoticeStatus(true);
+					mf.setProcessingStatus(getStatus(callInf.getProcessingStatus()));
+					mf.setApprovalDt(manifestNotice.getApprovalDt());
+					statusRepository.save(mf);
+					String response = sendApprovedToTesws(manifestNotice);
+					System.out.println("--------------- Approval Notice Response ---------------\n" + response);
 				}
 			}
 		}
@@ -162,22 +141,4 @@ public class CheckManifestStatusImpl {
 		}
 		
 	}
-	private String submittedManifestStatusToTesws(SubmittedManifestStatus submittedManifestStatus) {
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			String payload = mapper.writeValueAsString(submittedManifestStatus);
-			System.out.println("----------- Manifest Status notice payload ------------\n"+payload);
-			HttpMessage httpMessage = new HttpMessage();
-			httpMessage.setContentType("application/json");
-			httpMessage.setPayload(payload);
-			httpMessage.setMessageName("SUBMITTED_MANIFEST_STATUS");
-			httpMessage.setRecipient("SS");
-			HttpCall httpCall = new HttpCall();
-			return httpCall.httpRequest(httpMessage);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return "failed";
-	}
-
 }

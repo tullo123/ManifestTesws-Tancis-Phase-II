@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 public class ResponseCustomClearance {
     private String communicationAgreedId;
-    private String clearanceRef;
+    private String clearanceReference;
     private String approvalStatus;
     private String comment;
     private String noticeDate;

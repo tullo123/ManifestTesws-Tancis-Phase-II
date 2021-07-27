@@ -35,29 +35,29 @@ public class VesselDocumentationServiceImpl implements VesselDocumentationServic
 
         try{
             Optional<VesselDocumentationEntity> optional=vesselDocumentationRepository.
-                    findFirstByCommunicationAgreedId(vesselDocumentation.getCommunicationAgreedId());
+                     findFirstByCommunicationAgreedId(vesselDocumentation.getCommunicationAgreedId());
             if(!optional.isPresent()) {
-                VesselDocumentationEntity vessel = new VesselDocumentationEntity();
-                vessel.setCommunicationAgreedId(vesselDocumentation.getCommunicationAgreedId());
-                vessel.setControlReferenceNumber(vesselDocumentation.getControlReferenceNumber());
-                vessel.setVesselMaster(vesselDocumentation.getVesselMaster());
-                vessel.setVesselMasterAddress(vesselDocumentation.getVesselMasterAddress());
-                vessel.setAgentCode(vesselDocumentation.getAgentCode());
-                vessel.setAgentAddress(vesselDocumentation.getAgentAddress());
-                vessel.setTerminalOperatorCode(vesselDocumentation.getTerminalOperatorCode());
-                vessel.setVoyageNumber(vesselDocumentation.getVoyageNumber());
-                vessel.setCarrierId(vesselDocumentation.getCarrierId());
-                vessel.setCarrierName(vesselDocumentation.getCarrierName());
-                vessel.setCallSign(vesselDocumentation.getCallSign());
-                vessel.setTransportMeansId(vesselDocumentation.getTransportMeansId());
-                vessel.setTransportMeansName(vesselDocumentation.getTransportMeansName());
-                vessel.setTransportMeansNationality(vesselDocumentation.getTransportMeansNationality());
-                vessel.setTerminal(vesselDocumentation.getTerminal());
-                vessel.setDestinationPort(vesselDocumentation.getDestinationPort());
-                vessel.setPortOfCall(vesselDocumentation.getPortOfCall());
-                vessel.setNextPortOfCall(vesselDocumentation.getNextPortOfCall());
-                vessel.setFirstRegisterId("TESWS");
-                vessel.setLastUpdateId("TESWS");
+                 VesselDocumentationEntity vessel = new VesselDocumentationEntity();
+                 vessel.setCommunicationAgreedId(vesselDocumentation.getCommunicationAgreedId());
+                 vessel.setControlReferenceNumber(vesselDocumentation.getControlReferenceNumber());
+                 vessel.setVesselMaster(vesselDocumentation.getVesselMaster());
+                 vessel.setVesselMasterAddress(vesselDocumentation.getVesselMasterAddress());
+                 vessel.setAgentCode(vesselDocumentation.getAgentCode());
+                 vessel.setAgentAddress(vesselDocumentation.getAgentAddress());
+                 vessel.setTerminalOperatorCode(vesselDocumentation.getTerminalOperatorCode());
+                 vessel.setVoyageNumber(vesselDocumentation.getVoyageNumber());
+                 vessel.setCarrierId(vesselDocumentation.getCarrierId());
+                 vessel.setCarrierName(vesselDocumentation.getCarrierName());
+                 vessel.setCallSign(vesselDocumentation.getCallSign());
+                 vessel.setTransportMeansId(vesselDocumentation.getTransportMeansId());
+                 vessel.setTransportMeansName(vesselDocumentation.getTransportMeansName());
+                 vessel.setTransportMeansNationality(vesselDocumentation.getTransportMeansNationality());
+                 vessel.setTerminal(vesselDocumentation.getTerminal());
+                 vessel.setDestinationPort(vesselDocumentation.getDestinationPort());
+                 vessel.setPortOfCall(vesselDocumentation.getPortOfCall());
+                 vessel.setNextPortOfCall(vesselDocumentation.getNextPortOfCall());
+                 vessel.setLastUpdateId("TESWS");
+                 vessel.setFirstRegisterId("TESWS");
 
                 for (DocumentDto documentDto : vesselDocumentation.getDocuments()) {
                     vessel.setDocumentName(documentDto.getDocumentName());

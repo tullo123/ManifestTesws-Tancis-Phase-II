@@ -5,6 +5,6 @@ import com.ManifestTeswTancis.dtos.TeswsResponse;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface DeleteVesselService {
-    TeswsResponse deleteVesselInfo(CallInfCancelDto callInfCancelDto);
+public interface VesselCancellationService {
+    TeswsResponse cancelVesselInfo(CallInfCancelDto callInfCancelDto);
 }

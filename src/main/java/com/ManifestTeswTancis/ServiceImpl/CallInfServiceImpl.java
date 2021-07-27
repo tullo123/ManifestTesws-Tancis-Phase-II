@@ -49,7 +49,7 @@ public  class CallInfServiceImpl implements CallInfService {
 		Optional<ExImportManifest> optional = exImportManifestRepository
 				.findFirstByCommunicationAgreedId(callInfDetails.getCommunicationAgreedId());
 		if(!optional.isPresent()) {
-			ExImportManifest storedCallInfDetails=null;
+			ExImportManifest storedCallInfDetails;
 			try {
 				ExImportManifest exImportManifest = new ExImportManifest(callInfDetails);
 				ExportManifest exportManifest=new ExportManifest(callInfDetails);

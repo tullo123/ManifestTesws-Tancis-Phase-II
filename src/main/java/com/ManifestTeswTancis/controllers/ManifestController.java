@@ -19,7 +19,7 @@ public  class ManifestController  implements ManifestApi {
 	ExImportManifestService exImportManifestService;
 
 	final
-	DeleteVesselService deleteVesselService;
+    VesselCancellationService vesselCancellationService;
 	final
 	LiquidBulkDischargeSequenceService liquidBulkDischargeSequenceService;
 	final
@@ -66,10 +66,10 @@ public  class ManifestController  implements ManifestApi {
 	final
 	LiquidBulkFinalDischargeService liquidBulkFinalDischargeService;
 
-	public ManifestController(LiquidBulkDischargeSequenceUpdateService liquidBulkDischargeSequenceUpdateService, ExImportManifestService exImportManifestService, DeleteVesselService deleteVesselService, LiquidBulkDischargeSequenceService liquidBulkDischargeSequenceService, LiquidBulkQualityReportService liquidBulkQualityReportService, CallInfService callInfService, VesselDepartureService vesselDepartureService, UpdateVesselService updateVesselService, CustomClearanceService customClearanceService, HeaderServiceImpl headerServiceImpl, PortClearanceService portClearanceService, VesselBoardingService vesselBoardingService, VesselTrackingService vesselTrackingService, FreePartiqueService freePartiqueService, UpdateFreePartiqueService updateFreePartiqueService, VesselDocumentationService vesselDocumentationService, VesselDocumentationUpdateService vesselDocumentationUpdateService, LiquidBulkFinalDischargeService liquidBulkFinalDischargeService) {
+	public ManifestController(LiquidBulkDischargeSequenceUpdateService liquidBulkDischargeSequenceUpdateService, ExImportManifestService exImportManifestService, VesselCancellationService vesselCancellationService, LiquidBulkDischargeSequenceService liquidBulkDischargeSequenceService, LiquidBulkQualityReportService liquidBulkQualityReportService, CallInfService callInfService, VesselDepartureService vesselDepartureService, UpdateVesselService updateVesselService, CustomClearanceService customClearanceService, HeaderServiceImpl headerServiceImpl, PortClearanceService portClearanceService, VesselBoardingService vesselBoardingService, VesselTrackingService vesselTrackingService, FreePartiqueService freePartiqueService, UpdateFreePartiqueService updateFreePartiqueService, VesselDocumentationService vesselDocumentationService, VesselDocumentationUpdateService vesselDocumentationUpdateService, LiquidBulkFinalDischargeService liquidBulkFinalDischargeService) {
 		this.liquidBulkDischargeSequenceUpdateService = liquidBulkDischargeSequenceUpdateService;
 		this.exImportManifestService = exImportManifestService;
-		this.deleteVesselService = deleteVesselService;
+		this.vesselCancellationService = vesselCancellationService;
 		this.liquidBulkDischargeSequenceService = liquidBulkDischargeSequenceService;
 		this.liquidBulkQualityReportService = liquidBulkQualityReportService;
 		this.callInfService = callInfService;
@@ -141,7 +141,7 @@ public  class ManifestController  implements ManifestApi {
 	@Override
 	public ResponseEntity<TeswsResponse> deleteVesselInfo(
 			@RequestBody CallInfCancelDto callInfCancelDto) {
-		TeswsResponse response = deleteVesselService.deleteVesselInfo(callInfCancelDto);
+		TeswsResponse response = vesselCancellationService.cancelVesselInfo(callInfCancelDto);
 		return ResponseEntity.ok(response);
 	}
 	@Override

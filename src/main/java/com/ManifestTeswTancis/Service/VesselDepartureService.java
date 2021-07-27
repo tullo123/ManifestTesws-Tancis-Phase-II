@@ -6,6 +6,5 @@ import com.ManifestTeswTancis.dtos.*;
 
 @Service
 public interface VesselDepartureService {
-
     TeswsResponse saveVesselDepartureNotice(VesselDepartureNoticeDto vesselDepartureNoticeDto);
 }
