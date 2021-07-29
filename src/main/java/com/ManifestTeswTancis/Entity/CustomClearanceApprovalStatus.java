@@ -37,11 +37,11 @@ public class CustomClearanceApprovalStatus {
 	@Column(name ="APPROVED_STATUS" )
     private boolean approvedStatus;
 
-	@Column(name ="CREATED_AT" )
+	@Column(name ="FIRST_REGISTER_DT" )
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-	@Column(name ="UPDATED_AT" )
+	@Column(name ="LAST_UPDATE_DT" )
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 

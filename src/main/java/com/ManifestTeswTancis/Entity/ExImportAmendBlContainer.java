@@ -91,7 +91,7 @@ public class ExImportAmendBlContainer implements Serializable {
 	@Column(name = "IMDG_CD")
 	private String imdgCd;
 
-	@Column(name = "FIRST_REGISTER_ID", insertable = false, updatable = false)
+	@Column(name = "FIRST_REGISTER_ID")
 	private String firstRegisterId;
 
 	@Column(name = "LAST_UPDATE_ID")

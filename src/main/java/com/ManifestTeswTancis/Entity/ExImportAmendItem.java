@@ -21,7 +21,6 @@ import java.util.Date;
 @Table(name = "TANCISEXT.EX_MF_IMPORT_AMEND_ITEM")
 @IdClass(AmendItemId.class)
 public class ExImportAmendItem implements Serializable{
-
 	private static final long serialVersionUID = -7032664307929468473L;
     @Id
 	@NotNull
@@ -63,5 +62,4 @@ public class ExImportAmendItem implements Serializable{
 	@Column(name = "LAST_UPDATE_DT")
 	@UpdateTimestamp
 	private Date lastUpdateDate;
-
 }

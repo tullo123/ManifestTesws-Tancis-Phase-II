@@ -178,15 +178,15 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
 
 				exImportAmendBlContainerRepository.save(ex);
 			}
-			}
-
-
 		}
+
+
+	}
 
 	private void createAmendEdNotice(ManifestAmendmentDto manifestAmendmentDto) {
 		EdNoticeEntity edNotice = new EdNoticeEntity();
 		ExImportManifest ex= new ExImportManifest();
-		edNotice.setDocumentCode("CUSMAN202");
+		edNotice.setDocumentCode("IMFMOD215");
 		edNotice.setDocumentNumber(manifestAmendmentDto.getMrn());
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 		LocalDateTime now = LocalDateTime.now();
@@ -198,12 +198,11 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
 		edNotice.setReceiverId("INTERNAL");
 		edNotice.setSenderId("EXTERNAL");
 		edNotice.setDocumentType("D");
-		edNotice.setOriginalDocumentCode("CUSMAN202");
+		edNotice.setOriginalDocumentCode("IMFMOD215");
 		edNotice.setOriginalDocumentNumber(manifestAmendmentDto.getMrn());
 		edNotice.setProcessingStatus("N");
 		edNotice.setTransferType("E");
 		edNoticeRepository.save(edNotice);
-
 	}
 
 	private void saveDeletedContainers(List<DeletedContainerDto> deletedContainers) {
@@ -276,7 +275,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
 				exImportAmendBlContainerRepository.save(ex);
 			}
 		}
-		}
+	}
 
 
 	@SuppressWarnings("Duplicates")

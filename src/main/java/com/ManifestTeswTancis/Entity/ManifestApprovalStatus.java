@@ -60,11 +60,11 @@ public class ManifestApprovalStatus {
 	@Column(name = "MESSAGE_REFERENCE_NUMBER")
 	private String messageReferenceNumber;
 
-	@Column(name = "CREATED_AT")
+	@Column(name = "FIRST_REGISTER_DT")
 	@CreationTimestamp
 	private LocalDateTime createdAt;
 
-	@Column(name = "UPDATED_AT")
+	@Column(name = "LAST_UPDATE_DT")
 	@UpdateTimestamp
 	private LocalDateTime updatedAt;
 

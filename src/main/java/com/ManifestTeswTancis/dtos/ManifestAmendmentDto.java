@@ -16,6 +16,7 @@ public class ManifestAmendmentDto {
     private String amendmentReference;
     private String mrn;
     private String voyageNumber;
+    private String declarantTin;
     List <DeletedBlDto> deletedBls;
     List <AdditionalBls> additionalBls;
     List <AmendedBls> amendedBls;
