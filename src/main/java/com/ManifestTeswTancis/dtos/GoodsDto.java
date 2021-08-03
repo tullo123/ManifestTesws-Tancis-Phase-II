@@ -41,7 +41,7 @@ public class GoodsDto implements Serializable {
      private String vehicleModel;
      private String vehicleMake;
      private String vehicleOwnDrive;
-     private DangerousGoodInformation dangerousGoodInformation;
+     private DangerousGoodInformation dangerousGoodsInformation;
 	 List<GoodPlacementDto> placements;
 
 }

@@ -59,7 +59,7 @@ public interface ManifestApi {
             consumes = { MediaType.APPLICATION_JSON_VALUE })
     ResponseEntity<TeswsResponse> saveVesselDepartureNotice(@RequestBody @Valid VesselDepartureNoticeDto vesselDepartureNoticeDto);
 
-    @RequestMapping(value = "/cancels/callInf/v1", method = RequestMethod.DELETE,
+    @RequestMapping(value = "/cancels/callInf/v1", method = RequestMethod.POST,
             produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE })
     ResponseEntity<TeswsResponse> deleteVesselInfo(@RequestBody CallInfCancelDto callInfCancelDto);

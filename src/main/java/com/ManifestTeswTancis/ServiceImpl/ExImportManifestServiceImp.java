@@ -297,6 +297,21 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				goodItemsEntity.setFirstRegisterId("TESWS");
 				goodItemsEntity.setLastUpdateId("TESWS");
 				goodItemsEntity.setMrn(mrn);
+				if(goodsDto.getDangerousGoodsInformation()!=null){
+					goodItemsEntity.setClassCode(goodsDto.getDangerousGoodsInformation().getClassCode());
+					goodItemsEntity.setDescription(goodsDto.getDangerousGoodsInformation().getDescription());
+					goodItemsEntity.setPackingGroup(goodsDto.getDangerousGoodsInformation().getPackingGroup());
+					goodItemsEntity.setMarPolCategory(goodsDto.getDangerousGoodsInformation().getMarPolCategory());
+					goodItemsEntity.setImdgpage(goodsDto.getDangerousGoodsInformation().getImdgpage());
+					goodItemsEntity.setImdgclass(goodsDto.getDangerousGoodsInformation().getImdgclass());
+					goodItemsEntity.setUnnumber(goodsDto.getDangerousGoodsInformation().getUnnumber());
+					goodItemsEntity.setTremcard(goodsDto.getDangerousGoodsInformation().getTremcard());
+					goodItemsEntity.setMfag(goodsDto.getDangerousGoodsInformation().getMfag());
+					goodItemsEntity.setEms(goodsDto.getDangerousGoodsInformation().getEms());
+					goodItemsEntity.setFlashpointValue(goodsDto.getDangerousGoodsInformation().getFlashpointValue());
+					goodItemsEntity.setShipmFlashptValue(goodsDto.getDangerousGoodsInformation().getShipmFlashptValue());
+					goodItemsEntity.setShipmFlashptUnit(goodsDto.getDangerousGoodsInformation().getShipmFlashptUnit());
+				}
 				if(goodsDto.getPlacements().isEmpty() || goodsDto.getPlacements()==null){
 					goodItemsEntity.setContainerNo("LOOSE");
 				}
@@ -378,8 +393,8 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			oilType = gd.getOilType();
 			packingType = fixUnit(gd.getPackingType());
 
-			if (gd.getDangerousGoodInformation() != null) {
-				imdgClass = gd.getDangerousGoodInformation().getImdgclass();
+			if (gd.getDangerousGoodsInformation() != null) {
+				imdgClass = gd.getDangerousGoodsInformation().getImdgclass();
 			}
 
 			if(gd.getPackingType() != null){
