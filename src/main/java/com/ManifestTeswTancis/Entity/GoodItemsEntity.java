@@ -206,21 +206,6 @@ public class GoodItemsEntity implements Serializable {
             this.vehicleModel = goodsDto.getVehicleModel();
             this.vehicleMake = goodsDto.getVehicleMake();
             this.vehicleOwnDrive = goodsDto.getVehicleOwnDrive();
-            if (goodsDto.getDangerousGoodInformation()!= null) {
-                this.classCode=goodsDto.getDangerousGoodInformation().getClassCode();
-                this.flashpointValue=goodsDto.getDangerousGoodInformation().getFlashpointValue();
-                this.shipmFlashptValue = goodsDto.getDangerousGoodInformation().getShipmFlashptValue();
-                this.shipmFlashptUnit = goodsDto.getDangerousGoodInformation().getShipmFlashptUnit();
-                this.packingGroup = goodsDto.getDangerousGoodInformation().getPackingGroup();
-                this.marPolCategory = goodsDto.getDangerousGoodInformation().getMarPolCategory();
-                this.imdgpage = goodsDto.getDangerousGoodInformation().getImdgpage();
-                this.imdgclass = goodsDto.getDangerousGoodInformation().getImdgclass();
-                this.unnumber = goodsDto.getDangerousGoodInformation().getUnnumber();
-                this.tremcard = goodsDto.getDangerousGoodInformation().getTremcard();
-                this.mfag = goodsDto.getDangerousGoodInformation().getMfag();
-                this.ems = goodsDto.getDangerousGoodInformation().getEms();
-            }
-
             for(GoodPlacementDto containerDto: goodsDto.getPlacements()){
                 containerNo=containerDto.getContainerNo();
             }

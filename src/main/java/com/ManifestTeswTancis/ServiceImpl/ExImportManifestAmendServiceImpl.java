@@ -323,8 +323,8 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
 			eb.setPortOfLoading(amendedBls.getPortOfLoading());
 			eb.setPlaceOfDestination(amendedBls.getPlaceOfDestination());
 			eb.setPlaceOfDelivery(amendedBls.getPlaceOfDelivery());
-			if (gd.getDangerousGoodInformation()!=null && gd.getDangerousGoodInformation().getImdgclass() != null) {
-				eb.setImdgclass(gd.getDangerousGoodInformation().getImdgclass());
+			if (gd.getDangerousGoodsInformation()!=null && gd.getDangerousGoodsInformation().getImdgclass() != null) {
+				eb.setImdgclass(gd.getDangerousGoodsInformation().getImdgclass());
 			}
 			exImportAmendBlRepository.save(eb);
 		}
@@ -377,8 +377,8 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
 				eb.setPortOfLoading(additionalBls.getPortOfLoading());
 				eb.setPlaceOfDestination(additionalBls.getPlaceOfDestination());
 				eb.setPlaceOfDelivery(additionalBls.getPlaceOfDelivery());
-				if (gd.getDangerousGoodInformation()!=null && gd.getDangerousGoodInformation().getImdgclass() != null) {
-					eb.setImdgclass(gd.getDangerousGoodInformation().getImdgclass());
+				if (gd.getDangerousGoodsInformation()!=null && gd.getDangerousGoodsInformation().getImdgclass() != null) {
+					eb.setImdgclass(gd.getDangerousGoodsInformation().getImdgclass());
 				}
 				exImportAmendBlRepository.save(eb);
 			}
