@@ -21,20 +21,17 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 	private final ExImportHouseBlRepository exImportHouseBlRepository;
 	private final ExImportBlContainerRepository exImportBlContainerRepository;
 	private final EdNoticeRepository edNoticeRepository;
-	private final ManifestStatusServiceImp statusServiceImp;
-	final
-	BlGoodItemsRepository blGoodItemsRepository;
+	private final BlGoodItemsRepository blGoodItemsRepository;
 
 	@Autowired
 	public ExImportManifestServiceImp(ExImportManifestRepository exImportManifestRepository, ExImportMasterBlRepository exImportMasterBlRepository,
 									  ExImportHouseBlRepository exImportHouseBlRepository, ExImportBlContainerRepository exImportBlContainerRepository,
-									  EdNoticeRepository edNoticeRepository, ManifestStatusServiceImp statusServiceImp, BlGoodItemsRepository blGoodItemsRepository) {
+									  EdNoticeRepository edNoticeRepository, BlGoodItemsRepository blGoodItemsRepository) {
 		this.exImportManifestRepository = exImportManifestRepository;
 		this.exImportMasterBlRepository = exImportMasterBlRepository;
 		this.exImportHouseBlRepository = exImportHouseBlRepository;
 		this.exImportBlContainerRepository = exImportBlContainerRepository;
 		this.edNoticeRepository = edNoticeRepository;
-		this.statusServiceImp = statusServiceImp;
 		this.blGoodItemsRepository = blGoodItemsRepository;
 	}
 
@@ -67,8 +64,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				if(!vehicleMap.isEmpty()){
 					saveVehicles(vehicleMap, msnMap, infEntity.getMrn());
 				}
-				//statusServiceImp.save(infEntity, manifestDto.getControlReferenceNumber(), false);
-				// 12-june-2021 this line was commented
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -89,13 +84,13 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			Map<String, String> msnMap = msnHsnMap.get(set.getKey());
 
 			Set<String> mblset = blMap.keySet();
-			Iterator iter = mblset.iterator();
-			String masterBl = iter.next().toString();
+			Iterator<String> iter = mblset.iterator();
+			String masterBl = iter.next();
 			String houseBl = (blMap.get(masterBl) != null)?blMap.get(masterBl):"SIMPLE";
 
 			Set<String> msnSet = msnMap.keySet();
-			Iterator msnInter = msnSet.iterator();
-			String msn = msnInter.next().toString();
+			Iterator<String> msnInter = msnSet.iterator();
+			String msn = msnInter.next();
 
 			ExImportBlContainer blContainer = new ExImportBlContainer();
 			blContainer.setMrn(mrn);
@@ -129,13 +124,13 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				cnEn.setTypeOfContainer(container.getTypeOfContainer());
 
 				Set<String> mblset = blMap.keySet();
-				Iterator iter = mblset.iterator();
-				String mBl = iter.next().toString();
-                String hBl = (blMap.get(mBl) != null)?blMap.get(mBl):"SIMPLE";
+				Iterator<String> iter = mblset.iterator();
+				String mBl = iter.next();
+				String hBl = (blMap.get(mBl) != null)?blMap.get(mBl):"SIMPLE";
 
 				Set<String> msnSet = msnMap.keySet();
-				Iterator msnInter = msnSet.iterator();
-				String msn = msnInter.next().toString();
+				Iterator<String> msnInter = msnSet.iterator();
+				String msn = msnInter.next();
 
 				cnEn.setMasterBillOfLading(mBl);
 				cnEn.setHouseBillOfLading(hBl);
@@ -264,8 +259,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportMasterBl.setImdgclass(blMeasurement.getImdgClass());
 		exImportMasterBl.setBlDescription(bl.getBlDescription());
 		if(bl.getGoodDetails()!=null){
-		goodItemsEntity.setMasterBillOfLading(bl.getMasterBillOfLading());
-		goodItemsEntity.setHouseBillOfLading(bl.getHouseBillOfLading());
 			for(GoodsDto goodsDto:bl.getGoodDetails()){
 				goodItemsEntity.setPackageType(goodsDto.getPackageType());
 				goodItemsEntity.setDescription(goodsDto.getDescription());
@@ -281,7 +274,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				goodItemsEntity.setGrossWeightUnit(fixUnit(goodsDto.getGrossWeightUnit()));
 				goodItemsEntity.setNetWeight(goodsDto.getNetWeight());
 				goodItemsEntity.setNetWeightUnit(fixUnit(goodsDto.getNetWeightUnit()));
-				goodItemsEntity.setVolume(goodItemsEntity.getVolume());
+				goodItemsEntity.setVolume(goodsDto.getVolume());
 				goodItemsEntity.setVolumeUnit(fixUnit(goodsDto.getVolumeUnit()));
 				goodItemsEntity.setLength(goodsDto.getLength());
 				goodItemsEntity.setLengthUnit(goodsDto.getLengthUnit());
@@ -297,6 +290,8 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				goodItemsEntity.setFirstRegisterId("TESWS");
 				goodItemsEntity.setLastUpdateId("TESWS");
 				goodItemsEntity.setMrn(mrn);
+				goodItemsEntity.setMasterBillOfLading(bl.getMasterBillOfLading());
+				goodItemsEntity.setHouseBillOfLading(bl.getHouseBillOfLading());
 				if(goodsDto.getDangerousGoodsInformation()!=null){
 					goodItemsEntity.setClassCode(goodsDto.getDangerousGoodsInformation().getClassCode());
 					goodItemsEntity.setDescription(goodsDto.getDangerousGoodsInformation().getDescription());
@@ -398,12 +393,12 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			}
 
 			if(gd.getPackingType() != null){
-			if(packingType.equals("V")){
-				Map<String, String> blMap = new HashMap<>();
-				blMap.put(bl.getMasterBillOfLading(), bl.getHouseBillOfLading());
-				vehicleMap.put(gd.getVehicleVIN(),blMap);
-				msnMap.put(gd.getVehicleVIN(),map);
-			}
+				if(packingType.equals("V")){
+					Map<String, String> blMap = new HashMap<>();
+					blMap.put(bl.getMasterBillOfLading(), bl.getHouseBillOfLading());
+					vehicleMap.put(gd.getVehicleVIN(),blMap);
+					msnMap.put(gd.getVehicleVIN(),map);
+				}
 			}
 
 			for (GoodPlacementDto pc : gd.getPlacements()) {
@@ -503,7 +498,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 
 
 	}
-	}
+}
 
 
 
