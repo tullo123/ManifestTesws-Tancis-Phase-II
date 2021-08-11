@@ -7,7 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -45,17 +47,14 @@ public class ExportManifest implements Serializable {
 	@Column(name ="CARRIER_CD")
     private String carrierId;
 
-
 	@Column(name="CARRIER_NAME")
     private String carrierName;
 
 	@Column(name="NATIONALITY")
     private String transportMeansNationality;
 
-
 	@Column(name="IMO_NO")
     private String transportMeansId;
-
 
 	@Column(name="CALL_SIGN")
     private String callSign;
@@ -142,12 +141,14 @@ public class ExportManifest implements Serializable {
     private String firstRegisterId;
 
 	@Column(name="FIRST_REGISTER_DT")
+    @CreationTimestamp
     private Date firstRegisterDate;
 
 	@Column(name="LAST_UPDATE_ID")
     private String lastUpdateId;
 
 	@Column(name="LAST_UPDATE_DT")
+    @UpdateTimestamp
     private Date lastUpdateDt;
 
 	@Column(name="EXPECTED_DEPARTURE_DT")
@@ -173,7 +174,8 @@ public class ExportManifest implements Serializable {
 	    this.processingStatus="1";
 	    this.auditor="NA";
 	    this.processingId="SYSTEM";
-	    this.firstRegisterId= callInfDetails.getCarrierId();
+	    this.lastUpdateId="TESWS";
+	    this.firstRegisterId="TESWS";
         this.firstRegisterDate=DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
         this.transportMeansNationality=callInfDetails.getTransportMeansNationality();
         this.transportMeansName=callInfDetails.getTransportMeansName();
@@ -185,7 +187,6 @@ public class ExportManifest implements Serializable {
         this.estimatedDatetimeOfDeparture=callInfDetails.getEstimatedDatetimeOfDeparture();
 
     }
-
 
 }
 

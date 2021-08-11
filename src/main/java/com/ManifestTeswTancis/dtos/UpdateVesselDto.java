@@ -65,8 +65,8 @@ public class UpdateVesselDto implements Serializable {
      private Double bkWeightAtDischarge;
      private Double bkWeightAtDestination;
      private Double carQuantityLoaded;
-     private Double carQuantityAtDischarge;
-     private Double carQuantityAtDestination;
+     private Integer carQuantityAtDischarge;
+     private Integer carQuantityAtDestination;
      private Double carWeightLoaded;
      private Double carWeightAtDischarge;
      private Double carWeightAtDestination;

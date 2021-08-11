@@ -112,7 +112,7 @@ public class ExImportHouseBl {
 	private String volumeUnit;
 
 	@Column(name = "PACKING_TYPE")
-	private String packingType;
+	private String blPackingType;
 
 	@Column(name = "OIL_TYPE")
 	private String oilType;
@@ -165,6 +165,8 @@ public class ExImportHouseBl {
 		this.notifyTin = billOfLadingDto.getNotifyTin();
 		this.lastUpdateId = "TESWS";
 		this.firstRegisterId ="TESWS";
+		this.description=billOfLadingDto.getBlDescription();
+		this.blPackingType=billOfLadingDto.getBlPackingType();
 		this.invoiceValue =billOfLadingDto.getInvoiceValue();
 		this.invoiceCurrency=billOfLadingDto.getInvoiceCurrency();
 		this.freightCharge=billOfLadingDto.getFreightCharge();

@@ -210,6 +210,7 @@ public class ExImportMasterBl {
 		this.freightCharge = billOfLadingDto.getFreightCharge();
 		this.freightCurrency = billOfLadingDto.getFreightCurrency();
 		this.blType = (billOfLadingDto.getHouseBillOfLading() != null)?"C":"S";
+		this.consolidatedStatus = (billOfLadingDto.getHouseBillOfLading() != null)?"Y":"N";
 		this.marksNumbers =billOfLadingDto.getMarksNumbers();
 	}
 

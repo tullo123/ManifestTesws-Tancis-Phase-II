@@ -52,7 +52,7 @@ public class ExImportManifest implements Serializable {
 	private String communicationAgreedId;
 
 	@Column(name = "MESSAGE_TYPE_CD")
-	private Integer messageFunction;
+	private String messageReferenceNumber;
 
 	@Column(name = "IMO_NO")
 	private String transportMeansId;
@@ -133,7 +133,7 @@ public class ExImportManifest implements Serializable {
 	private Double cnWeightLoaded;
 
 	@Column(name = "DISCHARGE_CAR_COUNT")
-	private Double carQuantityAtDischarge;
+	private Integer carQuantityAtDischarge;
 
 	@Column(name = "DISCHARGE_CAR_WEIGHT")
 	private Double carWeightAtDischarge;
@@ -145,7 +145,7 @@ public class ExImportManifest implements Serializable {
 	private Double cnWeightAtDischarge;
 
 	@Column(name = "DESTINATION_CAR_COUNT")
-	private Double carQuantityAtDestination;
+	private Integer carQuantityAtDestination;
 
 	@Column(name = "DESTINATION_CAR_WEIGHT")
 	private Double carWeightAtDestination;
@@ -210,6 +210,7 @@ public class ExImportManifest implements Serializable {
 		this.firstRegisterId = callInfDetails.getCarrierName();
 		this.processingId = "TESWS";
 		this.lastUpdateId ="TESWS";
+		this.messageReferenceNumber=callInfDetails.getMessageReferenceNumber();
 		this.carQuantityLoaded = callInfDetails.getCarQuantityLoaded();
 		this.carWeightLoaded = callInfDetails.getCarWeightLoaded();
 		this.cnQuantityLoaded = callInfDetails.getCnQuantityLoaded();

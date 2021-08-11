@@ -21,7 +21,8 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 	private final ExImportHouseBlRepository exImportHouseBlRepository;
 	private final ExImportBlContainerRepository exImportBlContainerRepository;
 	private final EdNoticeRepository edNoticeRepository;
-	private final BlGoodItemsRepository blGoodItemsRepository;
+	final
+	BlGoodItemsRepository blGoodItemsRepository;
 
 	@Autowired
 	public ExImportManifestServiceImp(ExImportManifestRepository exImportManifestRepository, ExImportMasterBlRepository exImportMasterBlRepository,
@@ -259,6 +260,8 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportMasterBl.setImdgclass(blMeasurement.getImdgClass());
 		exImportMasterBl.setBlDescription(bl.getBlDescription());
 		if(bl.getGoodDetails()!=null){
+			goodItemsEntity.setMasterBillOfLading(bl.getMasterBillOfLading());
+			goodItemsEntity.setHouseBillOfLading(bl.getHouseBillOfLading());
 			for(GoodsDto goodsDto:bl.getGoodDetails()){
 				goodItemsEntity.setPackageType(goodsDto.getPackageType());
 				goodItemsEntity.setDescription(goodsDto.getDescription());
@@ -274,7 +277,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				goodItemsEntity.setGrossWeightUnit(fixUnit(goodsDto.getGrossWeightUnit()));
 				goodItemsEntity.setNetWeight(goodsDto.getNetWeight());
 				goodItemsEntity.setNetWeightUnit(fixUnit(goodsDto.getNetWeightUnit()));
-				goodItemsEntity.setVolume(goodsDto.getVolume());
+				goodItemsEntity.setVolume(goodItemsEntity.getVolume());
 				goodItemsEntity.setVolumeUnit(fixUnit(goodsDto.getVolumeUnit()));
 				goodItemsEntity.setLength(goodsDto.getLength());
 				goodItemsEntity.setLengthUnit(goodsDto.getLengthUnit());
@@ -290,8 +293,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				goodItemsEntity.setFirstRegisterId("TESWS");
 				goodItemsEntity.setLastUpdateId("TESWS");
 				goodItemsEntity.setMrn(mrn);
-				goodItemsEntity.setMasterBillOfLading(bl.getMasterBillOfLading());
-				goodItemsEntity.setHouseBillOfLading(bl.getHouseBillOfLading());
 				if(goodsDto.getDangerousGoodsInformation()!=null){
 					goodItemsEntity.setClassCode(goodsDto.getDangerousGoodsInformation().getClassCode());
 					goodItemsEntity.setDescription(goodsDto.getDangerousGoodsInformation().getDescription());
@@ -313,9 +314,10 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				for(GoodPlacementDto containerDto: goodsDto.getPlacements()){
 					goodItemsEntity.setContainerNo(containerDto.getContainerNo());
 				}
+				exImportMasterBlRepository.save(exImportMasterBl);
+				blGoodItemsRepository.save(goodItemsEntity);
 			}
-			exImportMasterBlRepository.save(exImportMasterBl);
-			blGoodItemsRepository.save(goodItemsEntity);
+
 		}
 
 
@@ -348,7 +350,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportHouseBl.setNetWeightUnit(blMeasurement.getWeightUnit());
 		exImportHouseBl.setVolumeUnit(blMeasurement.getVolumeUnit());
 		exImportHouseBl.setVolume(blMeasurement.getVolume());
-		exImportHouseBl.setPackingType(bl.getBlPackingType());
+		exImportHouseBl.setBlPackingType(bl.getBlPackingType());
 		exImportHouseBl.setOilType(blMeasurement.getOilType());
 		exImportHouseBl.setImdgclass(blMeasurement.getImdgClass());
 		exImportHouseBl.setDescription(bl.getBlDescription());
@@ -499,6 +501,3 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 
 	}
 }
-
-
-

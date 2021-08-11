@@ -17,6 +17,7 @@ public class CallInfDetailsRequestModel {
 	private String vesselMaster;
 	private String vesselMasterAddress;
 	private String agentCode;
+	private String messageReferenceNumber;
 	private String applicationReferenceNumber;
 	private LocalDateTime processingDate;
 	private LocalDateTime lastUpdateDate;
@@ -53,8 +54,8 @@ public class CallInfDetailsRequestModel {
 	private Double bkWeightAtDischarge;
 	private Double bkWeightAtDestination;
 	private Double carQuantityLoaded;
-	private Double carQuantityAtDischarge;
-	private Double carQuantityAtDestination;
+	private Integer carQuantityAtDischarge;
+	private Integer carQuantityAtDestination;
 	private Double carWeightLoaded;
 	private Double carWeightAtDischarge;
 	private Double carWeightAtDestination;
