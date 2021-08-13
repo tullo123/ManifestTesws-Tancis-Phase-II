@@ -6,9 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -98,51 +101,23 @@ public class ExImportAmendGeneral implements Serializable {
 	@Column(name = "DECLARANT_CD")
 	private String declarantCode;
 
-	@Column(name = "LAST_UPDATE_ID")
-	private String lastUpdateId;
-
 	@Column(name = "DECLARANT_NAME")
 	private String declarantName;
 
 	@Column(name = "DECLARANT_TEL")
 	private String declarantTel;
 
-	@Column(name = "FIRST_REGISTER_ID", insertable = false, updatable = false)
+	@Column(name = "FIRST_REGISTER_ID")
 	private String firstRegisterId;
 
+	@Column(name = "FIRST_REGISTER_DT")
+	@CreationTimestamp
+	private LocalDateTime firstRegisterDate;
+
+	@Column(name = "LAST_UPDATE_ID")
+	private String lastUpdateId;
+
 	@Column(name = "LAST_UPDATE_DT")
-	private Date lastUpdateDate;
-
-	public ExImportAmendGeneral(ExImportManifest exImportManifest) {
-		//this.declarantTin = exImportManifest.;
-		//this.amendYear = amendYear;
-		this.processType = processType;
-		this.amendSerialNumber = amendSerialNumber;
-		this.processingStatus = processingStatus;
-		this.processingDate = processingDate;
-		this.processingId = processingId;
-		this.customOfficeCode = customOfficeCode;
-		this.mrn = exImportManifest.getMrn();
-		this.msn = msn;
-		this.hsn = hsn;
-		this.amendType = amendType;
-		this.amendReasonCode = amendReasonCode;
-		this.amendReasonComment = amendReasonComment;
-		this.billYn = billYn;
-		this.billNumber = billNumber;
-		this.billIssueDate = billIssueDate;
-		this.paymentDate = paymentDate;
-		this.penaltyAmount = penaltyAmount;
-		this.submitDate = submitDate;
-		this.auditor = auditor;
-		this.auditDate = auditDate;
-		this.auditComment = auditComment;
-		this.declarantCode = declarantCode;
-		this.lastUpdateId = lastUpdateId;
-		this.declarantName = declarantName;
-		this.declarantTel = declarantTel;
-		this.firstRegisterId = firstRegisterId;
-		this.lastUpdateDate = lastUpdateDate;
-	}
-
+	@UpdateTimestamp
+	private LocalDateTime lastUpdateDate;
 }

@@ -71,4 +71,10 @@ public class ManifestApprovalStatus {
 	@Column(name="EXPORT_MRN")
 	private String mrnOut;
 
+	@Column(name="CANCELLATION_DT")
+	private String cancellationDate;
+
+	@Column(name="CANCELLATION_STATUS")
+	private String cancellationStatus;
+
 }

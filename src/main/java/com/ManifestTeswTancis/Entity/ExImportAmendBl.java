@@ -11,7 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -44,13 +44,10 @@ public class ExImportAmendBl implements Serializable {
 	private String billOfLading;
 
 	@Column(name = "PACKAGE_UNIT")
-	private String packageType;
+	private String PackageUnit;
 
 	@Column(name = "BL_PACKAGE")
 	private Double blPackage;
-
-//	@Column(name = "PACKAGE_UNIT" )
-//	private String PackageUnit;
 
 	@Column(name = "CARGO_CLASSIFICATION")
 	private String tradeType;
@@ -161,21 +158,21 @@ public class ExImportAmendBl implements Serializable {
 	private String blType;
 
 	@Column(name = "SHIPPING_MARKS")
-	private String shippingMarks;
+	private String marksNumbers;
 
 	@Column(name = "FIRST_REGISTER_ID")
 	private String firstRegisterId;
 
 	@Column(name = "FIRST_REGISTER_DT")
 	@CreationTimestamp
-	private Date firstRegisterDate;
+	private LocalDateTime firstRegisterDate;
 
 	@Column(name = "LAST_UPDATE_ID")
 	private String lastUpdateId;
 	
 	@Column(name="LAST_UPDATE_DT")
 	@UpdateTimestamp
-	private Date lastUpdateDate;
+	private LocalDateTime lastUpdateDate;
 
 	@Column(name="DECL_YN")           
 	private String declarationYesNo;
@@ -185,7 +182,5 @@ public class ExImportAmendBl implements Serializable {
 
 	@Column(name="FIRST_DESTINATION_PLACE")
 	private String firstDestinationPlace;
-
-
 
 }

@@ -1,13 +1,17 @@
 package com.ManifestTeswTancis.Entity;
 
 import com.ManifestTeswTancis.idEntities.ContainerAmendId;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -20,23 +24,28 @@ import java.util.Date;
 public class ExImportAmendBlContainer implements Serializable {
 	private static final long serialVersionUID = 3300232137526405825L;
 
+	@Id
+	@NotNull
 	@Column(name = "DECLARANT_TIN")
 	private String declarantTin;
 
+	@NotNull
 	@Column(name = "AMEND_YEAR")
 	private String amendYear;
 
+	@NotNull
 	@Column(name = "PROCESS_TYPE")
 	private String processType;
 
+	@NotNull
 	@Column(name = "AMEND_SERIAL_NO")
 	private String amendSerialNumber;
 
-	@Id
+	@NotNull
 	@Column(name = "BL_NO")
 	private String billOfLading;
 
-	@Id
+	@NotNull
 	@Column(name = "CONTAINER_NO")
 	private String containerNo;
 
@@ -76,6 +85,12 @@ public class ExImportAmendBlContainer implements Serializable {
 	@Column(name = "CONTAINER_WEIGHT")
 	private Double weight;
 
+	@Column(name = "CONTAINER_PACKAGE")
+	private Double packageQuantity;
+
+	@Column(name = "PACKAGE_UNIT")
+	private String packageType;
+
 	@Column(name = "WEIGHT_UNIT ")
 	private String weightUnit;
 
@@ -94,10 +109,14 @@ public class ExImportAmendBlContainer implements Serializable {
 	@Column(name = "FIRST_REGISTER_ID")
 	private String firstRegisterId;
 
+	@Column(name="FIRST_REGISTER_DT")
+	@CreationTimestamp
+	private LocalDateTime firstRegisterDate;
+
 	@Column(name = "LAST_UPDATE_ID")
 	private Date lastUpdateId;
 
 	@Column(name = "LAST_UPDATE_DT")
-	private Date lastUpdateDate;
-
+	@UpdateTimestamp
+	private LocalDateTime lastUpdateDate;
 }

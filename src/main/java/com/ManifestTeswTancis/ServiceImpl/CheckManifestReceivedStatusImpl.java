@@ -55,6 +55,11 @@ public class CheckManifestReceivedStatusImpl {
                     statusRepository.save(mf);
                     String response = submittedManifestStatusToTesws(submittedManifestStatus);
                     System.out.println("--------------- Approval Notice Response --------------\n" + response);
+
+                }else if(ManifestStatus.CANCELED.equals(callInf.getProcessingStatus())){
+                    mf.setCancellationDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                    mf.setCancellationStatus("CANCELED");
+                    mf.setApprovedStatus(true);
                 }
             }
         }

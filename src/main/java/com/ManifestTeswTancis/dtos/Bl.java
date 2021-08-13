@@ -5,34 +5,34 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class AmendedBls {
+public class Bl implements Serializable {
+    private String action;
+    private String blId;
     private String masterBillOfLading;
     private String houseBillOfLading;
+    private String blType;
+    private String blPackingType;
+    private String blDescription;
+    private BlSummary blSummary;
     private String tradeType;
     private String portOfOrigin;
+    private String portOfDischarge;
     private String placeOfDestination;
     private String placeOfDelivery;
     private String portOfLoading;
     private String crn;
-    private String msn;
-    private String mrn;
-    private String hsn;
     private String tasacControlNumber;
     private String shippingAgentCode;
     private String shippingAgentName;
     private String shippingLineCode;
     private String shippingLineName;
-    private Double freightCharge;
-    private String freightCurrency;
-    private String invoiceCurrency;
-    private Double invoiceValue;
-    private String auditComment;
     private String forwarderCode;
     private String forwarderName;
     private String forwarderContactName;
@@ -66,17 +66,13 @@ public class AmendedBls {
     private String notifyLocationCode;
     private String notifyLocationName;
     private String notifyContactName;
-    private String  notifyTin;
+    private String notifyTin;
     private String notifyTwoName;
     private String notifyTwoTel;
     private String notifyTwoAddress;
     private String notifyTwoLocationCode;
     private String notifyTwoLocationName;
     private String notifyTwoContactName;
-    private String  notifyTwoTin;
-    private String blType;
-    private String consolidatedStatus;
-    private String amendType;
-    private String declarantTin;
-    private List<GoodsDto> goodDetails;
+    private String notifyTwoTin;
+    private List<GoodDetails> goodDetails;
 }
