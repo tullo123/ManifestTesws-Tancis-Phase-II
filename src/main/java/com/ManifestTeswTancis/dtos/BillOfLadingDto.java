@@ -71,7 +71,7 @@ public class BillOfLadingDto implements Serializable {
 	   private String notifyLocationCode;
 	   private String notifyLocationName;
 	   private String notifyContactName;
-	   private String  notifyTin;
+	   private String notifyTin;
 	   private String notifyTwoName;
 	   private String notifyTwoTel;
 	   private String notifyTwoAddress;
@@ -81,7 +81,7 @@ public class BillOfLadingDto implements Serializable {
 	   private String  notifyTwoTin;
 	   private String blType;
 	   private String consolidatedStatus;
-	   private List<BlSummary>blSummary;
+	   private BlSummary blSummary;
 	   private List<GoodsDto> goodDetails;
 
 }

@@ -176,6 +176,7 @@ public class ExportManifest implements Serializable {
 	    this.processingId="SYSTEM";
 	    this.lastUpdateId="TESWS";
 	    this.firstRegisterId="TESWS";
+        this.processingDate=DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
         this.firstRegisterDate=DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
         this.transportMeansNationality=callInfDetails.getTransportMeansNationality();
         this.transportMeansName=callInfDetails.getTransportMeansName();
@@ -183,7 +184,6 @@ public class ExportManifest implements Serializable {
         this.terminalOperatorCode=callInfDetails.getTerminalOperatorCode();
         this.modeOfTransport= callInfDetails.getModeOfTransport();
         this.processingDate=DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
-        this.lastUpdateId=callInfDetails.getCarrierId();
         this.estimatedDatetimeOfDeparture=callInfDetails.getEstimatedDatetimeOfDeparture();
 
     }

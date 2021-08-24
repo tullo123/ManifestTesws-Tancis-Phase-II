@@ -114,8 +114,7 @@ public class ExImportManifest implements Serializable {
 	private LocalDateTime lastUpdateDate;
 
 	@Column(name = "PROCESSING_DT")
-	@CreationTimestamp
-	private LocalDateTime processingDate;
+	private Date processingDate;
 
 	@Column(name = "PROCESSING_ID")
 	private String processingId;
@@ -202,13 +201,14 @@ public class ExImportManifest implements Serializable {
 		this.nextPortOfCall = callInfDetails.getNextPortOfCall();
 		this.actualDateTimeOfArrival = DateFormatter.getDateFromLocalDateTime(callInfDetails.getActualDatetimeOfArrival());
 		this.actualDatetimeOfDeparture = DateFormatter.getDateFromLocalDateTime(callInfDetails.getActualDatetimeOfDeparture());
+		this.processingDate=DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
 		this.transportMeansNationality = callInfDetails.getTransportMeansNationality();
 		this.destinationPort = callInfDetails.getDestinationPort();
 		this.portOfCall = callInfDetails.getPortOfCall();
 		this.processingStatus = "1";
 		this.applicationReferenceNumber=callInfDetails.getApplicationReferenceNumber();
-		this.firstRegisterId = callInfDetails.getCarrierName();
-		this.processingId = "TESWS";
+		this.firstRegisterId = "TESWS";
+		this.processingId = "SYSTEM";
 		this.lastUpdateId ="TESWS";
 		this.messageReferenceNumber=callInfDetails.getMessageReferenceNumber();
 		this.carQuantityLoaded = callInfDetails.getCarQuantityLoaded();

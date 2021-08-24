@@ -38,7 +38,7 @@ public class CheckManifestReceivedStatusImpl {
     @Transactional
     @Scheduled(fixedRate = 120000)
     public void checkReceivedManifestStatus() {
-        List<ManifestApprovalStatus> manifestStatusEntities = statusRepository.findByApprovedStatusFalse();
+        List<ManifestApprovalStatus> manifestStatusEntities = statusRepository.findByReceivedNoticeSentFalse();
         for (ManifestApprovalStatus mf : manifestStatusEntities) {
             if (!mf.isApprovedStatus()) {
                 ExImportManifest callInf = exImportManifestRepository.findByMrn(mf.getMrn());
@@ -52,6 +52,8 @@ public class CheckManifestReceivedStatusImpl {
                     submittedManifestStatus.setCustomOfficeCode(callInf.getCustomOfficeCode());
                     submittedManifestStatus.setStatus(getStatus(callInf.getProcessingStatus()));
                     mf.setProcessingStatus(getStatus(callInf.getProcessingStatus()));
+                    mf.setReceivedNoticeSent(true);
+                    mf.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     statusRepository.save(mf);
                     String response = submittedManifestStatusToTesws(submittedManifestStatus);
                     System.out.println("--------------- Approval Notice Response --------------\n" + response);

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 @Data
 @NoArgsConstructor
@@ -39,6 +40,6 @@ public class ContainerDto implements Serializable {
 	private Double minimumTemperature;
 	private Double maximumTemperature;
 	private String amendSerialNumber;
-	List<SealNumberDto> sealNumbers;
+	private List<SealNumberDto> sealNumbers= new ArrayList<>();
 
 }

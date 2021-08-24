@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 @Data
@@ -19,6 +20,7 @@ public class ManifestDto {
 	private String controlReferenceNumber;
 	private String applicationReference;
 	private String messageReferenceNumber;
+	private String manifestReferenceNumber;
 	private String messageTypeId;
 	private String messageFunction;
 	private Date cargoReportDate;
@@ -39,10 +41,10 @@ public class ManifestDto {
 	private String nextPortOfCall;
 	private String terminal;
 	private String terminalOperator;
-	private List<ManifestSummary>manifestSummary;
+	private ManifestSummary manifestSummary;
 	private Date estimatedDatetimeOfDeparture;
 	private Date estimatedDatetimeOfArrival;
-	List<BillOfLadingDto> consignments;
-	List<ContainerDto> containers;
+	private List<BillOfLadingDto> consignments= new ArrayList<>();
+	private List<ContainerDto> containers =new ArrayList<>();
 
 }

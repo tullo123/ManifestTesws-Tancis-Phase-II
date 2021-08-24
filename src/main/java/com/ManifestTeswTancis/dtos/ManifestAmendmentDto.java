@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -20,5 +21,5 @@ public class ManifestAmendmentDto implements Serializable {
    private String voyageNumber;
    private String amendType;
    private Bl bl;
-   List<Containers> containers;
+   private List<Containers> containers= new ArrayList<>();
 }

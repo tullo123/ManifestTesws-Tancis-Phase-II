@@ -77,4 +77,10 @@ public class ManifestApprovalStatus {
 	@Column(name="CANCELLATION_STATUS")
 	private String cancellationStatus;
 
+	@Column(name="RECEIVED_NOTICE_SENT")
+	private boolean receivedNoticeSent;
+
+	@Column(name="RECEIVED_NOTICE_DT")
+	private String noticeDate;
+
 }

@@ -180,7 +180,4 @@ public class ExImportAmendBl implements Serializable {
 	@Column(name="REF_DECL_NO")                  
 	private String referenceDeclarationNumber;
 
-	@Column(name="FIRST_DESTINATION_PLACE")
-	private String firstDestinationPlace;
-
 }

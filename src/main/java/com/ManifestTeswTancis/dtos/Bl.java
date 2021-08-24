@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -74,5 +75,5 @@ public class Bl implements Serializable {
     private String notifyTwoLocationName;
     private String notifyTwoContactName;
     private String notifyTwoTin;
-    private List<GoodDetails> goodDetails;
+    private List<GoodDetails> goodDetails = new ArrayList<>();
 }

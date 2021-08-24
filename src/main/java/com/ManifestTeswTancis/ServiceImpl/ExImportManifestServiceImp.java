@@ -47,7 +47,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 
 		try {
 			Optional<ExImportManifest> callInfEntity = exImportManifestRepository
-					.findFirstByMrn(manifestDto.getMessageReferenceNumber());
+					.findFirstByMrn(manifestDto.getManifestReferenceNumber());
 			if (callInfEntity.isPresent()) {
 				System.out.print("-----------------Saving Manifest method called------------------------");
 				ExImportManifest infEntity = callInfEntity.get();

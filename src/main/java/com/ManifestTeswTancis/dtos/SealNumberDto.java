@@ -14,6 +14,6 @@ import java.io.Serializable;
 public class SealNumberDto implements Serializable {
 	private String sealNumber;
 	private String sealNumberIssuerType;
-	private String  sealNumberIssuerName;
+	private String sealNumberIssuerName;
 	private String sealNumberCondition;
 }

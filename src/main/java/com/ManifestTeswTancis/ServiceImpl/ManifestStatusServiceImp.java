@@ -36,6 +36,7 @@ public class ManifestStatusServiceImp {
 			statusEntity.setTransportMeansId(exImportManifest.getTransportMeansId());
 			statusEntity.setVoyageNumber(exImportManifest.getVoyageNumber());
 			statusEntity.setMrnOut(exportManifest.getMrnOut());
+			statusEntity.setReceivedNoticeSent(false);
 			statusEntity.setControlReferenceNumber(exImportManifest.getControlReferenceNumber());
 		}
 		return statusRepository.save(statusEntity);

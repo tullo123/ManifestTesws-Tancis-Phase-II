@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -43,5 +44,5 @@ public class GoodDetails implements Serializable {
     private String vehicleMake;
     private String vehicleOwnDrive;
     private DangerousGoodInformation dangerousGoodsInformation;
-    private List<Placements> placements;
+    private List<Placements> placements = new ArrayList<>();
 }
