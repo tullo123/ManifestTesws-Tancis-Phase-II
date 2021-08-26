@@ -26,7 +26,7 @@ public interface ManifestApi {
     ResponseEntity<TeswsResponse> createCallInfo(@RequestBody @Valid CallInfDetailsRequestModel callInfDetails);
 
 
-    @RequestMapping(value = "update/callInf/v1", method = RequestMethod.PUT,
+    @RequestMapping(value = "update/callInf/v1", method = RequestMethod.POST,
             produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE })
     ResponseEntity<TeswsResponse> updateCallInf(@RequestBody @Valid UpdateVesselDto updateVesselDto);

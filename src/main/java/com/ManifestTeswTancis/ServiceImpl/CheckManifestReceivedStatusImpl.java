@@ -47,7 +47,7 @@ public class CheckManifestReceivedStatusImpl {
                     submittedManifestStatus.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     submittedManifestStatus.setCommunicationAgreedId(callInf.getCommunicationAgreedId());
                     submittedManifestStatus.setControlReferenceNumber(callInf.getControlReferenceNumber());
-                    submittedManifestStatus.setApplicationReference(callInf.getApplicationReferenceNumber());
+                    submittedManifestStatus.setApplicationReference(callInf.getControlReferenceNumber());
                     submittedManifestStatus.setVoyageNumber(callInf.getVoyageNumber());
                     submittedManifestStatus.setCustomOfficeCode(callInf.getCustomOfficeCode());
                     submittedManifestStatus.setStatus(getStatus(callInf.getProcessingStatus()));

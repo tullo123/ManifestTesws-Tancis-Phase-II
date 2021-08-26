@@ -57,9 +57,9 @@ public class CheckManifestStatusImpl {
 				ExImportManifest callInf = exImportManifestRepository.findByMrn(mf.getMrn());
 				if (ManifestStatus.APPROVED.equals(callInf.getProcessingStatus())) {
 					ManifestNotice manifestNotice = new ManifestNotice();
-					manifestNotice.setCall_id(callInf.getCommunicationAgreedId());
+					manifestNotice.setCommunicationAgreedId(callInf.getCommunicationAgreedId());
 					manifestNotice.setMessageReferenceNumber(callInf.getControlReferenceNumber());
-					manifestNotice.setApprovalDt(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+					manifestNotice.setApprovalDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
 					manifestNotice.setMrn(mf.getMrn());
 					if (mf.getMrn() != null && mf.getMrnOut() != null) {
 						mf.setMrnStatus(true);
@@ -69,7 +69,7 @@ public class CheckManifestStatusImpl {
 					mf.setApprovedStatus(true);
 					mf.setApprovedNoticeStatus(true);
 					mf.setProcessingStatus(getStatus(callInf.getProcessingStatus()));
-					mf.setApprovalDt(manifestNotice.getApprovalDt());
+					mf.setApprovalDt(manifestNotice.getApprovalDate());
 					statusRepository.save(mf);
 					String response = sendApprovedToTesws(manifestNotice);
 					System.out.println("--------------- Approval Notice Response ---------------\n" + response);

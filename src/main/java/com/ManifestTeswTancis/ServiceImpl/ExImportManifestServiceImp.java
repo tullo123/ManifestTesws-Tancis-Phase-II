@@ -122,7 +122,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				cnEn.setMrn(mrn);
 				cnEn.setContainerNo(container.getContainerNo());
 				cnEn.setContainerSize(container.getContainerSize());
-				cnEn.setTypeOfContainer(container.getTypeOfContainer());
+				cnEn.setTypeOfContainer("C");
 
 				Set<String> mblset = blMap.keySet();
 				Iterator<String> iter = mblset.iterator();

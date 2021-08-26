@@ -12,9 +12,9 @@ import java.util.List;
 @ToString
 public class ManifestNotice {
 private String messageReferenceNumber;
-private String call_id;
+private String communicationAgreedId;
 private String mrn;
 private String approvalStatus;
-private String approvalDt;
+private String approvalDate;
 private List<ManifestNoticeBl> bls;
 }
