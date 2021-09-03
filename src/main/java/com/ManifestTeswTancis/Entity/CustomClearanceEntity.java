@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -74,16 +75,16 @@ public class CustomClearanceEntity implements Serializable {
     private String taxClearanceNumber;
 
     @Column(name="DEPARTURE_DT")
-    private String estimatedDatetimeOfDeparture;
+    private Date estimatedDatetimeOfDeparture;
 
     @Column(name="EST_DATE_ARRIVAL")
-    private String estimatedDatetimeOfArrival;
+    private Date estimatedDatetimeOfArrival;
 
     @Column(name="ACT_DATE_ARRIVAL")
-    private String actualDatetimeOfArrival;
+    private Date actualDatetimeOfArrival;
 
     @Column(name="CLEARANCE_REQUEST_DT")
-    private String clearanceRequestDate;
+    private Date clearanceRequestDate;
 
     @Column(name = "CREATED_DATE")
     @CreationTimestamp

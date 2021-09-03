@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,10 +28,10 @@ public class CustomClearanceDto {
      private String portOfCall;
      private String nextPortOfCall;
      private String taxClearanceNumber;
-     private String estimatedDatetimeOfDeparture;
-     private String estimatedDatetimeOfArrival;
-     private String actualDatetimeOfArrival;
-     private String actualDatetimeOfArrivalOuterAnchorage;
-     private String clearanceRequestDate;
+     private LocalDateTime estimatedDatetimeOfDeparture;
+     private LocalDateTime estimatedDatetimeOfArrival;
+     private LocalDateTime actualDatetimeOfArrival;
+     private LocalDateTime actualDatetimeOfArrivalOuterAnchorage;
+     private LocalDateTime clearanceRequestDate;
      private String comments;
 }

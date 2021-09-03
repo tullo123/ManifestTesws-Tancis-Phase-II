@@ -1,6 +1,8 @@
 package com.ManifestTeswTancis.ServiceImpl;
 
+import com.ManifestTeswTancis.Entity.CommonOrdinalEntity;
 import com.ManifestTeswTancis.Entity.ExportManifest;
+import com.ManifestTeswTancis.Repository.CommonOrdinalRepository;
 import com.ManifestTeswTancis.Repository.ExportManifestRepository;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
 import com.ManifestTeswTancis.Entity.ExImportManifest;
@@ -29,6 +31,8 @@ public  class CallInfServiceImpl implements CallInfService {
 	ExportManifestRepository exportManifestRepository;
 	private final ExImportManifestRepository exImportManifestRepository;
 	private final ManifestStatusServiceImp statusServiceImp;
+	@Autowired
+	CommonOrdinalRepository commonOrdinalRepository;
 
 	@Autowired
 	public CallInfServiceImpl(ExImportManifestRepository exImportManifestRepository,
@@ -110,19 +114,55 @@ public  class CallInfServiceImpl implements CallInfService {
 
 	}
 
-	private String generateMrn(String carrierCode) {
-		Object nextval = exImportManifestRepository.getNextValue();
-		String suffix = String.format("%06d", Long.valueOf(nextval.toString()));
-		DateFormat df = new SimpleDateFormat("yy");
-		String prefix = df.format(Calendar.getInstance().getTime());
-		return prefix + carrierCode + suffix;
-	}
+//	private String generateMrn(String carrierCode) {
+//		Object nextval = exImportManifestRepository.getNextValue();
+//		String suffix = String.format("%06d", Long.valueOf(nextval.toString()));
+//		DateFormat df = new SimpleDateFormat("yy");
+//		String prefix = df.format(Calendar.getInstance().getTime());
+//		return prefix + carrierCode + suffix;
+//	}
+//
+//     private String generatemrnOut(String carrierId) {
+//		Object nextval = exImportManifestRepository.getNextValue();
+//		String suffix = String.format("%06d", Long.valueOf(nextval.toString()));
+//		DateFormat df = new SimpleDateFormat("yy");
+//		String prefix = df.format(Calendar.getInstance().getTime());
+//		return prefix + carrierId + suffix;
+//	}
 
-     private String generatemrnOut(String carrierId) {
-		Object nextval = exImportManifestRepository.getNextValue();
-		String suffix = String.format("%06d", Long.valueOf(nextval.toString()));
+private String generateMrn(String carrierCode) {
+	CommonOrdinalEntity commonOrdinalEntity = new CommonOrdinalEntity();
+	DateFormat df = new SimpleDateFormat("yy");
+	String prefix= df.format(Calendar.getInstance().getTime()) +carrierCode;
+	Optional<CommonOrdinalEntity> optionalCommonOrdinalEntity = commonOrdinalRepository.findByPrefix(prefix);
+	if (optionalCommonOrdinalEntity.isPresent()) {
+		commonOrdinalEntity = optionalCommonOrdinalEntity.get();
+		commonOrdinalEntity.setSequenceNo(commonOrdinalEntity.getSequenceNo() + 1);
+	}else {
+		commonOrdinalEntity = new CommonOrdinalEntity();
+		commonOrdinalEntity.setPrefix(prefix);
+		commonOrdinalEntity.setSequenceNo(1);
+	}
+	commonOrdinalRepository.save(commonOrdinalEntity);
+	String suffix = String.format("%1$" + 6 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
+	return prefix +suffix;
+}
+	private String generatemrnOut(String carrierCode) {
+		new CommonOrdinalEntity();
+		CommonOrdinalEntity commonOrdinalEntity;
 		DateFormat df = new SimpleDateFormat("yy");
-		String prefix = df.format(Calendar.getInstance().getTime());
-		return prefix + carrierId + suffix;
+		String prefix= df.format(Calendar.getInstance().getTime()) +carrierCode;
+		Optional<CommonOrdinalEntity> optionalCommonOrdinalEntity = commonOrdinalRepository.findByPrefix(prefix);
+		if (optionalCommonOrdinalEntity.isPresent()) {
+			commonOrdinalEntity = optionalCommonOrdinalEntity.get();
+			commonOrdinalEntity.setSequenceNo(commonOrdinalEntity.getSequenceNo() + 1);
+		}else {
+			commonOrdinalEntity = new CommonOrdinalEntity();
+			commonOrdinalEntity.setPrefix(prefix);
+			commonOrdinalEntity.setSequenceNo(1);
+		}
+		 commonOrdinalRepository.save(commonOrdinalEntity);
+		String suffix = String.format("%1$" + 6 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
+		return prefix + suffix;
 	}
 }

@@ -58,12 +58,13 @@ public class CustomClearanceServiceImpl implements CustomClearanceService {
             cu.setNextPortOfCall(customClearanceDto.getNextPortOfCall());
             cu.setPortOfCall(customClearanceDto.getPortOfCall());
             cu.setTaxClearanceNumber(customClearanceDto.getTaxClearanceNumber());
-            cu.setEstimatedDatetimeOfArrival(customClearanceDto.getEstimatedDatetimeOfArrival());
-            cu.setEstimatedDatetimeOfDeparture(customClearanceDto.getEstimatedDatetimeOfDeparture());
-            cu.setActualDatetimeOfArrival(customClearanceDto.getActualDatetimeOfArrival());
-            cu.setClearanceRequestDate(customClearanceDto.getClearanceRequestDate());
             cu.setLastUpdateId("TESWS");
             cu.setFirstRegisterId("TESWS");
+            cu.setEstimatedDatetimeOfArrival(DateFormatter.getDateFromLocalDateTime(customClearanceDto.getEstimatedDatetimeOfArrival()));
+            cu.setActualDatetimeOfArrival(DateFormatter.getDateFromLocalDateTime(customClearanceDto.getActualDatetimeOfArrival()));
+            cu.setClearanceRequestDate(DateFormatter.getDateFromLocalDateTime(customClearanceDto.getClearanceRequestDate()));
+            cu.setEstimatedDatetimeOfDeparture(DateFormatter.getDateFromLocalDateTime(customClearanceDto.getEstimatedDatetimeOfDeparture()));
+
             customClearanceRepository.save(cu);
 
             CustomClearanceApprovalStatus cs= new CustomClearanceApprovalStatus();
