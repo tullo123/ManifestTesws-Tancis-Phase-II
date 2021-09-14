@@ -2,37 +2,42 @@ package com.ManifestTeswTancis.ServiceImpl;
 
 import com.ManifestTeswTancis.Entity.CustomClearanceApprovalStatus;
 import com.ManifestTeswTancis.Entity.CustomClearanceEntity;
+import com.ManifestTeswTancis.RabbitConfigurations.*;
 import com.ManifestTeswTancis.Repository.CustomClearanceApprovalRepository;
 import com.ManifestTeswTancis.Repository.CustomClearanceRepository;
 import com.ManifestTeswTancis.Response.CustomClearanceStatus;
 import com.ManifestTeswTancis.Util.ClearanceStatus;
 import com.ManifestTeswTancis.Util.DateFormatter;
-import com.ManifestTeswTancis.Util.HttpCall;
-import com.ManifestTeswTancis.Util.HttpMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
 @Service
 public class CheckCustomClearanceReceivedStatusImpl {
-    @Value("http://196.192.79.121:8062/message-api/stakeholder")
-    private String teswsFowardUrl;
+        @Value("${spring.rabbitmq.exchange.out}")
+        private String OUTBOUND_EXCHANGE;
+    final CustomClearanceRepository customClearanceRepository;
+    final CustomClearanceApprovalRepository customClearanceApprovalRepository;
+    final MessageProducer rabbitMqMessageProducer;
 
-    final
-    CustomClearanceRepository customClearanceRepository;
-    final
-    CustomClearanceApprovalRepository customClearanceApprovalRepository;
-
-    public CheckCustomClearanceReceivedStatusImpl(CustomClearanceRepository customClearanceRepository, CustomClearanceApprovalRepository customClearanceApprovalRepository) {
+    public CheckCustomClearanceReceivedStatusImpl(CustomClearanceRepository customClearanceRepository, CustomClearanceApprovalRepository customClearanceApprovalRepository, MessageProducer rabbitMqMessageProducer) {
         this.customClearanceRepository = customClearanceRepository;
         this.customClearanceApprovalRepository = customClearanceApprovalRepository;
+        this.rabbitMqMessageProducer = rabbitMqMessageProducer;
     }
 
     @Transactional
@@ -51,7 +56,7 @@ public class CheckCustomClearanceReceivedStatusImpl {
                     ca.setNoticeDate(customClearanceStatus.getNoticeDate());
                     ca.setReceivedNoticeSent(true);
                     customClearanceApprovalRepository.save(ca);
-                    String response = sendStatusNoticeToTesws(customClearanceStatus);
+                    String response = sendStatusNoticeToQueue(customClearanceStatus);
                     System.out.println("--------------- Status Notice Response ---------------\n" + response);
                 }
             }
@@ -59,23 +64,25 @@ public class CheckCustomClearanceReceivedStatusImpl {
         }
     }
 
-    private String sendStatusNoticeToTesws(CustomClearanceStatus customClearanceStatus) {
+    private String sendStatusNoticeToQueue(CustomClearanceStatus customClearanceStatus) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String payload = mapper.writeValueAsString(customClearanceStatus);
-            System.out.println("--------------- Custom Clearance Status Notice Payload ---------------\n"+payload);
-            HttpMessage httpMessage = new HttpMessage();
-            httpMessage.setContentType("application/json");
-            httpMessage.setPayload(payload);
-            httpMessage.setMessageName("CUSTOM_CLEARANCE_STATUS");
-            httpMessage.setRecipient("SS");
-            HttpCall httpCall = new HttpCall();
-            return httpCall.httpRequest(httpMessage);
+            System.out.println("-------------- Custom Status Payload --------------\n"+payload);
+            MessageDto messageDto = new MessageDto();
+            CustomClearanceMessageStatusDto customClearanceMessageStatusDto = new CustomClearanceMessageStatusDto();
+            customClearanceMessageStatusDto.setMessageName(MessageNames.CUSTOM_CLEARANCE_STATUS);
+            RequestIdDto requestIdDto = mapper.readValue(getId(), RequestIdDto.class);
+            customClearanceMessageStatusDto.setRequestId(requestIdDto.getMessageId());
+            messageDto.setPayload(customClearanceStatus);
+            AcknowledgementDto queueResponse =rabbitMqMessageProducer.
+                    sendMessage(OUTBOUND_EXCHANGE, MessageNames.CUSTOM_CLEARANCE_STATUS,customClearanceMessageStatusDto.getRequestId(),messageDto.getCallbackUrl(),messageDto.getPayload());
+            System.out.println(queueResponse);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "Failed";
+        return "Success";
     }
 
     public String getStatus(String processingStatus) {
@@ -87,5 +94,14 @@ public class CheckCustomClearanceReceivedStatusImpl {
             return "RECEIVED";
         }
         else return processingStatus;
+    }
+    private String getId() throws IOException {
+        String url = "http://192.168.30.200:7074/GetId";
+        HttpGet request = new HttpGet(url);
+        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpResponse response = client.execute(request);
+        HttpEntity entity = response.getEntity();
+
+        return EntityUtils.toString(entity);
     }
 }

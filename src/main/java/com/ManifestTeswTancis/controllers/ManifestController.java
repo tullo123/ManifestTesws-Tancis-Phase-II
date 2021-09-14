@@ -15,56 +15,24 @@ import javax.validation.Valid;
 @RestController
 public  class ManifestController  implements ManifestApi {
 
-	final
-	ExImportManifestService exImportManifestService;
-
-	final
-    VesselCancellationService vesselCancellationService;
-	final
-	LiquidBulkDischargeSequenceService liquidBulkDischargeSequenceService;
-	final
-	LiquidBulkDischargeSequenceUpdateService liquidBulkDischargeSequenceUpdateService;
-	final
-	LiquidBulkQualityReportService liquidBulkQualityReportService;
-
-	final
-	CallInfService callInfService;
-
-	final
-	UpdateVesselService updateVesselService;
-
-	final
-	CustomClearanceService customClearanceService;
-
-	final
-	HeaderServiceImpl headerServiceImpl;
-
-	final
-	PortClearanceService portClearanceService;
-
-	final
-	VesselBoardingService vesselBoardingService;
-
-	final
-	VesselDepartureService vesselDepartureService;
-
-	final
-	VesselTrackingService vesselTrackingService;
-
-	final
-	FreePartiqueService freePartiqueService;
-
-	final
-	UpdateFreePartiqueService updateFreePartiqueService;
-
-	final
-	VesselDocumentationService vesselDocumentationService;
-
-	final
-	VesselDocumentationUpdateService vesselDocumentationUpdateService;
-
-	final
-	LiquidBulkFinalDischargeService liquidBulkFinalDischargeService;
+	final ExImportManifestService exImportManifestService;
+	final VesselCancellationService vesselCancellationService;
+	final LiquidBulkDischargeSequenceService liquidBulkDischargeSequenceService;
+	final LiquidBulkDischargeSequenceUpdateService liquidBulkDischargeSequenceUpdateService;
+	final LiquidBulkQualityReportService liquidBulkQualityReportService;
+	final CallInfService callInfService;
+	final UpdateVesselService updateVesselService;
+	final CustomClearanceService customClearanceService;
+	final HeaderServiceImpl headerServiceImpl;
+	final PortClearanceService portClearanceService;
+	final VesselBoardingService vesselBoardingService;
+	final VesselDepartureService vesselDepartureService;
+	final VesselTrackingService vesselTrackingService;
+	final FreePartiqueService freePartiqueService;
+	final UpdateFreePartiqueService updateFreePartiqueService;
+	final VesselDocumentationService vesselDocumentationService;
+	final VesselDocumentationUpdateService vesselDocumentationUpdateService;
+	final LiquidBulkFinalDischargeService liquidBulkFinalDischargeService;
 
 	public ManifestController(LiquidBulkDischargeSequenceUpdateService liquidBulkDischargeSequenceUpdateService, ExImportManifestService exImportManifestService, VesselCancellationService vesselCancellationService, LiquidBulkDischargeSequenceService liquidBulkDischargeSequenceService, LiquidBulkQualityReportService liquidBulkQualityReportService, CallInfService callInfService, VesselDepartureService vesselDepartureService, UpdateVesselService updateVesselService, CustomClearanceService customClearanceService, HeaderServiceImpl headerServiceImpl, PortClearanceService portClearanceService, VesselBoardingService vesselBoardingService, VesselTrackingService vesselTrackingService, FreePartiqueService freePartiqueService, UpdateFreePartiqueService updateFreePartiqueService, VesselDocumentationService vesselDocumentationService, VesselDocumentationUpdateService vesselDocumentationUpdateService, LiquidBulkFinalDischargeService liquidBulkFinalDischargeService) {
 		this.liquidBulkDischargeSequenceUpdateService = liquidBulkDischargeSequenceUpdateService;

@@ -2,6 +2,7 @@ package com.ManifestTeswTancis.ServiceImpl;
 
 import com.ManifestTeswTancis.Entity.CommonOrdinalEntity;
 import com.ManifestTeswTancis.Entity.ExportManifest;
+import com.ManifestTeswTancis.RabbitConfigurations.*;
 import com.ManifestTeswTancis.Repository.CommonOrdinalRepository;
 import com.ManifestTeswTancis.Repository.ExportManifestRepository;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
@@ -11,10 +12,15 @@ import com.ManifestTeswTancis.Response.CallInfRest;
 import com.ManifestTeswTancis.Repository.ExImportManifestRepository;
 import com.ManifestTeswTancis.Service.CallInfService;
 import com.ManifestTeswTancis.Util.DateFormatter;
-import com.ManifestTeswTancis.Util.HttpCall;
-import com.ManifestTeswTancis.Util.HttpMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,8 +33,11 @@ import java.util.Optional;
 
 @Service
 public  class CallInfServiceImpl implements CallInfService {
-	final
-	ExportManifestRepository exportManifestRepository;
+	@Value("${spring.rabbitmq.exchange.out}")
+	private String OUTBOUND_EXCHANGE;
+    @Autowired
+	MessageProducer rabbitMqMessageProducer;
+	final ExportManifestRepository exportManifestRepository;
 	private final ExImportManifestRepository exImportManifestRepository;
 	private final ManifestStatusServiceImp statusServiceImp;
 	@Autowired
@@ -104,14 +113,26 @@ public  class CallInfServiceImpl implements CallInfService {
 		ObjectMapper mapper = new ObjectMapper();
 		String payload = mapper.writeValueAsString(returnValue);
 		System.out.println("--------------- Custom Vessel Reference ---------------\n"+payload);
-		HttpMessage httpMessage = new HttpMessage();
-		httpMessage.setContentType("application/json");
-		httpMessage.setMessageName("CUSTOMS_VESSEL_REFERENCE");
-		httpMessage.setPayload(payload);
-		httpMessage.setRecipient("SS");
-		HttpCall httpCall = new HttpCall();
-		return httpCall.httpRequest(httpMessage);
+		MessageDto messageDto = new MessageDto();
+		CallInfRestMessageDto callInfRestMessageDto = new CallInfRestMessageDto();
+		callInfRestMessageDto.setMessageName(MessageNames.CUSTOMS_VESSEL_REFERENCE);
+		RequestIdDto requestIdDto = mapper.readValue(getId(), RequestIdDto.class);
+		callInfRestMessageDto.setRequestId(requestIdDto.getMessageId());
+		messageDto.setPayload(returnValue);
+		AcknowledgementDto queueResponse = rabbitMqMessageProducer.
+				sendMessage(OUTBOUND_EXCHANGE, MessageNames.CUSTOMS_VESSEL_REFERENCE, callInfRestMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
+		System.out.println(queueResponse);
+		return "Success";
 
+	}
+	private String getId() throws IOException {
+		String url = "http://192.168.30.200:7074/GetId";
+		HttpGet request = new HttpGet(url);
+		CloseableHttpClient client = HttpClients.createDefault();
+		CloseableHttpResponse response = client.execute(request);
+		HttpEntity entity = response.getEntity();
+
+		return EntityUtils.toString(entity);
 	}
 
 //	private String generateMrn(String carrierCode) {
@@ -131,7 +152,7 @@ public  class CallInfServiceImpl implements CallInfService {
 //	}
 
 private String generateMrn(String carrierCode) {
-	CommonOrdinalEntity commonOrdinalEntity = new CommonOrdinalEntity();
+	CommonOrdinalEntity commonOrdinalEntity;
 	DateFormat df = new SimpleDateFormat("yy");
 	String prefix= df.format(Calendar.getInstance().getTime()) +carrierCode;
 	Optional<CommonOrdinalEntity> optionalCommonOrdinalEntity = commonOrdinalRepository.findByPrefix(prefix);
