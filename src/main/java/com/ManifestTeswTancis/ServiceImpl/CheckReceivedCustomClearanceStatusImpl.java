@@ -27,14 +27,14 @@ import java.util.List;
 
 @Component
 @Service
-public class CheckCustomClearanceReceivedStatusImpl {
+public class CheckReceivedCustomClearanceStatusImpl {
         @Value("${spring.rabbitmq.exchange.out}")
         private String OUTBOUND_EXCHANGE;
     final CustomClearanceRepository customClearanceRepository;
     final CustomClearanceApprovalRepository customClearanceApprovalRepository;
     final MessageProducer rabbitMqMessageProducer;
 
-    public CheckCustomClearanceReceivedStatusImpl(CustomClearanceRepository customClearanceRepository, CustomClearanceApprovalRepository customClearanceApprovalRepository, MessageProducer rabbitMqMessageProducer) {
+    public CheckReceivedCustomClearanceStatusImpl(CustomClearanceRepository customClearanceRepository, CustomClearanceApprovalRepository customClearanceApprovalRepository, MessageProducer rabbitMqMessageProducer) {
         this.customClearanceRepository = customClearanceRepository;
         this.customClearanceApprovalRepository = customClearanceApprovalRepository;
         this.rabbitMqMessageProducer = rabbitMqMessageProducer;
@@ -82,7 +82,7 @@ public class CheckCustomClearanceReceivedStatusImpl {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "Success";
+        return "success";
     }
 
     public String getStatus(String processingStatus) {

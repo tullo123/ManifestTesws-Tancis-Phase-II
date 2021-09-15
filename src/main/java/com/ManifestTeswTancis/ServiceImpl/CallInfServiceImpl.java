@@ -122,7 +122,8 @@ public  class CallInfServiceImpl implements CallInfService {
 		AcknowledgementDto queueResponse = rabbitMqMessageProducer.
 				sendMessage(OUTBOUND_EXCHANGE, MessageNames.CUSTOMS_VESSEL_REFERENCE, callInfRestMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
 		System.out.println(queueResponse);
-		return "Success";
+
+		return "success";
 
 	}
 	private String getId() throws IOException {

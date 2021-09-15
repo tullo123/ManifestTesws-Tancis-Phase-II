@@ -2,14 +2,19 @@ package com.ManifestTeswTancis.ServiceImpl;
 
 import com.ManifestTeswTancis.Entity.ExImportManifest;
 import com.ManifestTeswTancis.Entity.ManifestApprovalStatus;
+import com.ManifestTeswTancis.RabbitConfigurations.*;
 import com.ManifestTeswTancis.Repository.ExImportManifestRepository;
 import com.ManifestTeswTancis.Repository.ManifestApprovalStatusRepository;
 import com.ManifestTeswTancis.Response.SubmittedManifestStatus;
 import com.ManifestTeswTancis.Util.DateFormatter;
-import com.ManifestTeswTancis.Util.HttpCall;
-import com.ManifestTeswTancis.Util.HttpMessage;
 import com.ManifestTeswTancis.Util.ManifestStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,17 +27,17 @@ import java.util.List;
 
 @Component
 @Service
-public class CheckManifestReceivedStatusImpl {
-    @Value("${tesws-fowardurl}")
-    private String teswsFowardUrl;
-    final
-    ManifestApprovalStatusRepository statusRepository;
-    final
-    ExImportManifestRepository exImportManifestRepository;
+public class CheckSubmittedManifestStatusImpl {
+    @Value("${spring.rabbitmq.exchange.out}")
+    private String OUTBOUND_EXCHANGE;
+    final MessageProducer rabbitMqMessageProducer;
+    final ManifestApprovalStatusRepository statusRepository;
+    final ExImportManifestRepository exImportManifestRepository;
 
-    public CheckManifestReceivedStatusImpl(ManifestApprovalStatusRepository statusRepository, ExImportManifestRepository exImportManifestRepository) {
+    public CheckSubmittedManifestStatusImpl(ManifestApprovalStatusRepository statusRepository, ExImportManifestRepository exImportManifestRepository, MessageProducer rabbitMqMessageProducer) {
         this.statusRepository = statusRepository;
         this.exImportManifestRepository = exImportManifestRepository;
+        this.rabbitMqMessageProducer = rabbitMqMessageProducer;
     }
 
     @Transactional
@@ -55,7 +60,7 @@ public class CheckManifestReceivedStatusImpl {
                     mf.setReceivedNoticeSent(true);
                     mf.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     statusRepository.save(mf);
-                    String response = submittedManifestStatusToTesws(submittedManifestStatus);
+                    String response = submitManifestStatusToQueue(submittedManifestStatus);
                     System.out.println("--------------- Approval Notice Response --------------\n" + response);
 
                 }else if(ManifestStatus.CANCELED.equals(callInf.getProcessingStatus())){
@@ -67,22 +72,24 @@ public class CheckManifestReceivedStatusImpl {
         }
     }
 
-    private String submittedManifestStatusToTesws(SubmittedManifestStatus submittedManifestStatus) {
+    private String submitManifestStatusToQueue(SubmittedManifestStatus submittedManifestStatus) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String payload = mapper.writeValueAsString(submittedManifestStatus);
-            System.out.println("----------- Manifest Status notice payload ------------\n"+payload);
-            HttpMessage httpMessage = new HttpMessage();
-            httpMessage.setContentType("application/json");
-            httpMessage.setPayload(payload);
-            httpMessage.setMessageName("SUBMITTED_MANIFEST_STATUS");
-            httpMessage.setRecipient("SS");
-            HttpCall httpCall = new HttpCall();
-            return httpCall.httpRequest(httpMessage);
+            System.out.println("----------- Submitted Manifest Status notice------------\n"+payload);
+            MessageDto messageDto = new MessageDto();
+            SubmittedManifestStatusMessageDto submittedManifestStatusMessageDto = new SubmittedManifestStatusMessageDto();
+            submittedManifestStatusMessageDto.setMessageName(MessageNames.SUBMITTED_MANIFEST_STATUS);
+            RequestIdDto requestIdDto = mapper.readValue(getId(), RequestIdDto.class);
+            submittedManifestStatusMessageDto.setRequestId(requestIdDto.getMessageId());
+            messageDto.setPayload(submittedManifestStatus);
+            AcknowledgementDto queueResponse = rabbitMqMessageProducer.
+                    sendMessage(OUTBOUND_EXCHANGE, MessageNames.SUBMITTED_MANIFEST_STATUS, submittedManifestStatusMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
+            System.out.println(queueResponse);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "failed";
+        return "success";
     }
 
 
@@ -98,5 +105,14 @@ public class CheckManifestReceivedStatusImpl {
         else {
             return processingStatus;
         }
+    }
+    private String getId() throws IOException {
+        String url = "http://192.168.30.200:7074/GetId";
+        HttpGet request = new HttpGet(url);
+        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpResponse response = client.execute(request);
+        HttpEntity entity = response.getEntity();
+
+        return EntityUtils.toString(entity);
     }
 }

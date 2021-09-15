@@ -28,17 +28,15 @@ import java.util.List;
 
 @Component
 @Service
-public class CheckCustomClearanceApprovalStatusImpl {
+public class CheckApprovedCustomClearanceStatusImpl {
     @Value("${spring.rabbitmq.exchange.out}")
     private String OUTBOUND_EXCHANGE;
-    final
-    MessageProducer rabbitMqMessageProducer;
-
+    final MessageProducer rabbitMqMessageProducer;
     final CustomClearanceRepository customClearanceRepository;
     final CustomClearanceApprovalRepository customClearanceApprovalRepository;
 
     @Autowired
-    public CheckCustomClearanceApprovalStatusImpl(CustomClearanceRepository customClearanceRepository, CustomClearanceApprovalRepository customClearanceApprovalRepository, MessageProducer rabbitMqMessageProducer) {
+    public CheckApprovedCustomClearanceStatusImpl(CustomClearanceRepository customClearanceRepository, CustomClearanceApprovalRepository customClearanceApprovalRepository, MessageProducer rabbitMqMessageProducer) {
         this.customClearanceRepository = customClearanceRepository;
         this.customClearanceApprovalRepository = customClearanceApprovalRepository;
         this.rabbitMqMessageProducer = rabbitMqMessageProducer;
