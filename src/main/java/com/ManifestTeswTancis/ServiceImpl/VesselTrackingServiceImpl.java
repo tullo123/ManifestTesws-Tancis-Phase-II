@@ -13,8 +13,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class VesselTrackingServiceImpl implements VesselTrackingService {
-    final
-    ExImportManifestRepository exImportManifestRepository;
+    final ExImportManifestRepository exImportManifestRepository;
 
     public VesselTrackingServiceImpl(ExImportManifestRepository exImportManifestRepository) {
         this.exImportManifestRepository = exImportManifestRepository;

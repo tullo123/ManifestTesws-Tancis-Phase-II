@@ -1,6 +1,6 @@
 package com.ManifestTeswTancis.RabbitConfigurations;
 
-import com.ManifestTeswTancis.Response.ResponseCustomClearance;
+import com.ManifestTeswTancis.Response.CustomClearanceApprovalResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,5 +15,5 @@ public class ResponseClearanceMessageDto implements Serializable {
     private String messageName;
     private String requestId;
     private String callbackUrl;
-    private ResponseCustomClearance payload;
+    private CustomClearanceApprovalResponse payload;
 }

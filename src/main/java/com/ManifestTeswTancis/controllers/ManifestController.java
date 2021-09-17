@@ -2,7 +2,7 @@ package com.ManifestTeswTancis.controllers;
 import com.ManifestTeswTancis.Service.*;
 import com.ManifestTeswTancis.dtos.ManifestDto;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
-import com.ManifestTeswTancis.Request.CallInfDetailsRequestModel;
+import com.ManifestTeswTancis.Request.PortCallIdRequestModel;
 import com.ManifestTeswTancis.ServiceImpl.HeaderServiceImpl;
 import com.ManifestTeswTancis.controllers.api.ManifestApi;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public  class ManifestController  implements ManifestApi {
 	final LiquidBulkDischargeSequenceService liquidBulkDischargeSequenceService;
 	final LiquidBulkDischargeSequenceUpdateService liquidBulkDischargeSequenceUpdateService;
 	final LiquidBulkQualityReportService liquidBulkQualityReportService;
-	final CallInfService callInfService;
+	final PortCallIdService portCallIdService;
 	final UpdateVesselService updateVesselService;
 	final CustomClearanceService customClearanceService;
 	final HeaderServiceImpl headerServiceImpl;
@@ -34,13 +34,13 @@ public  class ManifestController  implements ManifestApi {
 	final VesselDocumentationUpdateService vesselDocumentationUpdateService;
 	final LiquidBulkFinalDischargeService liquidBulkFinalDischargeService;
 
-	public ManifestController(LiquidBulkDischargeSequenceUpdateService liquidBulkDischargeSequenceUpdateService, ExImportManifestService exImportManifestService, VesselCancellationService vesselCancellationService, LiquidBulkDischargeSequenceService liquidBulkDischargeSequenceService, LiquidBulkQualityReportService liquidBulkQualityReportService, CallInfService callInfService, VesselDepartureService vesselDepartureService, UpdateVesselService updateVesselService, CustomClearanceService customClearanceService, HeaderServiceImpl headerServiceImpl, PortClearanceService portClearanceService, VesselBoardingService vesselBoardingService, VesselTrackingService vesselTrackingService, FreePartiqueService freePartiqueService, UpdateFreePartiqueService updateFreePartiqueService, VesselDocumentationService vesselDocumentationService, VesselDocumentationUpdateService vesselDocumentationUpdateService, LiquidBulkFinalDischargeService liquidBulkFinalDischargeService) {
+	public ManifestController(LiquidBulkDischargeSequenceUpdateService liquidBulkDischargeSequenceUpdateService, ExImportManifestService exImportManifestService, VesselCancellationService vesselCancellationService, LiquidBulkDischargeSequenceService liquidBulkDischargeSequenceService, LiquidBulkQualityReportService liquidBulkQualityReportService, PortCallIdService portCallIdService, VesselDepartureService vesselDepartureService, UpdateVesselService updateVesselService, CustomClearanceService customClearanceService, HeaderServiceImpl headerServiceImpl, PortClearanceService portClearanceService, VesselBoardingService vesselBoardingService, VesselTrackingService vesselTrackingService, FreePartiqueService freePartiqueService, UpdateFreePartiqueService updateFreePartiqueService, VesselDocumentationService vesselDocumentationService, VesselDocumentationUpdateService vesselDocumentationUpdateService, LiquidBulkFinalDischargeService liquidBulkFinalDischargeService) {
 		this.liquidBulkDischargeSequenceUpdateService = liquidBulkDischargeSequenceUpdateService;
 		this.exImportManifestService = exImportManifestService;
 		this.vesselCancellationService = vesselCancellationService;
 		this.liquidBulkDischargeSequenceService = liquidBulkDischargeSequenceService;
 		this.liquidBulkQualityReportService = liquidBulkQualityReportService;
-		this.callInfService = callInfService;
+		this.portCallIdService = portCallIdService;
 		this.vesselDepartureService = vesselDepartureService;
 		this.updateVesselService = updateVesselService;
 		this.customClearanceService = customClearanceService;
@@ -64,8 +64,8 @@ public  class ManifestController  implements ManifestApi {
 
 	@Override
 	public ResponseEntity<TeswsResponse> createCallInfo(
-			@RequestBody @Valid CallInfDetailsRequestModel callInfDetails) {
-		TeswsResponse response = callInfService.createCallInfo(callInfDetails);
+			@RequestBody @Valid PortCallIdRequestModel callInfDetails) {
+		TeswsResponse response = portCallIdService.createCallInfo(callInfDetails);
 		return ResponseEntity.ok(response);
 	}
 	@Override

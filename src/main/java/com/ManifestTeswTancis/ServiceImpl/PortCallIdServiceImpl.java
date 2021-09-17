@@ -2,15 +2,17 @@ package com.ManifestTeswTancis.ServiceImpl;
 
 import com.ManifestTeswTancis.Entity.CommonOrdinalEntity;
 import com.ManifestTeswTancis.Entity.ExportManifest;
+import com.ManifestTeswTancis.Entity.QueueMessageStatusEntity;
 import com.ManifestTeswTancis.RabbitConfigurations.*;
 import com.ManifestTeswTancis.Repository.CommonOrdinalRepository;
 import com.ManifestTeswTancis.Repository.ExportManifestRepository;
+import com.ManifestTeswTancis.Repository.QueueMessageStatusRepository;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
 import com.ManifestTeswTancis.Entity.ExImportManifest;
-import com.ManifestTeswTancis.Request.CallInfDetailsRequestModel;
-import com.ManifestTeswTancis.Response.CallInfRest;
+import com.ManifestTeswTancis.Request.PortCallIdRequestModel;
+import com.ManifestTeswTancis.Response.PortCallIdResponse;
 import com.ManifestTeswTancis.Repository.ExImportManifestRepository;
-import com.ManifestTeswTancis.Service.CallInfService;
+import com.ManifestTeswTancis.Service.PortCallIdService;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
@@ -32,28 +34,30 @@ import java.util.Calendar;
 import java.util.Optional;
 
 @Service
-public  class CallInfServiceImpl implements CallInfService {
+public  class PortCallIdServiceImpl implements PortCallIdService {
 	@Value("${spring.rabbitmq.exchange.out}")
 	private String OUTBOUND_EXCHANGE;
-    @Autowired
-	MessageProducer rabbitMqMessageProducer;
+    final MessageProducer rabbitMqMessageProducer;
 	final ExportManifestRepository exportManifestRepository;
 	private final ExImportManifestRepository exImportManifestRepository;
 	private final ManifestStatusServiceImp statusServiceImp;
-	@Autowired
-	CommonOrdinalRepository commonOrdinalRepository;
+	final CommonOrdinalRepository commonOrdinalRepository;
+	final QueueMessageStatusRepository queueMessageStatusRepository;
 
 	@Autowired
-	public CallInfServiceImpl(ExImportManifestRepository exImportManifestRepository,
-							  ManifestStatusServiceImp statusServiceImp, ExportManifestRepository exportManifestRepository) {
+	public PortCallIdServiceImpl(ExImportManifestRepository exImportManifestRepository,
+								 ManifestStatusServiceImp statusServiceImp, ExportManifestRepository exportManifestRepository, MessageProducer rabbitMqMessageProducer, CommonOrdinalRepository commonOrdinalRepository, QueueMessageStatusRepository queueMessageStatusRepository) {
 		this.exImportManifestRepository = exImportManifestRepository;
 		this.statusServiceImp = statusServiceImp;
 		this.exportManifestRepository = exportManifestRepository;
+		this.rabbitMqMessageProducer = rabbitMqMessageProducer;
+		this.commonOrdinalRepository = commonOrdinalRepository;
+		this.queueMessageStatusRepository = queueMessageStatusRepository;
 	}
 
 	@Override
 	@Transactional
-	public TeswsResponse createCallInfo(CallInfDetailsRequestModel callInfDetails) {
+	public TeswsResponse createCallInfo(PortCallIdRequestModel callInfDetails) {
 		TeswsResponse response = new TeswsResponse();
 		response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
 		response.setRefId(callInfDetails.getControlReferenceNumber());
@@ -103,7 +107,7 @@ public  class CallInfServiceImpl implements CallInfService {
 
 	@Override
 	public String submitCallInfoNotice(ExImportManifest storedCallInfDetails, ExportManifest exportManifest) throws IOException {
-		CallInfRest returnValue = new CallInfRest();
+		PortCallIdResponse returnValue = new PortCallIdResponse();
 		returnValue.setCommunicationAgreedId(storedCallInfDetails.getCommunicationAgreedId());
 		returnValue.setCustomOfficeCode(storedCallInfDetails.getCustomOfficeCode());
 		returnValue.setMrnIn(storedCallInfDetails.getMrn());
@@ -114,17 +118,28 @@ public  class CallInfServiceImpl implements CallInfService {
 		String payload = mapper.writeValueAsString(returnValue);
 		System.out.println("--------------- Custom Vessel Reference ---------------\n"+payload);
 		MessageDto messageDto = new MessageDto();
-		CallInfRestMessageDto callInfRestMessageDto = new CallInfRestMessageDto();
-		callInfRestMessageDto.setMessageName(MessageNames.CUSTOMS_VESSEL_REFERENCE);
+		PortCallIdResponseMessageDto portCallIdResponseMessageDto = new PortCallIdResponseMessageDto();
+		portCallIdResponseMessageDto.setMessageName(MessageNames.CUSTOMS_VESSEL_REFERENCE);
 		RequestIdDto requestIdDto = mapper.readValue(getId(), RequestIdDto.class);
-		callInfRestMessageDto.setRequestId(requestIdDto.getMessageId());
+		portCallIdResponseMessageDto.setRequestId(requestIdDto.getMessageId());
 		messageDto.setPayload(returnValue);
 		AcknowledgementDto queueResponse = rabbitMqMessageProducer.
-				sendMessage(OUTBOUND_EXCHANGE, MessageNames.CUSTOMS_VESSEL_REFERENCE, callInfRestMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
+				sendMessage(OUTBOUND_EXCHANGE, MessageNames.CUSTOMS_VESSEL_REFERENCE, portCallIdResponseMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
 		System.out.println(queueResponse);
+		QueueMessageStatusEntity queueMessage = new QueueMessageStatusEntity();
+		queueMessage.setMessageId(returnValue.getCommunicationAgreedId());
+		queueMessage.setReferenceId(portCallIdResponseMessageDto.getRequestId());
+		queueMessage.setMessageName(MessageNames.CUSTOMS_VESSEL_REFERENCE);
+		queueMessage.setProcessStatus("1");
+		queueMessage.setProcessId("TANCIS-TESWS.API");
+		queueMessage.setFirstRegistrationId("TANCIS-TESWS.API");
+		queueMessage.setLastUpdateId("TANCIS-TESWS.API");
+		queueMessage.setProcessingDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+		queueMessage.setFirstRegisterDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+		queueMessage.setLastUpdateDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+		queueMessageStatusRepository.save(queueMessage);
 
 		return "success";
-
 	}
 	private String getId() throws IOException {
 		String url = "http://192.168.30.200:7074/GetId";

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CallInfDetailsRequestModel {
+public class PortCallIdRequestModel {
 	private String communicationAgreedId;
 	private String controlReferenceNumber;
 	private String vesselMaster;

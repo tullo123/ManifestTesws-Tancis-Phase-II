@@ -5,7 +5,7 @@ import com.ManifestTeswTancis.Entity.ManifestApprovalStatus;
 import com.ManifestTeswTancis.RabbitConfigurations.*;
 import com.ManifestTeswTancis.Repository.ExImportManifestRepository;
 import com.ManifestTeswTancis.Repository.ManifestApprovalStatusRepository;
-import com.ManifestTeswTancis.Response.SubmittedManifestStatus;
+import com.ManifestTeswTancis.Response.SubmittedManifestStatusResponse;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.Util.ManifestStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,19 +48,19 @@ public class CheckSubmittedManifestStatusImpl {
             if (!mf.isApprovedStatus()) {
                 ExImportManifest callInf = exImportManifestRepository.findByMrn(mf.getMrn());
                 if (ManifestStatus.RECEIVED.equals(callInf.getProcessingStatus()) || ManifestStatus.REJECTED.equals(callInf.getProcessingStatus())) {
-                    SubmittedManifestStatus submittedManifestStatus = new SubmittedManifestStatus();
-                    submittedManifestStatus.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-                    submittedManifestStatus.setCommunicationAgreedId(callInf.getCommunicationAgreedId());
-                    submittedManifestStatus.setControlReferenceNumber(callInf.getControlReferenceNumber());
-                    submittedManifestStatus.setApplicationReference(callInf.getControlReferenceNumber());
-                    submittedManifestStatus.setVoyageNumber(callInf.getVoyageNumber());
-                    submittedManifestStatus.setCustomOfficeCode(callInf.getCustomOfficeCode());
-                    submittedManifestStatus.setStatus(getStatus(callInf.getProcessingStatus()));
+                    SubmittedManifestStatusResponse submittedManifestStatusResponse = new SubmittedManifestStatusResponse();
+                    submittedManifestStatusResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                    submittedManifestStatusResponse.setCommunicationAgreedId(callInf.getCommunicationAgreedId());
+                    submittedManifestStatusResponse.setControlReferenceNumber(callInf.getControlReferenceNumber());
+                    submittedManifestStatusResponse.setApplicationReference(callInf.getControlReferenceNumber());
+                    submittedManifestStatusResponse.setVoyageNumber(callInf.getVoyageNumber());
+                    submittedManifestStatusResponse.setCustomOfficeCode(callInf.getCustomOfficeCode());
+                    submittedManifestStatusResponse.setStatus(getStatus(callInf.getProcessingStatus()));
                     mf.setProcessingStatus(getStatus(callInf.getProcessingStatus()));
                     mf.setReceivedNoticeSent(true);
                     mf.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     statusRepository.save(mf);
-                    String response = submitManifestStatusToQueue(submittedManifestStatus);
+                    String response = submitManifestStatusToQueue(submittedManifestStatusResponse);
                     System.out.println("--------------- Approval Notice Response --------------\n" + response);
 
                 }else if(ManifestStatus.CANCELED.equals(callInf.getProcessingStatus())){
@@ -72,17 +72,17 @@ public class CheckSubmittedManifestStatusImpl {
         }
     }
 
-    private String submitManifestStatusToQueue(SubmittedManifestStatus submittedManifestStatus) {
+    private String submitManifestStatusToQueue(SubmittedManifestStatusResponse submittedManifestStatusResponse) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            String payload = mapper.writeValueAsString(submittedManifestStatus);
+            String payload = mapper.writeValueAsString(submittedManifestStatusResponse);
             System.out.println("----------- Submitted Manifest Status notice------------\n"+payload);
             MessageDto messageDto = new MessageDto();
             SubmittedManifestStatusMessageDto submittedManifestStatusMessageDto = new SubmittedManifestStatusMessageDto();
             submittedManifestStatusMessageDto.setMessageName(MessageNames.SUBMITTED_MANIFEST_STATUS);
             RequestIdDto requestIdDto = mapper.readValue(getId(), RequestIdDto.class);
             submittedManifestStatusMessageDto.setRequestId(requestIdDto.getMessageId());
-            messageDto.setPayload(submittedManifestStatus);
+            messageDto.setPayload(submittedManifestStatusResponse);
             AcknowledgementDto queueResponse = rabbitMqMessageProducer.
                     sendMessage(OUTBOUND_EXCHANGE, MessageNames.SUBMITTED_MANIFEST_STATUS, submittedManifestStatusMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
             System.out.println(queueResponse);

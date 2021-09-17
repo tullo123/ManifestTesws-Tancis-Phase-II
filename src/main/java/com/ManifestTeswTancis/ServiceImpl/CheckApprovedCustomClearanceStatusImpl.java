@@ -2,10 +2,12 @@ package com.ManifestTeswTancis.ServiceImpl;
 
 import com.ManifestTeswTancis.Entity.CustomClearanceApprovalStatus;
 import com.ManifestTeswTancis.Entity.CustomClearanceEntity;
+import com.ManifestTeswTancis.Entity.QueueMessageStatusEntity;
 import com.ManifestTeswTancis.RabbitConfigurations.*;
 import com.ManifestTeswTancis.Repository.CustomClearanceApprovalRepository;
 import com.ManifestTeswTancis.Repository.CustomClearanceRepository;
-import com.ManifestTeswTancis.Response.ResponseCustomClearance;
+import com.ManifestTeswTancis.Repository.QueueMessageStatusRepository;
+import com.ManifestTeswTancis.Response.CustomClearanceApprovalResponse;
 import com.ManifestTeswTancis.Util.ClearanceStatus;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,12 +36,14 @@ public class CheckApprovedCustomClearanceStatusImpl {
     final MessageProducer rabbitMqMessageProducer;
     final CustomClearanceRepository customClearanceRepository;
     final CustomClearanceApprovalRepository customClearanceApprovalRepository;
+    final QueueMessageStatusRepository queueMessageStatusRepository;
 
     @Autowired
-    public CheckApprovedCustomClearanceStatusImpl(CustomClearanceRepository customClearanceRepository, CustomClearanceApprovalRepository customClearanceApprovalRepository, MessageProducer rabbitMqMessageProducer) {
+    public CheckApprovedCustomClearanceStatusImpl(CustomClearanceRepository customClearanceRepository, CustomClearanceApprovalRepository customClearanceApprovalRepository, MessageProducer rabbitMqMessageProducer, QueueMessageStatusRepository queueMessageStatusRepository) {
         this.customClearanceRepository = customClearanceRepository;
         this.customClearanceApprovalRepository = customClearanceApprovalRepository;
         this.rabbitMqMessageProducer = rabbitMqMessageProducer;
+        this.queueMessageStatusRepository = queueMessageStatusRepository;
     }
 
     @Transactional
@@ -52,15 +56,15 @@ public class CheckApprovedCustomClearanceStatusImpl {
                 System.out.println("---------- Approving custom clearance with CallId" + ca.getCommunicationAgreedId() + "----------");
                 CustomClearanceEntity cs = customClearanceRepository.findFirstByCommunicationAgreedId(ca.getCommunicationAgreedId());
                 if (ClearanceStatus.APPROVED.equals(cs.getProcessingStatus())) {
-                    ResponseCustomClearance responseCustomClearance = new ResponseCustomClearance();
-                    responseCustomClearance.setCommunicationAgreedId(cs.getCommunicationAgreedId());
-                    responseCustomClearance.setClearanceReference(cs.getTaxClearanceNumber());
-                    responseCustomClearance.setApprovalStatus(getStatus(cs.getProcessingStatus()));
-                    responseCustomClearance.setComment(cs.getComments());
-                    responseCustomClearance.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                    CustomClearanceApprovalResponse customClearanceApprovalResponse = new CustomClearanceApprovalResponse();
+                    customClearanceApprovalResponse.setCommunicationAgreedId(cs.getCommunicationAgreedId());
+                    customClearanceApprovalResponse.setClearanceReference(cs.getTaxClearanceNumber());
+                    customClearanceApprovalResponse.setApprovalStatus(getStatus(cs.getProcessingStatus()));
+                    customClearanceApprovalResponse.setComment(cs.getComments());
+                    customClearanceApprovalResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     ca.setApprovedStatus(true);
                     customClearanceApprovalRepository.save(ca);
-                    String response = sendApprovalNoticeToQueue(responseCustomClearance);
+                    String response = sendApprovalNoticeToQueue(customClearanceApprovalResponse);
                     System.out.println("--------------- Approval Notice Response --------------\n" + response);
                 }
             }
@@ -80,20 +84,32 @@ public class CheckApprovedCustomClearanceStatusImpl {
     }
 
 
-    private String sendApprovalNoticeToQueue(ResponseCustomClearance responseCustomClearance) {
+    private String sendApprovalNoticeToQueue(CustomClearanceApprovalResponse customClearanceApprovalResponse) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            String payload = mapper.writeValueAsString(responseCustomClearance);
+            String payload = mapper.writeValueAsString(customClearanceApprovalResponse);
             System.out.println("--------------- Custom Clearance Approval Notice Payload ---------------\n" + payload);
             MessageDto messageDto = new MessageDto();
             ResponseClearanceMessageDto responseClearanceMessageDto = new ResponseClearanceMessageDto();
             responseClearanceMessageDto.setMessageName(MessageNames.CUSTOM_CLEARANCE_NOTICE);
             RequestIdDto requestIdDto = mapper.readValue(getId(), RequestIdDto.class);
             responseClearanceMessageDto.setRequestId(requestIdDto.getMessageId());
-            messageDto.setPayload(responseCustomClearance);
+            messageDto.setPayload(customClearanceApprovalResponse);
             AcknowledgementDto queueResponse = rabbitMqMessageProducer.
                     sendMessage(OUTBOUND_EXCHANGE, MessageNames.CUSTOM_CLEARANCE_NOTICE, responseClearanceMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
             System.out.println(queueResponse);
+            QueueMessageStatusEntity queueMessage = new QueueMessageStatusEntity();
+            queueMessage.setMessageId(customClearanceApprovalResponse.getCommunicationAgreedId());
+            queueMessage.setReferenceId(responseClearanceMessageDto.getRequestId());
+            queueMessage.setMessageName(MessageNames.CUSTOM_CLEARANCE_NOTICE);
+            queueMessage.setProcessStatus("1");
+            queueMessage.setProcessId("TANCIS-TESWS.API");
+            queueMessage.setFirstRegistrationId("TANCIS-TESWS.API");
+            queueMessage.setLastUpdateId("TANCIS-TESWS.API");
+            queueMessage.setProcessingDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+            queueMessage.setFirstRegisterDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+            queueMessage.setLastUpdateDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+            queueMessageStatusRepository.save(queueMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -9,7 +9,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ResponseCustomClearance {
+public class CustomClearanceApprovalResponse {
     private String communicationAgreedId;
     private String clearanceReference;
     private String approvalStatus;

@@ -9,7 +9,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class SubmittedManifestStatus {
+public class SubmittedManifestStatusResponse {
     private String noticeDate;
     private String communicationAgreedId;
     private String controlReferenceNumber;

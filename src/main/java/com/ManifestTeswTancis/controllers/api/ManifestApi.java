@@ -1,7 +1,7 @@
 package com.ManifestTeswTancis.controllers.api;
 import com.ManifestTeswTancis.dtos.ManifestDto;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
-import com.ManifestTeswTancis.Request.CallInfDetailsRequestModel;
+import com.ManifestTeswTancis.Request.PortCallIdRequestModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +23,7 @@ public interface ManifestApi {
     @RequestMapping(value = "/callInf/v1", method = RequestMethod.POST,
             produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE })
-    ResponseEntity<TeswsResponse> createCallInfo(@RequestBody @Valid CallInfDetailsRequestModel callInfDetails);
+    ResponseEntity<TeswsResponse> createCallInfo(@RequestBody @Valid PortCallIdRequestModel callInfDetails);
 
 
     @RequestMapping(value = "update/callInf/v1", method = RequestMethod.POST,

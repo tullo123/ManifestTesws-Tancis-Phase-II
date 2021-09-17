@@ -1,6 +1,6 @@
 package com.ManifestTeswTancis.RabbitConfigurations;
 
-import com.ManifestTeswTancis.Request.CallInfDetailsRequestModel;
+import com.ManifestTeswTancis.Request.PortCallIdRequestModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,5 +15,5 @@ public class PortCallIdMessageDto implements Serializable {
     private String messageName;
     private String requestId;
     private String callbackUrl;
-    private CallInfDetailsRequestModel payload;
+    private PortCallIdRequestModel payload;
 }

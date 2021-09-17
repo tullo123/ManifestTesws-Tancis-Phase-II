@@ -1,5 +1,5 @@
 package com.ManifestTeswTancis.Entity;
-import com.ManifestTeswTancis.Request.CallInfDetailsRequestModel;
+import com.ManifestTeswTancis.Request.PortCallIdRequestModel;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -185,7 +185,7 @@ public class ExImportManifest implements Serializable {
 	@Column(name="BOARDING_DT")
 	private Date boardingDt;
 
-	public ExImportManifest(CallInfDetailsRequestModel callInfDetails) {
+	public ExImportManifest(PortCallIdRequestModel callInfDetails) {
 		this.customOfficeCode = callInfDetails.getCustomOfficeCode();
 		this.controlReferenceNumber = callInfDetails.getControlReferenceNumber();
 		this.terminalOperatorCode = callInfDetails.getTerminalOperatorCode();

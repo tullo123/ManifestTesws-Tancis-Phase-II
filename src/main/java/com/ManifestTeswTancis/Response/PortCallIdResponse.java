@@ -9,7 +9,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CallInfRest {
+public class PortCallIdResponse {
 	private String mrnIn;
 	private String mrnOut;
 	private String mrnDate;

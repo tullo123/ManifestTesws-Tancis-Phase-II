@@ -2,9 +2,11 @@ package com.ManifestTeswTancis.ServiceImpl;
 
 import com.ManifestTeswTancis.Entity.CustomClearanceApprovalStatus;
 import com.ManifestTeswTancis.Entity.CustomClearanceEntity;
+import com.ManifestTeswTancis.Entity.QueueMessageStatusEntity;
 import com.ManifestTeswTancis.RabbitConfigurations.*;
 import com.ManifestTeswTancis.Repository.CustomClearanceApprovalRepository;
 import com.ManifestTeswTancis.Repository.CustomClearanceRepository;
+import com.ManifestTeswTancis.Repository.QueueMessageStatusRepository;
 import com.ManifestTeswTancis.Response.CustomClearanceStatus;
 import com.ManifestTeswTancis.Util.ClearanceStatus;
 import com.ManifestTeswTancis.Util.DateFormatter;
@@ -33,11 +35,13 @@ public class CheckReceivedCustomClearanceStatusImpl {
     final CustomClearanceRepository customClearanceRepository;
     final CustomClearanceApprovalRepository customClearanceApprovalRepository;
     final MessageProducer rabbitMqMessageProducer;
+    final QueueMessageStatusRepository queueMessageStatusRepository;
 
-    public CheckReceivedCustomClearanceStatusImpl(CustomClearanceRepository customClearanceRepository, CustomClearanceApprovalRepository customClearanceApprovalRepository, MessageProducer rabbitMqMessageProducer) {
+    public CheckReceivedCustomClearanceStatusImpl(CustomClearanceRepository customClearanceRepository, CustomClearanceApprovalRepository customClearanceApprovalRepository, MessageProducer rabbitMqMessageProducer, QueueMessageStatusRepository queueMessageStatusRepository) {
         this.customClearanceRepository = customClearanceRepository;
         this.customClearanceApprovalRepository = customClearanceApprovalRepository;
         this.rabbitMqMessageProducer = rabbitMqMessageProducer;
+        this.queueMessageStatusRepository = queueMessageStatusRepository;
     }
 
     @Transactional
@@ -78,6 +82,18 @@ public class CheckReceivedCustomClearanceStatusImpl {
             AcknowledgementDto queueResponse =rabbitMqMessageProducer.
                     sendMessage(OUTBOUND_EXCHANGE, MessageNames.CUSTOM_CLEARANCE_STATUS,customClearanceMessageStatusDto.getRequestId(),messageDto.getCallbackUrl(),messageDto.getPayload());
             System.out.println(queueResponse);
+            QueueMessageStatusEntity queueMessage = new QueueMessageStatusEntity();
+            queueMessage.setMessageId(customClearanceStatus.getCommunicationAgreedId());
+            queueMessage.setReferenceId(customClearanceMessageStatusDto.getRequestId());
+            queueMessage.setMessageName(MessageNames.CUSTOM_CLEARANCE_STATUS);
+            queueMessage.setProcessStatus("1");
+            queueMessage.setProcessId("TANCIS-TESWS.API");
+            queueMessage.setFirstRegistrationId("TANCIS-TESWS.API");
+            queueMessage.setLastUpdateId("TANCIS-TESWS.API");
+            queueMessage.setProcessingDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+            queueMessage.setFirstRegisterDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+            queueMessage.setLastUpdateDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+            queueMessageStatusRepository.save(queueMessage);
 
         } catch (Exception e) {
             e.printStackTrace();

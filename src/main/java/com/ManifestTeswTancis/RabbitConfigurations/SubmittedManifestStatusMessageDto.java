@@ -1,6 +1,6 @@
 package com.ManifestTeswTancis.RabbitConfigurations;
 
-import com.ManifestTeswTancis.Response.SubmittedManifestStatus;
+import com.ManifestTeswTancis.Response.SubmittedManifestStatusResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +14,5 @@ public class SubmittedManifestStatusMessageDto {
     private String messageName;
     private String requestId;
     private String callbackUrl;
-    private SubmittedManifestStatus payload;
+    private SubmittedManifestStatusResponse payload;
 }

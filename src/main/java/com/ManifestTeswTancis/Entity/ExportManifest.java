@@ -1,6 +1,6 @@
 package com.ManifestTeswTancis.Entity;
 
-import com.ManifestTeswTancis.Request.CallInfDetailsRequestModel;
+import com.ManifestTeswTancis.Request.PortCallIdRequestModel;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -160,7 +160,7 @@ public class ExportManifest implements Serializable {
 	@Column(name="SENT_TO_TESWS")
     private String sentToTesws;
 
-	public ExportManifest (CallInfDetailsRequestModel callInfDetails){
+	public ExportManifest (PortCallIdRequestModel callInfDetails){
 	    this.terminalOperatorCode=callInfDetails.getTerminalOperatorCode();
 	    this.callSign = callInfDetails.getCallSign();
 	    this.carrierId=callInfDetails.getCarrierId();
