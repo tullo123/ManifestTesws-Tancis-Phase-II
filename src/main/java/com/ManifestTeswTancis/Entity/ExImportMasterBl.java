@@ -212,6 +212,8 @@ public class ExImportMasterBl {
 		this.blType = (billOfLadingDto.getHouseBillOfLading() != null)?"C":"S";
 		this.consolidatedStatus = (billOfLadingDto.getHouseBillOfLading() != null)?"Y":"N";
 		this.marksNumbers =billOfLadingDto.getMarksNumbers();
+		this.blGrossWeight=billOfLadingDto.getBlSummary().getBlGrossWeight();
+		this.blNetWeight= billOfLadingDto.getBlSummary().getBlNetWeight();
 	}
 
 }

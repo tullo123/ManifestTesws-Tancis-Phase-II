@@ -15,6 +15,10 @@ import java.util.List;
 public class BillOfLadingDto implements Serializable {
 	   private String masterBillOfLading;
 	   private String houseBillOfLading;
+	   private String blType;
+	   private BlSummary blSummary;
+	   private String blPackingType;
+	   private String blDescription;
 	   private String tradeType;
 	   private String portOfOrigin;
 	   private String placeOfDestination;
@@ -22,8 +26,6 @@ public class BillOfLadingDto implements Serializable {
 	   private String portOfLoading;
 	   private Integer goodsItemNo;
 	   private String marksNumbers;
-	   private String blPackingType;
-	   private String blDescription;
 	   private String crn;
 	   private String msn;
 	   private String mrn;
@@ -79,9 +81,7 @@ public class BillOfLadingDto implements Serializable {
 	   private String notifyTwoLocationName;
 	   private String notifyTwoContactName;
 	   private String  notifyTwoTin;
-	   private String blType;
 	   private String consolidatedStatus;
-	   private BlSummary blSummary;
 	   private List<GoodsDto> goodDetails;
 
 }

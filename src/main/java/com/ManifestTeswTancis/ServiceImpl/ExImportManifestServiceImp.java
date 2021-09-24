@@ -234,24 +234,13 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		System.out.println("generated msn:" + msn);
 		ExImportMasterBl exImportMasterBl = new ExImportMasterBl(bl);
 		GoodItemsEntity goodItemsEntity = new GoodItemsEntity(bl);
-		BlSummary blSummary = new BlSummary();
 		exImportMasterBl.setMrn(mrn);
 		exImportMasterBl.setMsn(msn);
 		exImportMasterBl.setAuditStatus("NA");
-		if (bl.getHouseBillOfLading() !=null){
-			exImportMasterBl.setConsolidatedStatus("Y");
-
-		}else {
-			exImportMasterBl.setConsolidatedStatus("N");
-		}
 		exImportMasterBl.setTradeType(getTradeType(bl));
 		exImportMasterBl.setBlPackage(blMeasurement.getPkQuantity());
 		exImportMasterBl.setPackageUnit(blMeasurement.getPkType());
-		//exImportMasterBl.setGrossWeight(blMeasurement.getGrossWeight());
-		exImportMasterBl.setBlGrossWeight(blSummary.getBlGrossWeight());
 		exImportMasterBl.setGrossWeightUnit(blMeasurement.getWeightUnit());
-		exImportMasterBl.setBlNetWeight(blSummary.getBlNetWeight());
-		//exImportMasterBl.setNetWeight(blMeasurement.getNetWeight());
 		exImportMasterBl.setNetWeightUnit(blMeasurement.getWeightUnit());
 		exImportMasterBl.setVolume(blMeasurement.getVolume());
 		exImportMasterBl.setVolumeUnit(blMeasurement.getVolumeUnit());
@@ -278,7 +267,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				goodItemsEntity.setNetWeight(goodsDto.getNetWeight());
 				goodItemsEntity.setNetWeightUnit(fixUnit(goodsDto.getNetWeightUnit()));
 				goodItemsEntity.setVolume(goodItemsEntity.getVolume());
-				goodItemsEntity.setVolumeUnit(fixUnit(goodsDto.getVolumeUnit()));
+				goodItemsEntity.setVolumeUnit("CBM");
 				goodItemsEntity.setLength(goodsDto.getLength());
 				goodItemsEntity.setLengthUnit(goodsDto.getLengthUnit());
 				goodItemsEntity.setWidth(goodsDto.getWidth());
@@ -433,7 +422,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 
 	private String fixUnit(String unit) {
 		if(unit != null) {
-			if (unit.equalsIgnoreCase("KGM")) {
+			if (unit.equalsIgnoreCase("KGM")|| unit.equalsIgnoreCase("KGS")) {
 				return "KG";
 			}
 			if (unit.equalsIgnoreCase("CN")) {
