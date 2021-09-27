@@ -62,11 +62,11 @@ public class ManifestApprovalStatus {
 
 	@Column(name = "FIRST_REGISTER_DT")
 	@CreationTimestamp
-	private LocalDateTime createdAt;
+	private LocalDateTime firstRegisterDate;
 
 	@Column(name = "LAST_UPDATE_DT")
 	@UpdateTimestamp
-	private LocalDateTime updatedAt;
+	private LocalDateTime lastUpdateDate;
 
 	@Column(name="EXPORT_MRN")
 	private String mrnOut;

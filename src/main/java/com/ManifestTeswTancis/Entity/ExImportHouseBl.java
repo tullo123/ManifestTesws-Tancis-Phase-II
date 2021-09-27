@@ -94,13 +94,13 @@ public class ExImportHouseBl {
 	private String imdgclass;
 
 	@Column(name = "BL_GROSS_WEIGHT")
-	private Double grossWeight;
+	private Double blGrossWeight;
 
 	@Column(name = "GROSS_WEIGHT_UNIT")
 	private String grossWeightUnit;
 
 	@Column(name = "BL_NET_WEIGHT")
-	private Double netWeight;
+	private Double blNetWeight;
 
 	@Column(name = "NET_WEIGHT_UNIT")
 	private String netWeightUnit;
@@ -172,6 +172,8 @@ public class ExImportHouseBl {
 		this.freightCharge=billOfLadingDto.getFreightCharge();
 		this.freightCurrency=billOfLadingDto.getFreightCurrency();
 		this.placeOfDestination = billOfLadingDto.getPlaceOfDestination();
+		this.blGrossWeight =billOfLadingDto.getBlSummary().getBlGrossWeight();
+		this.blNetWeight =billOfLadingDto.getBlSummary().getBlNetWeight();
 	}
 
 }

@@ -1,8 +1,6 @@
 package com.ManifestTeswTancis.Entity;
 
-import com.ManifestTeswTancis.dtos.BillOfLadingDto;
-import com.ManifestTeswTancis.dtos.GoodPlacementDto;
-import com.ManifestTeswTancis.dtos.GoodsDto;
+
 import com.ManifestTeswTancis.idEntities.GoodItemsId;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -172,45 +170,4 @@ public class GoodItemsEntity implements Serializable {
     @Column(name = "LAST_UPDATE_ID")
     private String lastUpdateId;
 
-    public GoodItemsEntity(BillOfLadingDto billOfLadingDto) {
-        this.masterBillOfLading = billOfLadingDto.getMasterBillOfLading();
-        this.houseBillOfLading = billOfLadingDto.getHouseBillOfLading();
-        this.goodsItemNo = billOfLadingDto.getGoodsItemNo();
-        this.firstRegisterId = "TESWS";
-        this.lastUpdateId = "TESWS";
-        for (GoodsDto goodsDto : billOfLadingDto.getGoodDetails()) {
-            this.packageType = goodsDto.getPackageType();
-            this.description = goodsDto.getDescription();
-            this.goodsItemNo = goodsDto.getGoodsItemNo();
-            this.packingType = goodsDto.getPackingType();
-            this.packageQuantity = goodsDto.getPackageQuantity();
-            this.oilType = goodsDto.getOilType();
-            this.invoiceValue = goodsDto.getInvoiceValue();
-            this.invoiceCurrency = goodsDto.getInvoiceCurrency();
-            this.freightCharge = goodsDto.getFreightCharge();
-            this.freightCurrency = goodsDto.getFreightCurrency();
-            this.grossWeight = goodsDto.getGrossWeight();
-            this.grossWeightUnit = "KG";
-            this.netWeight = goodsDto.getNetWeight();
-            this.netWeightUnit = "KG";
-            this.volume = goodsDto.getVolume();
-            this.volumeUnit = "CBM";
-            this.length = goodsDto.getLength();
-            this.lengthUnit = goodsDto.getLengthUnit();
-            this.width = goodsDto.getWidth();
-            this.widthUnit = goodsDto.getWidthUnit();
-            this.height = goodsDto.getHeight();
-            this.heightUnit = goodsDto.getHeightUnit();
-            this.marksNumbers = goodsDto.getMarksNumbers();
-            this.vehicleVIN = goodsDto.getVehicleVIN();
-            this.vehicleModel = goodsDto.getVehicleModel();
-            this.vehicleMake = goodsDto.getVehicleMake();
-            this.vehicleOwnDrive = goodsDto.getVehicleOwnDrive();
-            for(GoodPlacementDto containerDto: goodsDto.getPlacements()){
-                containerNo=containerDto.getContainerNo();
-            }
-
-        }
-
-    }
 }

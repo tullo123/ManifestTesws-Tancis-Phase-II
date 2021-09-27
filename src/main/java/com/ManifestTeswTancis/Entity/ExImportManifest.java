@@ -185,6 +185,9 @@ public class ExImportManifest implements Serializable {
 	@Column(name="BOARDING_DT")
 	private Date boardingDt;
 
+	@Column(name="SUBMIT_DT")
+	private Date submitDt;
+
 	public ExImportManifest(PortCallIdRequestModel callInfDetails) {
 		this.customOfficeCode = callInfDetails.getCustomOfficeCode();
 		this.controlReferenceNumber = callInfDetails.getControlReferenceNumber();
@@ -204,6 +207,7 @@ public class ExImportManifest implements Serializable {
 		this.processingDate=DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
 		this.transportMeansNationality = callInfDetails.getTransportMeansNationality();
 		this.destinationPort = callInfDetails.getDestinationPort();
+		this.submitDt =DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
 		this.portOfCall = callInfDetails.getPortOfCall();
 		this.processingStatus = "1";
 		this.applicationReferenceNumber=callInfDetails.getApplicationReferenceNumber();

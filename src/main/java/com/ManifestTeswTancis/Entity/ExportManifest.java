@@ -184,6 +184,7 @@ public class ExportManifest implements Serializable {
         this.terminalOperatorCode=callInfDetails.getTerminalOperatorCode();
         this.modeOfTransport= callInfDetails.getModeOfTransport();
         this.processingDate=DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
+        this.submitDt =DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
         this.estimatedDatetimeOfDeparture=callInfDetails.getEstimatedDatetimeOfDeparture();
 
     }

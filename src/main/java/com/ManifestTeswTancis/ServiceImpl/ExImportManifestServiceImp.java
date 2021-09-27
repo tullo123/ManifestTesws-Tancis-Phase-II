@@ -233,7 +233,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		BlMeasurement blMeasurement = getBlMeasurement(bl, msn, "   ", containerBlMap,vehicleMap,msnMap);
 		System.out.println("generated msn:" + msn);
 		ExImportMasterBl exImportMasterBl = new ExImportMasterBl(bl);
-		GoodItemsEntity goodItemsEntity = new GoodItemsEntity(bl);
+		GoodItemsEntity goodItemsEntity = new GoodItemsEntity();
 		exImportMasterBl.setMrn(mrn);
 		exImportMasterBl.setMsn(msn);
 		exImportMasterBl.setAuditStatus("NA");
@@ -299,6 +299,8 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				}
 				if(goodsDto.getPlacements().isEmpty() || goodsDto.getPlacements()==null){
 					goodItemsEntity.setContainerNo("LOOSE");
+				}else if (goodsDto.getPackingType().equalsIgnoreCase("V")){
+					goodItemsEntity.setContainerNo(goodsDto.getVehicleVIN());
 				}
 				for(GoodPlacementDto containerDto: goodsDto.getPlacements()){
 					goodItemsEntity.setContainerNo(containerDto.getContainerNo());
@@ -324,7 +326,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			Map<String, Map<String, String>> msnMap) {
 
 		BlMeasurement blMeasurement = getBlMeasurement(bl,msn,hsn,containerBlMap,vehicleMap,msnMap);
-		BlSummary blSummary = new BlSummary();
 		ExImportHouseBl exImportHouseBl = new ExImportHouseBl(bl);
 		exImportHouseBl.setMrn(mrn);
 		exImportHouseBl.setMsn(msn);
@@ -332,10 +333,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportHouseBl.setTradeType((getTradeType(bl)));
 		exImportHouseBl.setBlPackage(blMeasurement.getPkQuantity());
 		exImportHouseBl.setPackageUnit(blMeasurement.getPkType());
-		//exImportHouseBl.setGrossWeight(blMeasurement.getGrossWeight());
-		exImportHouseBl.setGrossWeight(blSummary.getBlGrossWeight());
-		//exImportHouseBl.setGrossWeightUnit(blMeasurement.getWeightUnit());
-		exImportHouseBl.setNetWeight(blSummary.getBlNetWeight());
 		exImportHouseBl.setNetWeightUnit(blMeasurement.getWeightUnit());
 		exImportHouseBl.setVolumeUnit(blMeasurement.getVolumeUnit());
 		exImportHouseBl.setVolume(blMeasurement.getVolume());
