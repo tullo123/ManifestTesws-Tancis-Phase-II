@@ -1,6 +1,6 @@
 package com.ManifestTeswTancis.ServiceImpl;
-import com.ManifestTeswTancis.Entity.ExImportManifest;
-import com.ManifestTeswTancis.Repository.ExImportManifestRepository;
+import com.ManifestTeswTancis.Entity.InImportManifest;
+import com.ManifestTeswTancis.Repository.InImportManifestRepository;
 import com.ManifestTeswTancis.Service.VesselTrackingService;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
@@ -13,10 +13,10 @@ import java.util.Optional;
 @Service
 @Transactional
 public class VesselTrackingServiceImpl implements VesselTrackingService {
-    final ExImportManifestRepository exImportManifestRepository;
+    final InImportManifestRepository inImportManifestRepository;
 
-    public VesselTrackingServiceImpl(ExImportManifestRepository exImportManifestRepository) {
-        this.exImportManifestRepository = exImportManifestRepository;
+    public VesselTrackingServiceImpl(InImportManifestRepository inImportManifestRepository) {
+        this.inImportManifestRepository = inImportManifestRepository;
     }
 
     @Override
@@ -29,15 +29,15 @@ public class VesselTrackingServiceImpl implements VesselTrackingService {
         response.setDescription("Vessel Tracking Received Successfully");
 
         try {
-            Optional<ExImportManifest> optional=exImportManifestRepository.
+            Optional<InImportManifest> optional=inImportManifestRepository.
                     findFirstByCommunicationAgreedId(vesselTrackingNotice.getCommunicationAgreedId());
             if (optional.isPresent()) {
-                ExImportManifest inImportManifest=optional.get();
+                InImportManifest inImportManifest=optional.get();
                 inImportManifest.setActualDateTimeOfArrival(DateFormatter.getDateFromLocalDateTime
                         (vesselTrackingNotice.getActualDatetimeOfArrival()));
                 inImportManifest.setActualDatetimeOfDeparture(DateFormatter.getDateFromLocalDateTime
                         (vesselTrackingNotice.getActualDatetimeOfDeparture()));
-                exImportManifestRepository.save(inImportManifest);
+                inImportManifestRepository.save(inImportManifest);
             }
 
         } catch (Exception e) {

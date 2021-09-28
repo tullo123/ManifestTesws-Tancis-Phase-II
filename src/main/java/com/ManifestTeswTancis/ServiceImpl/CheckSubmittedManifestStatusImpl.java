@@ -2,9 +2,11 @@ package com.ManifestTeswTancis.ServiceImpl;
 
 import com.ManifestTeswTancis.Entity.ExImportManifest;
 import com.ManifestTeswTancis.Entity.ManifestApprovalStatus;
+import com.ManifestTeswTancis.Entity.QueueMessageStatusEntity;
 import com.ManifestTeswTancis.RabbitConfigurations.*;
 import com.ManifestTeswTancis.Repository.ExImportManifestRepository;
 import com.ManifestTeswTancis.Repository.ManifestApprovalStatusRepository;
+import com.ManifestTeswTancis.Repository.QueueMessageStatusRepository;
 import com.ManifestTeswTancis.Response.SubmittedManifestStatusResponse;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.Util.ManifestStatus;
@@ -30,14 +32,16 @@ import java.util.List;
 public class CheckSubmittedManifestStatusImpl {
     @Value("${spring.rabbitmq.exchange.out}")
     private String OUTBOUND_EXCHANGE;
+    final QueueMessageStatusRepository queueMessageStatusRepository;
     final MessageProducer rabbitMqMessageProducer;
     final ManifestApprovalStatusRepository statusRepository;
     final ExImportManifestRepository exImportManifestRepository;
 
-    public CheckSubmittedManifestStatusImpl(ManifestApprovalStatusRepository statusRepository, ExImportManifestRepository exImportManifestRepository, MessageProducer rabbitMqMessageProducer) {
+    public CheckSubmittedManifestStatusImpl(ManifestApprovalStatusRepository statusRepository, ExImportManifestRepository exImportManifestRepository, MessageProducer rabbitMqMessageProducer, QueueMessageStatusRepository queueMessageStatusRepository) {
         this.statusRepository = statusRepository;
         this.exImportManifestRepository = exImportManifestRepository;
         this.rabbitMqMessageProducer = rabbitMqMessageProducer;
+        this.queueMessageStatusRepository = queueMessageStatusRepository;
     }
 
     @Transactional
@@ -86,6 +90,18 @@ public class CheckSubmittedManifestStatusImpl {
             AcknowledgementDto queueResponse = rabbitMqMessageProducer.
                     sendMessage(OUTBOUND_EXCHANGE, MessageNames.SUBMITTED_MANIFEST_STATUS, submittedManifestStatusMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
             System.out.println(queueResponse);
+            QueueMessageStatusEntity queueMessage = new QueueMessageStatusEntity();
+            queueMessage.setMessageId(submittedManifestStatusResponse.getCommunicationAgreedId());
+            queueMessage.setReferenceId(submittedManifestStatusMessageDto.getRequestId());
+            queueMessage.setMessageName(MessageNames.SUBMITTED_MANIFEST_STATUS);
+            queueMessage.setProcessStatus("1");
+            queueMessage.setProcessId("TANCIS-TESWS.API");
+            queueMessage.setFirstRegistrationId("TANCIS-TESWS.API");
+            queueMessage.setLastUpdateId("TANCIS-TESWS.API");
+            queueMessage.setProcessingDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+            queueMessage.setFirstRegisterDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+            queueMessage.setLastUpdateDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+            queueMessageStatusRepository.save(queueMessage);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,17 +1,11 @@
 package com.ManifestTeswTancis.ServiceImpl;
 
+import com.ManifestTeswTancis.Entity.*;
 import com.ManifestTeswTancis.RabbitConfigurations.*;
+import com.ManifestTeswTancis.Repository.*;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.*;
 import com.ManifestTeswTancis.dtos.ManifestNoticeBl;
-import com.ManifestTeswTancis.Entity.ExImportManifest;
-import com.ManifestTeswTancis.Entity.ExImportHouseBl;
-import com.ManifestTeswTancis.Entity.ManifestApprovalStatus;
-import com.ManifestTeswTancis.Entity.ExImportMasterBl;
-import com.ManifestTeswTancis.Repository.ExImportManifestRepository;
-import com.ManifestTeswTancis.Repository.ExImportHouseBlRepository;
-import com.ManifestTeswTancis.Repository.ManifestApprovalStatusRepository;
-import com.ManifestTeswTancis.Repository.ExImportMasterBlRepository;
 import com.ManifestTeswTancis.Util.ManifestStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
@@ -36,6 +30,7 @@ import java.util.List;
 public class CheckApprovedManifestStatusImpl {
 	@Value("${spring.rabbitmq.exchange.out}")
 	private String OUTBOUND_EXCHANGE;
+	final QueueMessageStatusRepository queueMessageStatusRepository;
 	final MessageProducer rabbitMqMessageProducer;
 	private final ExImportManifestRepository exImportManifestRepository;
 	private final ExImportMasterBlRepository exImportMasterBlRepository;
@@ -44,12 +39,13 @@ public class CheckApprovedManifestStatusImpl {
 
 	@Autowired
 	public CheckApprovedManifestStatusImpl(ExImportManifestRepository exImportManifestRepository, ExImportMasterBlRepository exImportMasterBlRepository,
-										   ExImportHouseBlRepository exImportHouseBlRepository, ManifestApprovalStatusRepository statusRepository, MessageProducer rabbitMqMessageProducer) {
+										   ExImportHouseBlRepository exImportHouseBlRepository, ManifestApprovalStatusRepository statusRepository, MessageProducer rabbitMqMessageProducer, QueueMessageStatusRepository queueMessageStatusRepository) {
 		this.exImportManifestRepository = exImportManifestRepository;
 		this.exImportMasterBlRepository = exImportMasterBlRepository;
 		this.exImportHouseBlRepository = exImportHouseBlRepository;
 		this.statusRepository = statusRepository;
 		this.rabbitMqMessageProducer = rabbitMqMessageProducer;
+		this.queueMessageStatusRepository = queueMessageStatusRepository;
 	}
 
 	@Transactional
@@ -129,6 +125,18 @@ public class CheckApprovedManifestStatusImpl {
 			AcknowledgementDto queueResponse = rabbitMqMessageProducer.
 					sendMessage(OUTBOUND_EXCHANGE, MessageNames.MANIFEST_APPROVAL_NOTICE, manifestNoticeMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
 			System.out.println(queueResponse);
+			QueueMessageStatusEntity queueMessage = new QueueMessageStatusEntity();
+			queueMessage.setMessageId(manifestNotice.getCommunicationAgreedId());
+			queueMessage.setReferenceId(manifestNoticeMessageDto.getRequestId());
+			queueMessage.setMessageName(MessageNames.MANIFEST_APPROVAL_NOTICE);
+			queueMessage.setProcessStatus("1");
+			queueMessage.setProcessId("TANCIS-TESWS.API");
+			queueMessage.setFirstRegistrationId("TANCIS-TESWS.API");
+			queueMessage.setLastUpdateId("TANCIS-TESWS.API");
+			queueMessage.setProcessingDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+			queueMessage.setFirstRegisterDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+			queueMessage.setLastUpdateDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+			queueMessageStatusRepository.save(queueMessage);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

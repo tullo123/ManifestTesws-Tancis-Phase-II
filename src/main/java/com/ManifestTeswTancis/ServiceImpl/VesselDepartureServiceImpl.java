@@ -1,6 +1,6 @@
 package com.ManifestTeswTancis.ServiceImpl;
-import com.ManifestTeswTancis.Entity.ExImportManifest;
-import com.ManifestTeswTancis.Repository.ExImportManifestRepository;
+import com.ManifestTeswTancis.Entity.InImportManifest;
+import com.ManifestTeswTancis.Repository.InImportManifestRepository;
 import com.ManifestTeswTancis.Service.VesselDepartureService;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
@@ -14,11 +14,10 @@ import java.util.Optional;
 @Service
 @Transactional
 public class VesselDepartureServiceImpl implements VesselDepartureService {
-    final
-    ExImportManifestRepository exImportManifestRepository;
+    final InImportManifestRepository inImportManifestRepository;
 
-    public VesselDepartureServiceImpl(ExImportManifestRepository exImportManifestRepository) {
-        this.exImportManifestRepository = exImportManifestRepository;
+    public VesselDepartureServiceImpl(InImportManifestRepository inImportManifestRepository) {
+        this.inImportManifestRepository = inImportManifestRepository;
     }
 
 
@@ -32,13 +31,13 @@ public class VesselDepartureServiceImpl implements VesselDepartureService {
         response.setDescription("Vessel Departure Notice Received Successfully");
 
         try {
-            Optional<ExImportManifest> optional=exImportManifestRepository.
+            Optional<InImportManifest> optional=inImportManifestRepository.
                     findFirstByCommunicationAgreedId(vesselDepartureNoticeDto.getCommunicationAgreedId());
             if (optional.isPresent()) {
-                ExImportManifest inImportManifest=optional.get();
+                InImportManifest inImportManifest=optional.get();
                 inImportManifest.setActualDatetimeOfDeparture(DateFormatter.getDateFromLocalDateTime
                         (vesselDepartureNoticeDto.getActualDatetimeOfDeparture()));
-                exImportManifestRepository.save(inImportManifest);
+                inImportManifestRepository.save(inImportManifest);
             }
 
         } catch (Exception e) {
