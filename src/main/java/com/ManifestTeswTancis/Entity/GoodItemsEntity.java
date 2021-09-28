@@ -13,7 +13,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -158,14 +158,14 @@ public class GoodItemsEntity implements Serializable {
 
     @Column(name = "FIRST_REGISTER_DT")
     @CreationTimestamp
-    private LocalDateTime firstRegisterDate;
+    private Date firstRegisterDate;
 
     @Column(name = "FIRST_REGISTER_ID")
     private String firstRegisterId;
 
     @Column(name = "LAST_UPDATE_DT")
     @UpdateTimestamp
-    private LocalDateTime lastUpdateDate;
+    private Date lastUpdateDate;
 
     @Column(name = "LAST_UPDATE_ID")
     private String lastUpdateId;
