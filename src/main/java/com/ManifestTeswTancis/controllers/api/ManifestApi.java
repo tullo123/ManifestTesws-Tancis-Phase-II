@@ -62,7 +62,7 @@ public interface ManifestApi {
     @RequestMapping(value = "/cancels/callInf/v1", method = RequestMethod.POST,
             produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE })
-    ResponseEntity<TeswsResponse> deleteVesselInfo(@RequestBody CallInfCancelDto callInfCancelDto);
+    ResponseEntity<TeswsResponse> deleteVesselInfo(@RequestBody PortCallIdCancellationDto portCallIdCancellationDto);
 
     @RequestMapping(value = "/saveLiquidBulkDischargeSequence/v1", method = RequestMethod.POST,
             produces = { MediaType.APPLICATION_JSON_VALUE },

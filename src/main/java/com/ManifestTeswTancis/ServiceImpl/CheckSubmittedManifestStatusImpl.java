@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
@@ -98,9 +99,11 @@ public class CheckSubmittedManifestStatusImpl {
             queueMessage.setProcessId("TANCIS-TESWS.API");
             queueMessage.setFirstRegistrationId("TANCIS-TESWS.API");
             queueMessage.setLastUpdateId("TANCIS-TESWS.API");
-            queueMessage.setProcessingDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-            queueMessage.setFirstRegisterDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-            queueMessage.setLastUpdateDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+            LocalDateTime localDateTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+            queueMessage.setProcessingDate(localDateTime.format(formatter));
+            queueMessage.setFirstRegisterDate(localDateTime.format(formatter));
+            queueMessage.setLastUpdateDate(localDateTime.format(formatter));
             queueMessageStatusRepository.save(queueMessage);
         } catch (IOException e) {
             e.printStackTrace();

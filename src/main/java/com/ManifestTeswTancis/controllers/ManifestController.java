@@ -108,8 +108,8 @@ public  class ManifestController  implements ManifestApi {
 	}
 	@Override
 	public ResponseEntity<TeswsResponse> deleteVesselInfo(
-			@RequestBody CallInfCancelDto callInfCancelDto) {
-		TeswsResponse response = vesselCancellationService.cancelVesselInfo(callInfCancelDto);
+			@RequestBody PortCallIdCancellationDto portCallIdCancellationDto) {
+		TeswsResponse response = vesselCancellationService.cancelVesselInfo(portCallIdCancellationDto);
 		return ResponseEntity.ok(response);
 	}
 	@Override

@@ -9,7 +9,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CallInfCancelDto {
+public class PortCallIdCancellationDto {
      private String cancelRef;
      private String communicationAgreedId;
      private String voyageNumber;

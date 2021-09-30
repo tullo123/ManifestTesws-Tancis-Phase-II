@@ -1,7 +1,7 @@
 package com.ManifestTeswTancis.RabbitConfigurations;
 
 import com.ManifestTeswTancis.ServiceImpl.VesselCancellationServiceImpl;
-import com.ManifestTeswTancis.dtos.CallInfCancelDto;
+import com.ManifestTeswTancis.dtos.PortCallIdCancellationDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +29,9 @@ public class VesselCancellationMessageConsumer {
             LOGGER.info("[VesselCancellationMessageConsumer.listen()] - [Start: {}]", MESSAGE_NAME);
             VesselCancellationMessageDto vesselCancellationMessageDto = objectMapper.readValue(message, VesselCancellationMessageDto.class);
             LOGGER.info("VesselCancellationMessageConsumer.listen()] - [VesselCancellationMessageConsumer: {}]", vesselCancellationMessageDto);
-            CallInfCancelDto callInfCancelDto = vesselCancellationMessageDto.getPayload();
-            System.out.println(callInfCancelDto);
-            VesselCancellationServiceImpl.cancelVesselInfo(callInfCancelDto);
+            PortCallIdCancellationDto portCallIdCancellationDto = vesselCancellationMessageDto.getPayload();
+            System.out.println(portCallIdCancellationDto);
+            VesselCancellationServiceImpl.cancelVesselInfo(portCallIdCancellationDto);
             LOGGER.info("[VesselCancellationMessageConsumer.listen()] - [End: {}]", MESSAGE_NAME);
             TimeUnit.SECONDS.sleep(5);
         } catch (IOException ioe) {

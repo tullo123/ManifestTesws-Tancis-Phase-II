@@ -1,6 +1,6 @@
 package com.ManifestTeswTancis.RabbitConfigurations;
 
-import com.ManifestTeswTancis.dtos.CallInfCancelDto;
+import com.ManifestTeswTancis.dtos.PortCallIdCancellationDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,5 +16,5 @@ public class VesselCancellationMessageDto implements Serializable {
     private String messageName;
     private String requestId;
     private String callbackUrl;
-    private CallInfCancelDto payload;
+    private PortCallIdCancellationDto payload;
 }

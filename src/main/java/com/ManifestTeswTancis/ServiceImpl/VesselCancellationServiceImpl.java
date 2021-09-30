@@ -3,7 +3,7 @@ import com.ManifestTeswTancis.Entity.ExImportManifest;
 import com.ManifestTeswTancis.Repository.ExImportManifestRepository;
 import com.ManifestTeswTancis.Service.VesselCancellationService;
 import com.ManifestTeswTancis.Util.DateFormatter;
-import com.ManifestTeswTancis.dtos.CallInfCancelDto;
+import com.ManifestTeswTancis.dtos.PortCallIdCancellationDto;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -21,16 +21,16 @@ public class VesselCancellationServiceImpl implements VesselCancellationService 
 
     @Override
     @Transactional
-    public TeswsResponse cancelVesselInfo(CallInfCancelDto callInfCancelDto) {
+    public TeswsResponse cancelVesselInfo(PortCallIdCancellationDto portCallIdCancellationDto) {
         TeswsResponse response = new TeswsResponse();
         response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-       response.setRefId(callInfCancelDto.getCancelRef());
+       response.setRefId(portCallIdCancellationDto.getCancelRef());
         response.setDescription("Vessel Cancellation Notice received successfully");
         response.setAckType("VESSEL_CANCELLATION_NOTICE");
 
         try {
             Optional<ExImportManifest> optional = exImportManifestRepository
-                    .findFirstByCommunicationAgreedId(callInfCancelDto.getCommunicationAgreedId());
+                    .findFirstByCommunicationAgreedId(portCallIdCancellationDto.getCommunicationAgreedId());
             if(optional.isPresent()) {
                 ExImportManifest ex = optional.get();
                 ex.setProcessingStatus("X");
@@ -39,7 +39,7 @@ public class VesselCancellationServiceImpl implements VesselCancellationService 
         } catch (Exception e) {
             response.setDescription(e.getMessage());
             response.setCode(400);
-            System.err.println("CommunicationAgreedId:"+callInfCancelDto.getCommunicationAgreedId()+" Not Found");
+            System.err.println("CommunicationAgreedId:"+ portCallIdCancellationDto.getCommunicationAgreedId()+" Not Found");
         }
         return response;
     }
