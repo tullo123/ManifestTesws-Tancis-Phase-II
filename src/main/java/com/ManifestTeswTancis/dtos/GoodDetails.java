@@ -20,11 +20,11 @@ public class GoodDetails implements Serializable {
     private String packageQuantity;
     private String packageType;
     private String oilType;
-    private String invoiceValue;
+    private Double invoiceValue;
     private String invoiceCurrency;
     private String insuranceValue;
     private String insuranceCurrency;
-    private String freightCharge;
+    private Double freightCharge;
     private String freightCurrency;
     private String grossWeight;
     private String grossWeightUnit;

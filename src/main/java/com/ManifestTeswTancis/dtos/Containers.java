@@ -34,7 +34,7 @@ public class Containers implements Serializable {
     private String temperature;
     private String temperatureType;
     private String temperatureUnit;
-    private String minimumTemperature;
-    private String maximumTemperature;
+    private Double minimumTemperature;
+    private Double maximumTemperature;
     private List<SealNumberDto> sealNumbers = new ArrayList<>();
 }

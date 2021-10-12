@@ -114,7 +114,7 @@ public class ExImportAmendBlContainer implements Serializable {
 	private LocalDateTime firstRegisterDate;
 
 	@Column(name = "LAST_UPDATE_ID")
-	private Date lastUpdateId;
+	private String lastUpdateId;
 
 	@Column(name = "LAST_UPDATE_DT")
 	@UpdateTimestamp
