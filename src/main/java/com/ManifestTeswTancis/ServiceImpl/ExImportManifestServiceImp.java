@@ -1,5 +1,6 @@
 package com.ManifestTeswTancis.ServiceImpl;
 
+import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.*;
 import com.ManifestTeswTancis.Entity.*;
 import com.ManifestTeswTancis.Repository.*;
@@ -248,6 +249,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportMasterBl.setOilType(blMeasurement.getOilType());
 		exImportMasterBl.setImdgclass(blMeasurement.getImdgClass());
 		exImportMasterBl.setBlDescription(bl.getBlDescription());
+		exImportMasterBl.setFirstRegisterDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
 		if(bl.getGoodDetails()!=null){
 			goodItemsEntity.setMasterBillOfLading(bl.getMasterBillOfLading());
 			goodItemsEntity.setHouseBillOfLading(bl.getHouseBillOfLading());
@@ -281,6 +283,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				goodItemsEntity.setVehicleOwnDrive(goodsDto.getVehicleOwnDrive());
 				goodItemsEntity.setFirstRegisterId("TESWS");
 				goodItemsEntity.setLastUpdateId("TESWS");
+				goodItemsEntity.setFirstRegisterDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
 				goodItemsEntity.setMrn(mrn);
 				if(goodsDto.getDangerousGoodsInformation()!=null){
 					goodItemsEntity.setClassCode(goodsDto.getDangerousGoodsInformation().getClassCode());
@@ -340,6 +343,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportHouseBl.setOilType(blMeasurement.getOilType());
 		exImportHouseBl.setImdgclass(blMeasurement.getImdgClass());
 		exImportHouseBl.setDescription(bl.getBlDescription());
+		exImportHouseBl.setFirstRegisterDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
 
 		exImportHouseBlRepository.save(exImportHouseBl);
 
