@@ -304,7 +304,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				}
 				if(goodsDto.getPlacements().isEmpty() || goodsDto.getPlacements()==null){
 					goodItemsEntity.setContainerNo("LOOSE");
-				}else if (goodsDto.getPackingType().equalsIgnoreCase("V")){
+				}else if (goodsDto.getPackingType().equalsIgnoreCase("V") &&  goodsDto.getVehicleVIN()!=null){
 					goodItemsEntity.setContainerNo(goodsDto.getVehicleVIN());
 				}
 				for(GoodPlacementDto containerDto: goodsDto.getPlacements()){

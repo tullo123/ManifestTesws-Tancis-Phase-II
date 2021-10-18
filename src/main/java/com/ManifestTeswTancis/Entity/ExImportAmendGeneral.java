@@ -44,7 +44,7 @@ public class ExImportAmendGeneral implements Serializable {
 	private String processingStatus;
 
 	@Column(name = "PROCESSING_DT")
-	private String processingDate;
+	private Date processingDate;
 
 	@Column(name = "PROCESSING_ID")
 	private String processingId;

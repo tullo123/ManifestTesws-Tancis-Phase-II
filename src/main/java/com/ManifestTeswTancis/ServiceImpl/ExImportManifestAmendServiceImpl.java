@@ -2,6 +2,7 @@ package com.ManifestTeswTancis.ServiceImpl;
 import com.ManifestTeswTancis.Entity.*;
 import com.ManifestTeswTancis.Repository.*;
 import com.ManifestTeswTancis.Service.ExImportManifestAmendService;
+import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,8 +58,9 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
                 Map<String, Map<String, String>> containerBlMap = new HashMap<>();
                 Map<String, Map<String, String>> amendSerialNoMap = new HashMap<>();
                 Map<String, Map<String, String>> vehicleMap = new HashMap<>();
+                saveGeneralAmendment(bl,manifestAmendmentDto);
                 List<Containers> containers= manifestAmendmentDto.getContainers();
-                setBl(bl,containerBlMap,vehicleMap,amendSerialNoMap);
+                setBl(bl,containerBlMap,vehicleMap,amendSerialNoMap,manifestAmendmentDto);
                 if(!containers.isEmpty()){
                     saveContainer(containers,bl);
                 }
@@ -77,8 +79,32 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         return responseData;
     }
 
+    private void saveGeneralAmendment(Bl bl, ManifestAmendmentDto manifestAmendmentDto) {
+        ExImportAmendGeneral amendGeneral = new ExImportAmendGeneral();
+        Optional<CoCompanyCodeEntity> optional=coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
+        if(optional.isPresent()){
+            CoCompanyCodeEntity company= optional.get();
+            amendGeneral.setDeclarantTin(company.getTin());
+        }
+        DateFormat df = new SimpleDateFormat("yy");
+        amendGeneral.setAmendYear(df.format(Calendar.getInstance().getTime()));
+        amendGeneral.setProcessType("M");
+        String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
+        amendGeneral.setAmendSerialNumber(suffix);
+        amendGeneral.setProcessingStatus("1");
+        amendGeneral.setProcessingDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
+        amendGeneral.setProcessingId("SYSTEM");
+        Optional<InImportManifest> option = inImportManifestRepository.findFirstByCommunicationAgreedId(manifestAmendmentDto.getCommunicationAgreedId());
+        if (option.isPresent()) {
+            InImportManifest amend = option.get();
+            amendGeneral.setCustomOfficeCode(amend.getCustomOfficeCode());
+        }
+        amendGeneral.setMrn(manifestAmendmentDto.getMrn());
+
+    }
+
     private void setBl(Bl bl, Map<String, Map<String, String>> blMap, Map<String, Map<String, String>> containerBlMap,
-                       Map<String, Map<String, String>> vehicleMap) {
+                       Map<String, Map<String, String>> vehicleMap,ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendBl amendBl = new ExImportAmendBl();
         BlMeasurement blMeasurement =new BlMeasurement();
         Optional<CoCompanyCodeEntity> optional=coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
@@ -89,7 +115,6 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         DateFormat df = new SimpleDateFormat("yy");
         amendBl.setAmendYear(df.format(Calendar.getInstance().getTime()));
         amendBl.setProcessType("M");
-        amendBl.setAmendSerialNumber("");
         if(bl.getHouseBillOfLading()!= null){
             amendBl.setBillOfLading(bl.getHouseBillOfLading());
         }else{
@@ -150,6 +175,11 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
             amendBl.setAmendSerialNumber(suffix);
         exImportAmendBlRepository.save(amendBl);
+        Optional<InImportManifest> opt = inImportManifestRepository.findFirstByCommunicationAgreedId(manifestAmendmentDto.getCommunicationAgreedId());
+        if(opt.isPresent()){
+            InImportManifest inImportManifest= opt.get();
+            amendBl.setFirstDestinationPlace(inImportManifest.getDestinationPort());
+        }
     }
 
 
@@ -181,6 +211,37 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
            cn.setMinimumTemperature(container.getMinimumTemperature());
            String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
            cn.setAmendSerialNumber(suffix);
+           int i = 0;
+           int l = 0;
+           if (container.getSealNumbers() != null && !container.getSealNumbers().isEmpty()){
+               for (SealNumberDto sealNumber : container.getSealNumbers()) {
+                   if (sealNumber.getSealNumberIssuerType() != null
+                           && sealNumber.getSealNumberIssuerType().contentEquals("CU")) {
+                       if (i == 0) {
+                           cn.setCustomSealNumberOne(sealNumber.getSealNumber());
+                           i++;
+                       } else if (i == 1) {
+                           cn.setCustomSealNumberTwo(sealNumber.getSealNumber());
+                           i++;
+                       } else if (i == 2) {
+                           cn.setCustomSealNumberThree(sealNumber.getSealNumber());
+                           i++;
+                       }
+                   } else {
+                       if (l == 0) {
+                           cn.setSealNumberOne(sealNumber.getSealNumber());
+                           l++;
+                       } else if (l == 1) {
+                           cn.setSealNumberTwo(sealNumber.getSealNumber());
+                           l++;
+                       } else if (l == 2) {
+                           cn.setSealNumberThree(sealNumber.getSealNumber());
+                           l++;
+                       }
+                   }
+
+               }
+           }
 
        }
     }
