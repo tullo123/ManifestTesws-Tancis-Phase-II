@@ -140,7 +140,8 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				cnEn.setHsn(msnMap.get(msn));
 
 				cnEn.setFreightIndicator(container.getFreightIndicator());
-				cnEn.setWeight(container.getGrossWeight());
+				cnEn.setWeight(container.getWeight());
+				cnEn.setWeightUnit(fixUnit(container.getWeightUnit()));
 				cnEn.setWeightUnit(fixUnit(container.getGrossWeightUnit()));
 				cnEn.setVolume(container.getVolume());
 				cnEn.setVolumeUnit(fixUnit(container.getVolumeUnit()));
@@ -148,6 +149,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				cnEn.setMinimumTemperature(container.getMinimumTemperature());
 				cnEn.setFirstRegisterId("TESWS");
 				cnEn.setLastUpdateId("TESWS");
+				cnEn.setFirstRegisterDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
 
 				if(container.getTemperatureType() != null) {
 					cnEn.setReferPlugYn(container.getTemperatureType().contentEquals("1")?"Y":"N");

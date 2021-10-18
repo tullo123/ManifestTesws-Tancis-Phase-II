@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional
@@ -25,9 +24,11 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
     final ExImportManifestRepository exImportManifestRepository;
     final CoCompanyCodeRepository coCompanyCodeRepository;
     final CommonOrdinalRepository commonOrdinalRepository;
+    final InImportManifestRepository inImportManifestRepository;
+    CommonOrdinalEntity commonOrdinalEntity;
 
    @Autowired
-    public ExImportManifestAmendServiceImpl(AmendItemContainerRepository amendItemContainerRepository, BlGoodItemsRepository blGoodItemsRepository, EdNoticeRepository edNoticeRepository, ExImportAmendGeneralRepository exImportAmendGeneralRepository, ExImportAmendItemRepository importAmendItemRepository, ExImportAmendBlRepository exImportAmendBlRepository, ExImportManifestRepository exImportManifestRepository, CoCompanyCodeRepository coCompanyCodeRepository, CommonOrdinalRepository commonOrdinalRepository) {
+    public ExImportManifestAmendServiceImpl(AmendItemContainerRepository amendItemContainerRepository, BlGoodItemsRepository blGoodItemsRepository, EdNoticeRepository edNoticeRepository, ExImportAmendGeneralRepository exImportAmendGeneralRepository, ExImportAmendItemRepository importAmendItemRepository, ExImportAmendBlRepository exImportAmendBlRepository, ExImportManifestRepository exImportManifestRepository, CoCompanyCodeRepository coCompanyCodeRepository, CommonOrdinalRepository commonOrdinalRepository, InImportManifestRepository inImportManifestRepository) {
         this.amendItemContainerRepository = amendItemContainerRepository;
         this.blGoodItemsRepository = blGoodItemsRepository;
         this.edNoticeRepository = edNoticeRepository;
@@ -37,6 +38,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         this.exImportManifestRepository = exImportManifestRepository;
         this.coCompanyCodeRepository = coCompanyCodeRepository;
        this.commonOrdinalRepository = commonOrdinalRepository;
+       this.inImportManifestRepository = inImportManifestRepository;
    }
 
     @Override
@@ -58,7 +60,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
                 List<Containers> containers= manifestAmendmentDto.getContainers();
                 setBl(bl,containerBlMap,vehicleMap,amendSerialNoMap);
                 if(!containers.isEmpty()){
-                    saveContainer(containers, containerBlMap, amendSerialNoMap,bl);
+                    saveContainer(containers,bl);
                 }
                 if(!vehicleMap.isEmpty()){
                     saveVehicles(vehicleMap, amendSerialNoMap,bl);
@@ -75,9 +77,8 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         return responseData;
     }
 
-    private void setBl(Bl bl, Map<String, Map<String, String>> containerBlMap,
-                       Map<String, Map<String, String>> vehicleMap, Map<String,
-                     Map<String, String>> amendSerialNoMap) {
+    private void setBl(Bl bl, Map<String, Map<String, String>> blMap, Map<String, Map<String, String>> containerBlMap,
+                       Map<String, Map<String, String>> vehicleMap) {
         ExImportAmendBl amendBl = new ExImportAmendBl();
         BlMeasurement blMeasurement =new BlMeasurement();
         Optional<CoCompanyCodeEntity> optional=coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
@@ -146,13 +147,14 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         amendBl.setLastUpdateId("TESWS");
         amendBl.setFirstRegisterId("TESWS");
         amendBl.setTasacControlNumber(bl.getTasacControlNumber());
+            String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
+            amendBl.setAmendSerialNumber(suffix);
         exImportAmendBlRepository.save(amendBl);
     }
 
 
 
-    private void saveContainer(List<Containers> containers, Map<String, Map<String, String>> containerBlMap,
-                               Map<String, Map<String, String>> amendSerialNoMap, Bl bl) {
+    private void saveContainer(List<Containers> containers, Bl bl) {
        for (Containers container : containers) {
            ExImportAmendBlContainer cn= new ExImportAmendBlContainer();
            Optional<CoCompanyCodeEntity> optional=coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
@@ -177,6 +179,8 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
            cn.setFreightIndicator(container.getFreightIndicator());
            cn.setMaximumTemperature(container.getMaximumTemperature());
            cn.setMinimumTemperature(container.getMinimumTemperature());
+           String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
+           cn.setAmendSerialNumber(suffix);
 
        }
     }
@@ -213,16 +217,14 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
        }
         return blType;
     }
-    private void createEdNotice(ManifestAmendmentDto manifestAmendmentDto) throws InterruptedException {
+    private void createEdNotice(ManifestAmendmentDto manifestAmendmentDto) {
 
         EdNoticeEntity edNotice = new EdNoticeEntity();
         CoCompanyCodeEntity coCompanyCodeEntity = new CoCompanyCodeEntity();
-        Optional<ExImportManifest> optional = exImportManifestRepository.findFirstByMrn(manifestAmendmentDto.getMrn());
-        if(!optional.isPresent()) {
-            ExImportManifest batch= optional.get();
-            System.out.println(
-                    "#---------------CreateEdNotice START ---------------#");
-            TimeUnit.SECONDS.sleep(10);
+        Optional<InImportManifest> optional = inImportManifestRepository.findFirstByCommunicationAgreedId(manifestAmendmentDto.getCommunicationAgreedId());
+        if(optional.isPresent()) {
+            InImportManifest infEntity= optional.get();
+            edNotice.setCustomsOfficeCode(infEntity.getCustomOfficeCode());
             edNotice.setDocumentCode("IMFMOD215");
             edNotice.setDocumentNumber(generatedDocumentNo(coCompanyCodeEntity.getTin()));
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
@@ -231,7 +233,6 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             edNotice.setCreateDate(strDate);
             edNotice.setSequenceNumber(1);
             edNotice.setDocumentFunctionType("9");
-            edNotice.setCustomsOfficeCode(batch.getCustomOfficeCode());
             edNotice.setReceiverId("INTERNAL");
             edNotice.setSenderId("EXTERNAL");
             edNotice.setDocumentType("D");
@@ -240,12 +241,9 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             edNotice.setTransferType("E");
             edNotice.setProcessingStatus("N");
             edNoticeRepository.save(edNotice);
-            System.out.println(
-                    "#---------------CreateEdNotice END ---------------#");
-            TimeUnit.SECONDS.sleep(10);
         }
         else {
-            System.out.println("Manifest with This Mrn already submitted to TANCIS INTERNAL.");
+            System.out.println("Manifest Amendment with This Mrn is not present in TANCIS");
         }
 
 
