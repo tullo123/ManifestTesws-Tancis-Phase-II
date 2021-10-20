@@ -34,4 +34,10 @@ public class CustomClearanceDto {
      private LocalDateTime actualDatetimeOfArrivalOuterAnchorage;
      private LocalDateTime clearanceRequestDate;
      private String comments;
+     private Double cnQuantityLoaded;
+     private Double cnWeightLoaded;
+     private Double bkQuantityLoaded;
+     private Double bkWeightLoaded;
+     private Double carQuantityLoaded;
+     private Double carWeightLoaded;
 }

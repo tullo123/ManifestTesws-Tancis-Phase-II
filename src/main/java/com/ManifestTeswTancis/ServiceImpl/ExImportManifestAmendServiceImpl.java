@@ -174,12 +174,12 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         amendBl.setTasacControlNumber(bl.getTasacControlNumber());
             String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
             amendBl.setAmendSerialNumber(suffix);
-        exImportAmendBlRepository.save(amendBl);
         Optional<InImportManifest> opt = inImportManifestRepository.findFirstByCommunicationAgreedId(manifestAmendmentDto.getCommunicationAgreedId());
         if(opt.isPresent()){
             InImportManifest inImportManifest= opt.get();
             amendBl.setFirstDestinationPlace(inImportManifest.getDestinationPort());
         }
+        exImportAmendBlRepository.save(amendBl);
     }
 
 

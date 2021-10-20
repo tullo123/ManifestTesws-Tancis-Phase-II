@@ -60,11 +60,16 @@ public class CustomClearanceServiceImpl implements CustomClearanceService {
             cu.setTaxClearanceNumber(customClearanceDto.getTaxClearanceNumber());
             cu.setLastUpdateId("TESWS");
             cu.setFirstRegisterId("TESWS");
+            cu.setCnQuantityLoaded(customClearanceDto.getCnQuantityLoaded());
+            cu.setCnWeightLoaded(customClearanceDto.getCnWeightLoaded());
+            cu.setBkQuantityLoaded(customClearanceDto.getBkQuantityLoaded());
+            cu.setBkWeightLoaded(customClearanceDto.getBkWeightLoaded());
+            cu.setCarQuantityLoaded(customClearanceDto.getCarQuantityLoaded());
+            cu.setCarWeightLoaded(customClearanceDto.getCarWeightLoaded());
             cu.setEstimatedDatetimeOfArrival(DateFormatter.getDateFromLocalDateTime(customClearanceDto.getEstimatedDatetimeOfArrival()));
             cu.setActualDatetimeOfArrival(DateFormatter.getDateFromLocalDateTime(customClearanceDto.getActualDatetimeOfArrival()));
             cu.setClearanceRequestDate(DateFormatter.getDateFromLocalDateTime(customClearanceDto.getClearanceRequestDate()));
             cu.setEstimatedDatetimeOfDeparture(DateFormatter.getDateFromLocalDateTime(customClearanceDto.getEstimatedDatetimeOfDeparture()));
-
             customClearanceRepository.save(cu);
 
             CustomClearanceApprovalStatus cs= new CustomClearanceApprovalStatus();

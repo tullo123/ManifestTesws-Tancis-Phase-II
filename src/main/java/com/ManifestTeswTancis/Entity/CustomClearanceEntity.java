@@ -106,5 +106,23 @@ public class CustomClearanceEntity implements Serializable {
 
     @Column(name="COMMENTS")
     private  String comments;
+
+    @Column(name = "LOADING_CONTAINER_COUNT")
+    private Double cnQuantityLoaded;
+
+    @Column(name = "LOADING_CONTAINER_WEIGHT")
+    private Double cnWeightLoaded;
+
+    @Column(name = "LOADING_BULK_COUNT")
+    private Double bkQuantityLoaded;
+
+    @Column(name = "LOADING_BULK_WEIGHT")
+    private Double bkWeightLoaded;
+
+    @Column(name = "LOADING_CAR_COUNT")
+    private Double carQuantityLoaded;
+
+    @Column(name = "LOADING_CAR_WEIGHT")
+    private Double carWeightLoaded;
 }
 
