@@ -58,8 +58,8 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
                 Map<String, Map<String, String>> containerBlMap = new HashMap<>();
                 Map<String, Map<String, String>> amendSerialNoMap = new HashMap<>();
                 Map<String, Map<String, String>> vehicleMap = new HashMap<>();
-                saveGeneralAmendment(bl,manifestAmendmentDto);
                 List<Containers> containers= manifestAmendmentDto.getContainers();
+                saveGeneralAmendment(bl,manifestAmendmentDto,containers);
                 setBl(bl,containerBlMap,vehicleMap,amendSerialNoMap,manifestAmendmentDto);
                 if(!containers.isEmpty()){
                     saveContainer(containers,bl);
@@ -79,7 +79,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         return responseData;
     }
 
-    private void saveGeneralAmendment(Bl bl, ManifestAmendmentDto manifestAmendmentDto) {
+    private void saveGeneralAmendment(Bl bl, ManifestAmendmentDto manifestAmendmentDto,List<Containers> containers) {
         ExImportAmendGeneral amendGeneral = new ExImportAmendGeneral();
         Optional<CoCompanyCodeEntity> optional=coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
         if(optional.isPresent()){
@@ -100,6 +100,39 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             amendGeneral.setCustomOfficeCode(amend.getCustomOfficeCode());
         }
         amendGeneral.setMrn(manifestAmendmentDto.getMrn());
+        if(bl.getAction().equalsIgnoreCase("ADD")){
+            if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()!=null){
+                amendGeneral.setAmendType("HA");
+            }else if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()== null){
+                amendGeneral.setAmendType("MA");
+            }
+        }else if(bl.getAction().equalsIgnoreCase("AMEND")){
+            if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()!=null){
+                amendGeneral.setAmendType("HM");
+            }else if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()== null){
+                amendGeneral.setAmendType("MM");
+            }
+        }else if(bl.getAction().equalsIgnoreCase("DELETE")){
+            if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()!=null){
+                amendGeneral.setAmendType("HD");
+            }else if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()== null){
+                amendGeneral.setAmendType("MD");
+            }
+        }else if(bl.getAction().equalsIgnoreCase("AMEND") && bl.getPlaceOfDelivery()!=null){
+               amendGeneral.setAmendType("TI");
+        }for (Containers container : containers) {
+            if(container.getAction().equalsIgnoreCase("AMEND")){
+                amendGeneral.setAmendType("CM");
+            }
+
+        }
+        amendGeneral.setAmendReasonCode("01");
+        amendGeneral.setDeclarantCode(bl.getShippingAgentCode());
+        amendGeneral.setDeclarantName(bl.getShippingAgentName());
+        amendGeneral.setFirstRegisterId("TESWS");
+        amendGeneral.setFirstRegisterDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
+        amendGeneral.setSubmitDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
+        amendGeneral.setLastUpdateId("TESWS");
 
     }
 

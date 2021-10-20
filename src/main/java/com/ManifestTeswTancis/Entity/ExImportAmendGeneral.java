@@ -11,7 +11,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -112,12 +111,12 @@ public class ExImportAmendGeneral implements Serializable {
 
 	@Column(name = "FIRST_REGISTER_DT")
 	@CreationTimestamp
-	private LocalDateTime firstRegisterDate;
+	private Date firstRegisterDate;
 
 	@Column(name = "LAST_UPDATE_ID")
 	private String lastUpdateId;
 
 	@Column(name = "LAST_UPDATE_DT")
 	@UpdateTimestamp
-	private LocalDateTime lastUpdateDate;
+	private Date lastUpdateDate;
 }
