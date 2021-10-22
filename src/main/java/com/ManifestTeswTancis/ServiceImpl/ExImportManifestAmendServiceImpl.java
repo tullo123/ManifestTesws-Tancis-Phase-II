@@ -27,9 +27,10 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
     final CommonOrdinalRepository commonOrdinalRepository;
     final InImportManifestRepository inImportManifestRepository;
     CommonOrdinalEntity commonOrdinalEntity;
+    final ExImportMasterBlRepository exImportMasterBlRepository;
 
    @Autowired
-    public ExImportManifestAmendServiceImpl(AmendItemContainerRepository amendItemContainerRepository, BlGoodItemsRepository blGoodItemsRepository, EdNoticeRepository edNoticeRepository, ExImportAmendGeneralRepository exImportAmendGeneralRepository, ExImportAmendItemRepository importAmendItemRepository, ExImportAmendBlRepository exImportAmendBlRepository, ExImportManifestRepository exImportManifestRepository, CoCompanyCodeRepository coCompanyCodeRepository, CommonOrdinalRepository commonOrdinalRepository, InImportManifestRepository inImportManifestRepository) {
+    public ExImportManifestAmendServiceImpl(AmendItemContainerRepository amendItemContainerRepository, BlGoodItemsRepository blGoodItemsRepository, EdNoticeRepository edNoticeRepository, ExImportAmendGeneralRepository exImportAmendGeneralRepository, ExImportAmendItemRepository importAmendItemRepository, ExImportAmendBlRepository exImportAmendBlRepository, ExImportManifestRepository exImportManifestRepository, CoCompanyCodeRepository coCompanyCodeRepository, CommonOrdinalRepository commonOrdinalRepository, InImportManifestRepository inImportManifestRepository, ExImportMasterBlRepository exImportMasterBlRepository) {
         this.amendItemContainerRepository = amendItemContainerRepository;
         this.blGoodItemsRepository = blGoodItemsRepository;
         this.edNoticeRepository = edNoticeRepository;
@@ -40,6 +41,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         this.coCompanyCodeRepository = coCompanyCodeRepository;
        this.commonOrdinalRepository = commonOrdinalRepository;
        this.inImportManifestRepository = inImportManifestRepository;
+       this.exImportMasterBlRepository = exImportMasterBlRepository;
    }
 
     @Override
@@ -59,15 +61,12 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
                 Map<String, Map<String, String>> amendSerialNoMap = new HashMap<>();
                 Map<String, Map<String, String>> vehicleMap = new HashMap<>();
                 List<Containers> containers= manifestAmendmentDto.getContainers();
+                this.createEdNotice(manifestAmendmentDto);
                 saveGeneralAmendment(bl,manifestAmendmentDto,containers);
                 setBl(bl,containerBlMap,vehicleMap,amendSerialNoMap,manifestAmendmentDto);
                 if(!containers.isEmpty()){
                     saveContainer(containers,bl);
                 }
-                if(!vehicleMap.isEmpty()){
-                    saveVehicles(vehicleMap, amendSerialNoMap,bl);
-                }
-                this.createEdNotice(manifestAmendmentDto);
             }
 
         } catch (Exception exception) {
@@ -133,6 +132,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         amendGeneral.setFirstRegisterDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
         amendGeneral.setSubmitDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
         amendGeneral.setLastUpdateId("TESWS");
+        exImportAmendGeneralRepository.save(amendGeneral);
 
     }
 
@@ -207,11 +207,12 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         amendBl.setTasacControlNumber(bl.getTasacControlNumber());
             String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
             amendBl.setAmendSerialNumber(suffix);
-        Optional<InImportManifest> opt = inImportManifestRepository.findFirstByCommunicationAgreedId(manifestAmendmentDto.getCommunicationAgreedId());
-        if(opt.isPresent()){
-            InImportManifest inImportManifest= opt.get();
-            amendBl.setFirstDestinationPlace(inImportManifest.getDestinationPort());
-        }
+            Optional<ExImportMasterBl> opt=exImportMasterBlRepository.
+                    findFirstByMrnAndMasterBillOfLading(manifestAmendmentDto.getMrn(),bl.getMasterBillOfLading());
+            if(opt.isPresent()){
+                ExImportMasterBl masterBl=opt.get();
+                amendBl.setFirstDestinationPlace(masterBl.getPlaceOfDestination());
+            }
         exImportAmendBlRepository.save(amendBl);
     }
 
@@ -229,7 +230,8 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
            cn.setProcessType("M");
            DateFormat df = new SimpleDateFormat("yy");
            cn.setAmendYear(df.format(Calendar.getInstance().getTime()));
-           cn.setAmendSerialNumber("");
+           String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
+           cn.setAmendSerialNumber(suffix);
            cn.setContainerSize(container.getContainerSize());
            cn.setTypeOfContainer("C");
            if(bl.getHouseBillOfLading()!= null){
@@ -242,8 +244,6 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
            cn.setFreightIndicator(container.getFreightIndicator());
            cn.setMaximumTemperature(container.getMaximumTemperature());
            cn.setMinimumTemperature(container.getMinimumTemperature());
-           String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
-           cn.setAmendSerialNumber(suffix);
            int i = 0;
            int l = 0;
            if (container.getSealNumbers() != null && !container.getSealNumbers().isEmpty()){
@@ -279,9 +279,6 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
        }
     }
 
-    private void saveVehicles(Map<String, Map<String, String>> vehicleMap,
-                              Map<String, Map<String, String>> amendSerialNoMap, Bl bl) {
-    }
 
     private String getTradeType(Bl bl) {
         String tradeType = bl.getTradeType();
