@@ -10,7 +10,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ManifestAmendmentResponseStatus implements Serializable {
+public class ManifestAmendmentApprovalResponseStatus implements Serializable {
         private String communicationAgreedId;
         private String noticeDate;
         private String amendmentReference;

@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ManifestResponseStatus {
+public class ManifestApprovalResponseStatus {
 	private String messageReferenceNumber;
 	private String communicationAgreedId;
 	private String mrn;
