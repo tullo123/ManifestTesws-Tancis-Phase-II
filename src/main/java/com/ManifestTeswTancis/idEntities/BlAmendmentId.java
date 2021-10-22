@@ -12,22 +12,11 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 public class BlAmendmentId  implements Serializable{
-	
 	private static final long serialVersionUID = 2492961508424042418L;
-
-	
 	private String declatantTin;
-
-
 	private Integer amendYear;
-
-
 	private String processType;
-
-
 	private String amendSerialNumber;
-	
-	
 	private String billOfLading;
 
 }
