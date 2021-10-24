@@ -15,7 +15,7 @@ import java.util.Date;
 @ToString
 @Entity
 @DynamicUpdate
-@Table(name = "TTANCISINT.CM_MF_AMENDMENT_STG_TBL")
+@Table(name = "TANCISINT.CM_MF_AMENDMENT_STG_TBL")
 @IdClass(ManifestAmendStagingTblId.class)
 public class ManifestAmendmentApprovalStatus {
     @Id

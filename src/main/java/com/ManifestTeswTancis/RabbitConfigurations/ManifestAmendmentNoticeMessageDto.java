@@ -1,6 +1,6 @@
 package com.ManifestTeswTancis.RabbitConfigurations;
 
-import com.ManifestTeswTancis.dtos.ManifestAmendmentDto;
+import com.ManifestTeswTancis.Response.ManifestAmendmentApprovalResponseStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,12 +9,12 @@ import lombok.ToString;
 import java.io.Serializable;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
-public class ManifestAmendmentMessageDto implements Serializable {
+public class ManifestAmendmentNoticeMessageDto implements Serializable {
     private String messageName;
     private String requestId;
     private String callbackUrl;
-    private ManifestAmendmentDto payload;
+    private ManifestAmendmentApprovalResponseStatus payload;
 }

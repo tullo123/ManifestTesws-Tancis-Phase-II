@@ -28,9 +28,10 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
     final InImportManifestRepository inImportManifestRepository;
     CommonOrdinalEntity commonOrdinalEntity;
     final ExImportMasterBlRepository exImportMasterBlRepository;
+    final ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository;
 
    @Autowired
-    public ExImportManifestAmendServiceImpl(AmendItemContainerRepository amendItemContainerRepository, BlGoodItemsRepository blGoodItemsRepository, EdNoticeRepository edNoticeRepository, ExImportAmendGeneralRepository exImportAmendGeneralRepository, ExImportAmendItemRepository importAmendItemRepository, ExImportAmendBlRepository exImportAmendBlRepository, ExImportManifestRepository exImportManifestRepository, CoCompanyCodeRepository coCompanyCodeRepository, CommonOrdinalRepository commonOrdinalRepository, InImportManifestRepository inImportManifestRepository, ExImportMasterBlRepository exImportMasterBlRepository) {
+    public ExImportManifestAmendServiceImpl(AmendItemContainerRepository amendItemContainerRepository, BlGoodItemsRepository blGoodItemsRepository, EdNoticeRepository edNoticeRepository, ExImportAmendGeneralRepository exImportAmendGeneralRepository, ExImportAmendItemRepository importAmendItemRepository, ExImportAmendBlRepository exImportAmendBlRepository, ExImportManifestRepository exImportManifestRepository, CoCompanyCodeRepository coCompanyCodeRepository, CommonOrdinalRepository commonOrdinalRepository, InImportManifestRepository inImportManifestRepository, ExImportMasterBlRepository exImportMasterBlRepository, ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository) {
         this.amendItemContainerRepository = amendItemContainerRepository;
         this.blGoodItemsRepository = blGoodItemsRepository;
         this.edNoticeRepository = edNoticeRepository;
@@ -42,6 +43,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
        this.commonOrdinalRepository = commonOrdinalRepository;
        this.inImportManifestRepository = inImportManifestRepository;
        this.exImportMasterBlRepository = exImportMasterBlRepository;
+       this.manifestAmendmentApprovalStatusRepository = manifestAmendmentApprovalStatusRepository;
    }
 
     @Override
@@ -57,15 +59,13 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
                     findFirstByMrn(manifestAmendmentDto.getMrn());
             if(optional.isPresent()){
                 Bl bl = manifestAmendmentDto.getBl();
-                Map<String, Map<String, String>> containerBlMap = new HashMap<>();
-                Map<String, Map<String, String>> amendSerialNoMap = new HashMap<>();
-                Map<String, Map<String, String>> vehicleMap = new HashMap<>();
                 List<Containers> containers= manifestAmendmentDto.getContainers();
                 this.createEdNotice(manifestAmendmentDto);
-                saveGeneralAmendment(bl,manifestAmendmentDto,containers);
-                setBl(bl,containerBlMap,vehicleMap,amendSerialNoMap,manifestAmendmentDto);
-                if(!containers.isEmpty()){
-                    saveContainer(containers,bl);
+                saveGeneralAmendment(bl,manifestAmendmentDto);
+                if(manifestAmendmentDto.getBl()!=null){
+                    saveBl(bl,manifestAmendmentDto);
+                }else if(manifestAmendmentDto.getContainers()!=null){
+                    saveContainers(containers,bl);
                 }
             }
 
@@ -78,7 +78,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         return responseData;
     }
 
-    private void saveGeneralAmendment(Bl bl, ManifestAmendmentDto manifestAmendmentDto,List<Containers> containers) {
+    private void saveGeneralAmendment(Bl bl, ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendGeneral amendGeneral = new ExImportAmendGeneral();
         Optional<CoCompanyCodeEntity> optional=coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
         if(optional.isPresent()){
@@ -99,32 +99,35 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             amendGeneral.setCustomOfficeCode(amend.getCustomOfficeCode());
         }
         amendGeneral.setMrn(manifestAmendmentDto.getMrn());
-        if(bl.getAction().equalsIgnoreCase("ADD")){
-            if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()!=null){
+        if(manifestAmendmentDto.getAmendType().equalsIgnoreCase("ADD_BL")){
+            if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()!=null && bl.getForwarderCode()!=null){
                 amendGeneral.setAmendType("HA");
-            }else if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()== null){
+            }else if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()== null && bl.getForwarderCode()==null){
                 amendGeneral.setAmendType("MA");
             }
-        }else if(bl.getAction().equalsIgnoreCase("AMEND")){
-            if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()!=null){
+        }else if(manifestAmendmentDto.getAmendType().equalsIgnoreCase("AMEND_BL")){
+            if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()!=null && bl.getForwarderCode()!=null){
                 amendGeneral.setAmendType("HM");
-            }else if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()== null){
+            }else if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()== null && bl.getForwarderCode()==null){
                 amendGeneral.setAmendType("MM");
             }
-        }else if(bl.getAction().equalsIgnoreCase("DELETE")){
-            if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()!=null){
+        }else if(manifestAmendmentDto.getAmendType().equalsIgnoreCase("DELETE_BL")){
+            if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()!=null && bl.getForwarderCode()!=null){
                 amendGeneral.setAmendType("HD");
-            }else if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()== null){
+            }else if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()== null && bl.getForwarderCode()==null){
                 amendGeneral.setAmendType("MD");
             }
-        }else if(bl.getAction().equalsIgnoreCase("AMEND") && bl.getPlaceOfDelivery()!=null){
+        }else if(manifestAmendmentDto.getAmendType().equalsIgnoreCase("AMEND_BL") && bl.getPlaceOfDelivery()!=null){
                amendGeneral.setAmendType("TI");
-        }for (Containers container : containers) {
-            if(container.getAction().equalsIgnoreCase("AMEND")){
+        }if(manifestAmendmentDto.getAmendType().equalsIgnoreCase("ADD_CONTAINER")){
+                amendGeneral.setAmendType("CA");
+        }else if(manifestAmendmentDto.getAmendType().equalsIgnoreCase("AMEND_CONTAINER")){
                 amendGeneral.setAmendType("CM");
-            }
-
+        }else if(manifestAmendmentDto.getAmendType().equalsIgnoreCase("DELETE_CONTAINER")){
+                amendGeneral.setAmendType("CD");
         }
+
+
         amendGeneral.setAmendReasonCode("01");
         amendGeneral.setDeclarantCode(bl.getShippingAgentCode());
         amendGeneral.setDeclarantName(bl.getShippingAgentName());
@@ -136,8 +139,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
 
     }
 
-    private void setBl(Bl bl, Map<String, Map<String, String>> blMap, Map<String, Map<String, String>> containerBlMap,
-                       Map<String, Map<String, String>> vehicleMap,ManifestAmendmentDto manifestAmendmentDto) {
+    private void saveBl(Bl bl, ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendBl amendBl = new ExImportAmendBl();
         BlMeasurement blMeasurement =new BlMeasurement();
         Optional<CoCompanyCodeEntity> optional=coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
@@ -218,7 +220,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
 
 
 
-    private void saveContainer(List<Containers> containers, Bl bl) {
+    private void saveContainers(List<Containers> containers, Bl bl) {
        for (Containers container : containers) {
            ExImportAmendBlContainer cn= new ExImportAmendBlContainer();
            Optional<CoCompanyCodeEntity> optional=coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
@@ -336,8 +338,16 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         else {
             System.out.println("Manifest Amendment with This Mrn is not present in TANCIS");
         }
-
-
+        ManifestAmendmentApprovalStatus manifestAmendmentApprovalStatus = new ManifestAmendmentApprovalStatus();
+        manifestAmendmentApprovalStatus.setMrn(manifestAmendmentDto.getMrn());
+        manifestAmendmentApprovalStatus.setCommunicationAgreedId(manifestAmendmentApprovalStatus.getCommunicationAgreedId());
+        manifestAmendmentApprovalStatus.setAmendReference(manifestAmendmentDto.getAmendmentReference());
+        manifestAmendmentApprovalStatus.setAmendDate(manifestAmendmentApprovalStatus.getAmendDate());
+        manifestAmendmentApprovalStatus.setVoyageNumber(manifestAmendmentDto.getVoyageNumber());
+        manifestAmendmentApprovalStatus.setReceivedNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+        manifestAmendmentApprovalStatus.setLastUpdateId("TESWS");
+        manifestAmendmentApprovalStatus.setFirstRegisterId("TESWS");
+        manifestAmendmentApprovalStatusRepository.save(manifestAmendmentApprovalStatus);
     }
 
     private String generatedDocumentNo(String tin) {
