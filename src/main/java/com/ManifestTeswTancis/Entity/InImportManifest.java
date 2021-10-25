@@ -33,12 +33,6 @@ public class InImportManifest implements Serializable {
     @Column(name = "CUSTOMS_OFFICE_CD")
     private String customOfficeCode;
 
-    @Column(name = "CONTROL_REFERENCE_NO")
-    private String controlReferenceNumber;
-
-    @Column(name = "APPLICATION_REFERENCE_NO")
-    private String applicationReferenceNumber;
-
     @Column(name = "TERMINAL_OPERATOR_CD")
     private String terminalOperatorCode;
 
@@ -47,9 +41,6 @@ public class InImportManifest implements Serializable {
 
     @Column(name = "TPA_UID")
     private String communicationAgreedId;
-
-    @Column(name = "MESSAGE_TYPE_CD")
-    private String messageReferenceNumber;
 
     @Column(name = "IMO_NO")
     private String transportMeansId;

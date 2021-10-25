@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -46,12 +48,14 @@ public class ManifestAmendmentApprovalStatus {
     private String receivedNoticeDate;
 
     @Column(name="FIRST_REGISTER_DT")
+    @CreationTimestamp
     private Date firstRegisterDate;
 
     @Column(name="FIRST_REGISTER_ID")
     private String firstRegisterId;
 
     @Column(name="LAST_UPDATE_DT")
+    @UpdateTimestamp
     private Date lastUpdateDate;
 
     @Column(name="LAST_UPDATE_ID")

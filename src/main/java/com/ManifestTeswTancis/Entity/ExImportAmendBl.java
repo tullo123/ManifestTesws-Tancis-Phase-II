@@ -49,23 +49,11 @@ public class ExImportAmendBl implements Serializable {
 	@Column(name = "BL_PACKAGE")
 	private Double blPackage;
 
-	@Column(name = "AUDIT_STATUS")
-	private String auditStatus;
-
-	@Column(name = "AUDITOR")
-	private String auditor;
-
-	@Column(name="CONSOLIDATED_STATUS")
-	private String consolidatedStatus;
-
 	@Column(name = "CARGO_CLASSIFICATION")
 	private String tradeType;
 
 	@Column(name = "SHIPPING_AGENT_CD")
 	private String shippingAgentCode;
-
-	@Column(name = "TASAC_CONTROL_NUMBER")
-	private String tasacControlNumber;
 
 	@Column(name = "FORWARDER_CD")
 	private String forwarderCode;
