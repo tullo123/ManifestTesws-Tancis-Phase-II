@@ -113,13 +113,10 @@ public class CheckSubmittedManifestStatusImpl {
 
 
     private String getStatus(String processingStatus) {
-        if (processingStatus.contentEquals("E")) {
-            return "A";
+        if (processingStatus.contentEquals("B")) {
+            return "RECEIVED";
         } else if (processingStatus.contentEquals("F")) {
             return "REJECT";
-
-        } else if (processingStatus.contentEquals("B")){
-            return "RECEIVED";
         }
         else {
             return processingStatus;

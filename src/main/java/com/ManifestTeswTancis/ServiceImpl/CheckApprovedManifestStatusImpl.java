@@ -149,11 +149,6 @@ public class CheckApprovedManifestStatusImpl {
 	private String getStatus(String s) {
 		if (s.contentEquals("E")) {
 			return "A";
-		} else if (s.contentEquals("F")) {
-			return "REJECT";
-
-		} else if (s.contentEquals("B")){
-			return "RECEIVED";
 		}
 		else {
 			return s;
