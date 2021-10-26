@@ -59,13 +59,13 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             if (optional.isPresent()) {
                 Bl bl = manifestAmendmentDto.getBl();
                 List<Containers> containers = manifestAmendmentDto.getContainers();
-                this.createEdNotice(manifestAmendmentDto, bl);
                 saveGeneralAmendment(bl, manifestAmendmentDto);
                 if (manifestAmendmentDto.getBl() != null) {
                     saveBl(bl, manifestAmendmentDto);
                 } else if (!manifestAmendmentDto.getContainers().isEmpty()) {
                     saveContainers(containers, bl);
                 }
+                this.createEdNotice(manifestAmendmentDto, bl);
             }
 
         } catch (Exception exception) {
@@ -160,6 +160,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
 
     private void saveBl(Bl bl, ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendBl amendBl = new ExImportAmendBl();
+        ManifestAmendmentApprovalStatus manifestAmendmentApprovalStatus= new ManifestAmendmentApprovalStatus(manifestAmendmentDto);
         BlMeasurement blMeasurement = new BlMeasurement();
         Optional<CoCompanyCodeEntity> optional = coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
         if (optional.isPresent()) {
@@ -195,6 +196,9 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         amendBl.setNotifyTin(bl.getNotifyTin());
         amendBl.setNotifyName(bl.getNotifyName());
         amendBl.setNotifyTel(bl.getNotifyTel());
+        manifestAmendmentApprovalStatus.setCommunicationAgreedId(manifestAmendmentDto.getCommunicationAgreedId());
+        manifestAmendmentApprovalStatus.setMrn(manifestAmendmentDto.getMrn());
+        manifestAmendmentApprovalStatus.setAmendReference(manifestAmendmentDto.getAmendmentReference());
         amendBl.setNotifyAddress(bl.getNotifyAddress());
         amendBl.setDescription(bl.getBlDescription());
         amendBl.setBlPackage(blMeasurement.getPkQuantity());
@@ -242,6 +246,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             amendBl.setFirstDestinationPlace(masterBl.getPlaceOfDestination());
         }
         exImportAmendBlRepository.save(amendBl);
+        manifestAmendmentApprovalStatusRepository.save(manifestAmendmentApprovalStatus);
     }
 
 

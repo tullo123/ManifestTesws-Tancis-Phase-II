@@ -1,5 +1,7 @@
 package com.ManifestTeswTancis.Entity;
 
+import com.ManifestTeswTancis.Util.DateFormatter;
+import com.ManifestTeswTancis.dtos.ManifestAmendmentDto;
 import com.ManifestTeswTancis.idEntities.ManifestAmendStagingTblId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +12,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 @Data
 @NoArgsConstructor
@@ -60,4 +63,15 @@ public class ManifestAmendmentApprovalStatus {
 
     @Column(name="LAST_UPDATE_ID")
     private String lastUpdateId;
+
+    public ManifestAmendmentApprovalStatus(ManifestAmendmentDto manifestAmendmentDto){
+        this.mrn=manifestAmendmentDto.getMrn();
+        this.communicationAgreedId=manifestAmendmentDto.getCommunicationAgreedId();
+        this.amendReference=manifestAmendmentDto.getAmendmentReference();
+        this.amendDate=manifestAmendmentDto.getAmendDate();
+        this.voyageNumber=manifestAmendmentDto.getVoyageNumber();
+        this.receivedNoticeDate= DateFormatter.getTeSWSLocalDate(LocalDateTime.now());
+        this.firstRegisterId="TESWS";
+        this.lastUpdateId="TESWS";
+    }
 }
