@@ -117,6 +117,13 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             amendGeneral.setCustomOfficeCode(amend.getCustomOfficeCode());
         }
         amendGeneral.setMrn(manifestAmendmentDto.getMrn());
+        String crn=bl.getCrn().trim();
+        if(crn.length()==15) {
+            amendGeneral.setMsn(bl.getCrn().substring(11, 15));
+        }else if (crn.length()==18){
+            amendGeneral.setHsn(bl.getCrn().substring(15,18));
+        }
+
         if (manifestAmendmentDto.getAmendType().equalsIgnoreCase("ADD_BL")) {
             if (bl.getMasterBillOfLading() != null && bl.getHouseBillOfLading() != null && bl.getForwarderCode() != null) {
                 amendGeneral.setAmendType("HA");

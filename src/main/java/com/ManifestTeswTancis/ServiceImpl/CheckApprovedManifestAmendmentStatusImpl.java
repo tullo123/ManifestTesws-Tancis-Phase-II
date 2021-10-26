@@ -8,7 +8,6 @@ import com.ManifestTeswTancis.Repository.*;
 import com.ManifestTeswTancis.Response.ManifestAmendmentApprovalResponseStatus;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.Util.ManifestAmendmentStatus;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -60,7 +59,11 @@ public class CheckApprovedManifestAmendmentStatusImpl {
                     manifestAmendmentApprovalResponseStatus.setApprovalStatus(getStatus(general.getProcessingStatus()));
                     manifestAmendmentApprovalResponseStatus.setMsn(general.getMsn());
                     manifestAmendmentApprovalResponseStatus.setHsn(general.getHsn());
-                    manifestAmendmentApprovalResponseStatus.setCrn(general.getMrn()+general.getMsn()+general.getHsn());
+                    if(general.getHsn()!=null){
+                        manifestAmendmentApprovalResponseStatus.setCrn(general.getMrn()+general.getMsn()+general.getHsn());
+                    }else{
+                        manifestAmendmentApprovalResponseStatus.setCrn(general.getMrn()+general.getMsn());
+                    }
                     manifestAmendmentApprovalResponseStatus.setComment(general.getAuditComment());
                     ma.setApprovedStatus(true);
                     manifestAmendmentApprovalStatusRepository.save(ma);
@@ -80,7 +83,7 @@ public class CheckApprovedManifestAmendmentStatusImpl {
             MessageDto messageDto = new MessageDto();
             ManifestAmendmentNoticeMessageDto manifestAmendmentNoticeMessageDto = new ManifestAmendmentNoticeMessageDto();
             manifestAmendmentNoticeMessageDto.setMessageName(MessageNames.MANIFEST_AMENDMENT_NOTICE);
-            RequestIdDto requestIdDto = mapper.readValue((JsonParser) getId(), RequestIdDto.class);
+            RequestIdDto requestIdDto = mapper.readValue( getId(), RequestIdDto.class);
             manifestAmendmentNoticeMessageDto.setRequestId(requestIdDto.getMessageId());
             messageDto.setPayload(manifestAmendmentApprovalResponseStatus);
             AcknowledgementDto queueResponse = rabbitMqMessageProducer.
@@ -107,7 +110,7 @@ public class CheckApprovedManifestAmendmentStatusImpl {
         return "success";
     }
 
-    private Object getId() throws IOException {
+    private String getId() throws IOException {
         String url = "http://192.168.30.200:7074/GetId";
         HttpGet request = new HttpGet(url);
         CloseableHttpClient client = HttpClients.createDefault();

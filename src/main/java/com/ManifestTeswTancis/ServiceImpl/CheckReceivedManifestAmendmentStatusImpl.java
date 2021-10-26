@@ -10,7 +10,6 @@ import com.ManifestTeswTancis.Repository.QueueMessageStatusRepository;
 import com.ManifestTeswTancis.Response.ManifestAmendmentReceivedRejectedStatus;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.Util.ManifestAmendmentStatus;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -62,7 +61,11 @@ public class CheckReceivedManifestAmendmentStatusImpl {
                     manifestAmendmentReceivedRejectedStatus.setStatus(getStatus(general.getProcessingStatus()));
                     manifestAmendmentReceivedRejectedStatus.setMsn(general.getMsn());
                     manifestAmendmentReceivedRejectedStatus.setHsn(general.getHsn());
-                    manifestAmendmentReceivedRejectedStatus.setCrn(general.getMrn()+general.getMsn()+general.getHsn());
+                    if(general.getHsn()!=null){
+                        manifestAmendmentReceivedRejectedStatus.setCrn(general.getMrn()+general.getMsn()+general.getHsn());
+                    }else{
+                        manifestAmendmentReceivedRejectedStatus.setCrn(general.getMrn()+general.getMsn());
+                    }
                     manifestAmendmentReceivedRejectedStatus.setComment(general.getAuditComment());
                     ma.setReceivedNoticeSent(true);
                     ma.setReceivedNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
@@ -82,7 +85,7 @@ public class CheckReceivedManifestAmendmentStatusImpl {
             MessageDto messageDto = new MessageDto();
             ManifestAmendmentStatusMessageDto manifestAmendmentStatusMessageDto = new ManifestAmendmentStatusMessageDto();
             manifestAmendmentStatusMessageDto.setMessageName(MessageNames.MANIFEST_AMENDMENT_STATUS);
-            RequestIdDto requestIdDto = mapper.readValue((JsonParser) getId(), RequestIdDto.class);
+            RequestIdDto requestIdDto = mapper.readValue(getId(), RequestIdDto.class);
             manifestAmendmentStatusMessageDto.setRequestId(requestIdDto.getMessageId());
             messageDto.setPayload(manifestAmendmentReceivedRejectedStatus);
             AcknowledgementDto queueResponse = rabbitMqMessageProducer.
@@ -108,7 +111,8 @@ public class CheckReceivedManifestAmendmentStatusImpl {
         }
         return "success";
     }
-    private Object getId() throws IOException {
+
+    private String getId() throws IOException {
         String url = "http://192.168.30.200:7074/GetId";
         HttpGet request = new HttpGet(url);
         CloseableHttpClient client = HttpClients.createDefault();
@@ -117,6 +121,8 @@ public class CheckReceivedManifestAmendmentStatusImpl {
 
         return EntityUtils.toString(entity);
     }
+
+
     public String getStatus(String processingStatus) {
         if(processingStatus.contentEquals("B")){
             return "RECEIVED";
