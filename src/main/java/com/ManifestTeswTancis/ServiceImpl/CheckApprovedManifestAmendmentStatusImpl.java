@@ -54,7 +54,7 @@ public class CheckApprovedManifestAmendmentStatusImpl {
                     manifestAmendmentApprovalResponseStatus.setCommunicationAgreedId(ma.getCommunicationAgreedId());
                     manifestAmendmentApprovalResponseStatus.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     manifestAmendmentApprovalResponseStatus.setAmendmentReference(ma.getAmendReference());
-                    manifestAmendmentApprovalResponseStatus.setMrn(ma.getMrn());
+                    manifestAmendmentApprovalResponseStatus.setMrn(general.getMrn());
                     manifestAmendmentApprovalResponseStatus.setVoyageNumber(ma.getVoyageNumber());
                     manifestAmendmentApprovalResponseStatus.setApprovalStatus(getStatus(general.getProcessingStatus()));
                     manifestAmendmentApprovalResponseStatus.setMsn(general.getMsn());

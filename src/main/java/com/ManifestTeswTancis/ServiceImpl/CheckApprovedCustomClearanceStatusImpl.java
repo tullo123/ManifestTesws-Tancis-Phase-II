@@ -72,19 +72,6 @@ public class CheckApprovedCustomClearanceStatusImpl {
         }
 
     }
-
-
-    private String getStatus(String processingStatus) {
-        if (processingStatus.contentEquals("D")) {
-            return "A";
-        } else if (processingStatus.contentEquals("R")) {
-            return "REJECTED";
-        } else if (processingStatus.contentEquals("B")) {
-            return "RECEIVED";
-        } else return processingStatus;
-    }
-
-
     private String sendApprovalNoticeToQueue(CustomClearanceApprovalResponse customClearanceApprovalResponse) {
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -127,6 +114,15 @@ public class CheckApprovedCustomClearanceStatusImpl {
         HttpEntity entity = response.getEntity();
 
         return EntityUtils.toString(entity);
+    }
+    private String getStatus(String processingStatus) {
+        if (processingStatus.contentEquals("D")) {
+            return "A";
+        } else if (processingStatus.contentEquals("R")) {
+            return "REJECTED";
+        } else if (processingStatus.contentEquals("B")) {
+            return "RECEIVED";
+        } else return processingStatus;
     }
 }
 
