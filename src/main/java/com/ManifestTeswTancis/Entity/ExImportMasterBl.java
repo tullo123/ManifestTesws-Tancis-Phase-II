@@ -178,6 +178,9 @@ public class ExImportMasterBl {
 	@Column(name = "LAST_UPDATE_ID")
 	private String lastUpdateId;
 
+	@Column(name = "CONTAINER_COUNT")
+	private Integer containerCount;
+
 
 	public ExImportMasterBl(BillOfLadingDto billOfLadingDto) {
 		this.masterBillOfLading = billOfLadingDto.getMasterBillOfLading();

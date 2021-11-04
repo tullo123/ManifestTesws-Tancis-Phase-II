@@ -25,9 +25,9 @@ public class Containers implements Serializable {
     private String widthUnit;
     private String height;
     private String heightUnit;
-    private String volume;
+    private Double volume;
     private String volumeUnit;
-    private String weight;
+    private Double weight;
     private String weightUnit;
     private String grossWeight;
     private String grossWeightUnit;

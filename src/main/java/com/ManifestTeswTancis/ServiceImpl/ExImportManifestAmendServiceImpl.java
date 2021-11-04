@@ -28,9 +28,10 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
     final InImportManifestRepository inImportManifestRepository;
     final ExImportMasterBlRepository exImportMasterBlRepository;
     final ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository;
+    final ExImportBlContainerRepository exImportBlContainerRepository;
 
     @Autowired
-    public ExImportManifestAmendServiceImpl(AmendItemContainerRepository amendItemContainerRepository, BlGoodItemsRepository blGoodItemsRepository, EdNoticeRepository edNoticeRepository, ExImportAmendGeneralRepository exImportAmendGeneralRepository, ExImportAmendItemRepository importAmendItemRepository, ExImportAmendBlRepository exImportAmendBlRepository, ExImportManifestRepository exImportManifestRepository, CoCompanyCodeRepository coCompanyCodeRepository, CommonOrdinalRepository commonOrdinalRepository, InImportManifestRepository inImportManifestRepository, ExImportMasterBlRepository exImportMasterBlRepository, ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository) {
+    public ExImportManifestAmendServiceImpl(AmendItemContainerRepository amendItemContainerRepository, BlGoodItemsRepository blGoodItemsRepository, EdNoticeRepository edNoticeRepository, ExImportAmendGeneralRepository exImportAmendGeneralRepository, ExImportAmendItemRepository importAmendItemRepository, ExImportAmendBlRepository exImportAmendBlRepository, ExImportManifestRepository exImportManifestRepository, CoCompanyCodeRepository coCompanyCodeRepository, CommonOrdinalRepository commonOrdinalRepository, InImportManifestRepository inImportManifestRepository, ExImportMasterBlRepository exImportMasterBlRepository, ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository, ExImportBlContainerRepository exImportBlContainerRepository) {
         this.amendItemContainerRepository = amendItemContainerRepository;
         this.blGoodItemsRepository = blGoodItemsRepository;
         this.edNoticeRepository = edNoticeRepository;
@@ -43,6 +44,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         this.inImportManifestRepository = inImportManifestRepository;
         this.exImportMasterBlRepository = exImportMasterBlRepository;
         this.manifestAmendmentApprovalStatusRepository = manifestAmendmentApprovalStatusRepository;
+        this.exImportBlContainerRepository = exImportBlContainerRepository;
     }
 
     @Override
@@ -60,9 +62,17 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
                 Bl bl = manifestAmendmentDto.getBl();
                 List<Containers> containers = manifestAmendmentDto.getContainers();
                 saveGeneralAmendment(bl, manifestAmendmentDto);
-                if (manifestAmendmentDto.getBl() != null) {
+                if(manifestAmendmentDto.getBl()!=null && manifestAmendmentDto.getAmendType().
+                        equalsIgnoreCase("AMEND_BL")){
+                    saveAmendBl(bl,manifestAmendmentDto);
+                }
+                else if (manifestAmendmentDto.getBl() != null) {
                     saveBl(bl, manifestAmendmentDto);
-                } else if (!manifestAmendmentDto.getContainers().isEmpty()) {
+                }if(!manifestAmendmentDto.getContainers().isEmpty() && manifestAmendmentDto.getAmendType().
+                        equalsIgnoreCase("AMEND_CONTAINER")){
+                    saveAmendedContainerDetail(containers, bl,manifestAmendmentDto);
+                }
+                 else if (!manifestAmendmentDto.getContainers().isEmpty()) {
                     saveContainers(containers, bl);
                 }
                 this.createEdNotice(manifestAmendmentDto, bl);
@@ -76,6 +86,9 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
 
         return responseData;
     }
+
+
+
 
     private void saveGeneralAmendment(Bl bl, ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendGeneral amendGeneral = new ExImportAmendGeneral();
@@ -256,6 +269,208 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         manifestAmendmentApprovalStatusRepository.save(manifestAmendmentApprovalStatus);
     }
 
+    private void saveAmendBl(Bl bl, ManifestAmendmentDto manifestAmendmentDto) {
+        ExImportAmendItem amendItem = new ExImportAmendItem();
+        BlMeasurement blMeasurement = new BlMeasurement();
+        Optional<CoCompanyCodeEntity> optional = coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
+        if (optional.isPresent()) {
+            CoCompanyCodeEntity entity = optional.get();
+            amendItem.setDeclarantTin(entity.getTin());
+        }
+        DateFormat df = new SimpleDateFormat("yyyy");
+        amendItem.setAmendYear(df.format(Calendar.getInstance().getTime()));
+        amendItem.setProcessType("M");
+        CommonOrdinalEntity commonOrdinalEntity = new CommonOrdinalEntity();
+        DateFormat dT = new SimpleDateFormat("yyyy");
+        String prefix =amendItem.getDeclarantTin()+ dT.format(Calendar.getInstance().getTime()) + "M";
+        Optional<CommonOrdinalEntity> optionalCommonOrdinalEntity = commonOrdinalRepository.findByPrefix(prefix);
+        if (optionalCommonOrdinalEntity.isPresent()) {
+            commonOrdinalEntity = optionalCommonOrdinalEntity.get();
+            commonOrdinalEntity.setSequenceNo(commonOrdinalEntity.getSequenceNo());
+        }
+        String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
+        amendItem.setAmendSerialNumber(suffix);
+        amendItem.setLastUpdateId("TESWS");
+        amendItem.setFirstRegisterId("TESWS");
+        if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()==null){
+            Optional<ExImportMasterBl> opt=exImportMasterBlRepository.
+                    findFirstByMrnAndMasterBillOfLading(manifestAmendmentDto.getMrn(), bl.getMasterBillOfLading());
+            if(opt.isPresent()){
+                ExImportMasterBl blItem = opt.get();
+                if(!bl.getPlaceOfDelivery().equalsIgnoreCase(blItem.getPlaceOfDelivery())){
+                    amendItem.setBeforeItemComments(blItem.getPlaceOfDelivery());
+                    amendItem.setAfterItemComments(bl.getPlaceOfDelivery());
+                    amendItem.setItemNumber("B01");
+                }else if(!bl.getBlDescription().equalsIgnoreCase(blItem.getBlDescription())){
+                    amendItem.setBeforeItemComments(blItem.getBlDescription());
+                    amendItem.setAfterItemComments(bl.getBlDescription());
+                    amendItem.setItemNumber("B02");
+                }else if(!blMeasurement.getPkQuantity().equals(blItem.getBlPackage())){
+                    amendItem.setBeforeItemComments(blItem.getBlPackage().toString());
+                    amendItem.setAfterItemComments(blMeasurement.getPkQuantity().toString());
+                    amendItem.setItemNumber("B03");
+                }else if(!blMeasurement.getPkType().equalsIgnoreCase(blItem.getPackageUnit())){
+                    amendItem.setBeforeItemComments(blItem.getPackageUnit());
+                    amendItem.setAfterItemComments(blMeasurement.getPkType());
+                    amendItem.setItemNumber("B04");
+                }else if(!bl.getBlSummary().getBlGrossWeight().equals(blItem.getBlGrossWeight())){
+                    amendItem.setBeforeItemComments(blItem.getBlGrossWeight().toString());
+                    amendItem.setAfterItemComments(bl.getBlSummary().getBlGrossWeight().toString());
+                    amendItem.setItemNumber("B05");
+                }else if(!blMeasurement.getWeightUnit().equalsIgnoreCase(blItem.getGrossWeightUnit())){
+                    amendItem.setBeforeItemComments(blItem.getGrossWeightUnit());
+                    amendItem.setAfterItemComments(blMeasurement.getWeightUnit());
+                    amendItem.setItemNumber("B06");
+                }else if(!blMeasurement.getVolume().equals(blItem.getVolume())){
+                    amendItem.setBeforeItemComments(blItem.getVolume().toString());
+                    amendItem.setAfterItemComments(blMeasurement.getVolume().toString());
+                    amendItem.setItemNumber("B07");
+                }else if(!blMeasurement.getVolumeUnit().equalsIgnoreCase(blItem.getVolumeUnit())){
+                    amendItem.setBeforeItemComments(blItem.getVolumeUnit());
+                    amendItem.setAfterItemComments(blMeasurement.getVolumeUnit());
+                    amendItem.setItemNumber("B08");
+                }else if(!bl.getExporterName().equalsIgnoreCase(blItem.getExporterName())){
+                    amendItem.setBeforeItemComments(blItem.getExporterName());
+                    amendItem.setAfterItemComments(bl.getExporterName());
+                    amendItem.setItemNumber("B09");
+                }else if(!bl.getExporterTel().equalsIgnoreCase(blItem.getExporterTel())){
+                    amendItem.setBeforeItemComments(blItem.getExporterTel());
+                    amendItem.setAfterItemComments(bl.getExporterTel());
+                    amendItem.setItemNumber("B10");
+                }else if(!bl.getExporterAddress().equalsIgnoreCase(blItem.getExporterAddress())){
+                    amendItem.setBeforeItemComments(blItem.getExporterAddress());
+                    amendItem.setAfterItemComments(bl.getExporterAddress());
+                    amendItem.setItemNumber("B11");
+                }else if(!bl.getExporterTin().equalsIgnoreCase(blItem.getExporterTin())){
+                    amendItem.setBeforeItemComments(blItem.getExporterTin());
+                    amendItem.setAfterItemComments(bl.getExporterTin());
+                    amendItem.setItemNumber("B12");
+                }else if(!bl.getConsigneeName().equalsIgnoreCase(blItem.getConsigneeName())){
+                    amendItem.setBeforeItemComments(blItem.getConsigneeName());
+                    amendItem.setAfterItemComments(bl.getConsigneeName());
+                    amendItem.setItemNumber("B13");
+                }else if(!bl.getConsigneeTel().equalsIgnoreCase(blItem.getConsigneeTel())){
+                    amendItem.setBeforeItemComments(blItem.getConsigneeTel());
+                    amendItem.setAfterItemComments(bl.getConsigneeTel());
+                    amendItem.setItemNumber("B14");
+                }else if(!bl.getConsigneeAddress().equalsIgnoreCase(blItem.getConsigneeAddress())){
+                    amendItem.setBeforeItemComments(blItem.getConsigneeAddress());
+                    amendItem.setAfterItemComments(bl.getConsigneeAddress());
+                    amendItem.setItemNumber("B15");
+                }else if(!bl.getConsigneeTin().equalsIgnoreCase(blItem.getConsigneeTin())){
+                    amendItem.setBeforeItemComments(blItem.getConsigneeTin());
+                    amendItem.setAfterItemComments(bl.getConsigneeTin());
+                    amendItem.setItemNumber("B16");
+                }else if(!bl.getNotifyName().equalsIgnoreCase(blItem.getNotifyName())){
+                    amendItem.setBeforeItemComments(blItem.getNotifyName());
+                    amendItem.setAfterItemComments(bl.getNotifyName());
+                    amendItem.setItemNumber("B17");
+                }else if(!bl.getNotifyTel().equalsIgnoreCase(blItem.getNotifyTel())){
+                    amendItem.setBeforeItemComments(blItem.getNotifyTel());
+                    amendItem.setAfterItemComments(bl.getNotifyTel());
+                    amendItem.setItemNumber("B18");
+                }else if(!bl.getNotifyAddress().equalsIgnoreCase(blItem.getNotifyAddress())){
+                    amendItem.setBeforeItemComments(blItem.getNotifyAddress());
+                    amendItem.setAfterItemComments(bl.getNotifyAddress());
+                    amendItem.setItemNumber("B19");
+                }else if(!bl.getNotifyTin().equalsIgnoreCase(blItem.getNotifyTin())){
+                    amendItem.setBeforeItemComments(blItem.getNotifyTin());
+                    amendItem.setAfterItemComments(bl.getNotifyTin());
+                    amendItem.setItemNumber("B20");
+                }else if(!bl.getBlSummary().getNumberOfContainers().equals(blItem.getContainerCount())){
+                    amendItem.setBeforeItemComments(blItem.getContainerCount().toString());
+                    amendItem.setAfterItemComments(bl.getBlSummary().getNumberOfContainers().toString());
+                    amendItem.setItemNumber("B21");
+                }
+            }
+        }
+        importAmendItemRepository.save(amendItem);
+    }
+    private void saveAmendedContainerDetail(List<Containers> containers, Bl bl, ManifestAmendmentDto manifestAmendmentDto) {
+        ExImportAmendItemContainer itemContainer = new ExImportAmendItemContainer();
+        BlMeasurement blMeasurement = new BlMeasurement();
+        for (Containers container : containers) {
+            Optional<CoCompanyCodeEntity> optional = coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
+            if (optional.isPresent()) {
+                CoCompanyCodeEntity entity = optional.get();
+                itemContainer.setDeclarantTin(entity.getTin());
+            }
+            DateFormat df = new SimpleDateFormat("yyyy");
+            itemContainer.setAmendYear(df.format(Calendar.getInstance().getTime()));
+            itemContainer.setProcessType("M");
+            CommonOrdinalEntity commonOrdinalEntity = new CommonOrdinalEntity();
+            DateFormat dT = new SimpleDateFormat("yyyy");
+            String prefix =itemContainer.getDeclarantTin()+ dT.format(Calendar.getInstance().getTime()) + "M";
+            Optional<CommonOrdinalEntity> optionalCommonOrdinalEntity = commonOrdinalRepository.findByPrefix(prefix);
+            if (optionalCommonOrdinalEntity.isPresent()) {
+                commonOrdinalEntity = optionalCommonOrdinalEntity.get();
+                commonOrdinalEntity.setSequenceNo(commonOrdinalEntity.getSequenceNo());
+            }
+            String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
+            itemContainer.setAmendSerialNumber(suffix);
+            itemContainer.setItemNumber("C00");
+            itemContainer.setContainerNumber(container.getContainerNo());
+            itemContainer.setContainerSize(container.getContainerSize());
+            if(itemContainer.getContainerType().startsWith("C")){
+                itemContainer.setContainerType("C");
+            }else if(itemContainer.getContainerType().startsWith("V")){
+                itemContainer.setContainerType("V");
+            }
+            itemContainer.setContainerWeight(container.getWeight());
+            itemContainer.setWeightUnit(container.getWeightUnit());
+            itemContainer.setContainerVolume(container.getVolume());
+            itemContainer.setVolumeUnit(container.getVolumeUnit());
+            itemContainer.setFreightIndicator(container.getFreightIndicator());
+            itemContainer.setMaximumTemperature(container.getMaximumTemperature());
+            itemContainer.setMinimumTemperature(container.getMinimumTemperature());
+            itemContainer.setImdgCode(blMeasurement.getImdgClass());
+            itemContainer.setFirstRegisterId("TESWS");
+            itemContainer.setLastUpdateId("TESWS");
+            Optional<ExImportBlContainer> option=exImportBlContainerRepository.
+                    findByMrnAndMasterBillOfLading(manifestAmendmentDto.getMrn(),bl.getMasterBillOfLading());
+            if(option.isPresent()){
+                ExImportBlContainer blContainer= option.get();
+                itemContainer.setOldContainerNumber(blContainer.getContainerNo());
+            }
+
+            if(container.getTemperatureType() != null) {
+                itemContainer.setReferPlugYn(container.getTemperatureType().contentEquals("1")?"Y":"N");
+            }
+            int i = 0;
+            int l = 0;
+            if (container.getSealNumbers() != null && !container.getSealNumbers().isEmpty()) {
+                for (SealNumberDto sealNumber : container.getSealNumbers()) {
+                    if (sealNumber.getSealNumberIssuerType() != null
+                            && sealNumber.getSealNumberIssuerType().contentEquals("CU")) {
+                        if (i == 0) {
+                            itemContainer.setCustomSealNumberOne(sealNumber.getSealNumber());
+                            i++;
+                        } else if (i == 1) {
+                            itemContainer.setCustomSealNumberTwo(sealNumber.getSealNumber());
+                            i++;
+                        } else if (i == 2) {
+                            itemContainer.setCustomSealNumberThree(sealNumber.getSealNumber());
+                            i++;
+                        }
+                    } else {
+                        if (l == 0) {
+                            itemContainer.setSealNumberOne(sealNumber.getSealNumber());
+                            l++;
+                        } else if (l == 1) {
+                            itemContainer.setSealNumberTwo(sealNumber.getSealNumber());
+                            l++;
+                        } else if (l == 2) {
+                            itemContainer.setSealNumberThree(sealNumber.getSealNumber());
+                            l++;
+                        }
+                    }
+
+                }
+            }
+
+        }
+        amendItemContainerRepository.save(itemContainer);
+    }
 
     private void saveContainers(List<Containers> containers, Bl bl) {
         for (Containers container : containers) {
@@ -267,7 +482,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             }
             cn.setContainerNo(container.getContainerNo());
             cn.setProcessType("M");
-            DateFormat df = new SimpleDateFormat("yy");
+            DateFormat df = new SimpleDateFormat("yyyy");
             cn.setAmendYear(df.format(Calendar.getInstance().getTime()));
             CommonOrdinalEntity commonOrdinalEntity = new CommonOrdinalEntity();
             String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
