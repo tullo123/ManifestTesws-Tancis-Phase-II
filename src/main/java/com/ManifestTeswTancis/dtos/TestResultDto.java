@@ -2,7 +2,7 @@ package com.ManifestTeswTancis.dtos;
 
 import java.io.Serializable;
 
-public class TestResult implements Serializable {
+public class TestResultDto implements Serializable {
 	private static final long serialVersionUID = -7257874289243411657L;
 /*	private String densityAt15;
 	private String densityAt20;
@@ -11,34 +11,34 @@ public class TestResult implements Serializable {
 	private String appearance;
 	*/
 	private String testMethod;
-    public Tests getDensityAt15() {
+    public TestsDto getDensityAt15() {
 		return densityAt15;
 	}
-	public void setDensityAt15(Tests densityAt15) {
+	public void setDensityAt15(TestsDto densityAt15) {
 		this.densityAt15 = densityAt15;
 	}
-	public Tests getDensityAt20() {
+	public TestsDto getDensityAt20() {
 		return densityAt20;
 	}
-	public void setDensityAt20(Tests densityAt20) {
+	public void setDensityAt20(TestsDto densityAt20) {
 		this.densityAt20 = densityAt20;
 	}
-	public Tests getCommercialColour() {
+	public TestsDto getCommercialColour() {
 		return commercialColour;
 	}
-	public void setCommercialColour(Tests commercialColour) {
+	public void setCommercialColour(TestsDto commercialColour) {
 		this.commercialColour = commercialColour;
 	}
-	public Tests getDoctorTest() {
+	public TestsDto getDoctorTest() {
 		return doctorTest;
 	}
-	public void setDoctorTest(Tests doctorTest) {
+	public void setDoctorTest(TestsDto doctorTest) {
 		this.doctorTest = doctorTest;
 	}
-	public Tests getAppearance() {
+	public TestsDto getAppearance() {
 		return appearance;
 	}
-	public void setAppearance(Tests appearance) {
+	public void setAppearance(TestsDto appearance) {
 		this.appearance = appearance;
 	}
 	public static long getSerialversionuid() {
@@ -49,18 +49,18 @@ public class TestResult implements Serializable {
     private String result;
     private String passFail;
     
-    private Tests densityAt15;
-    private Tests densityAt20;
-    private Tests commercialColour;
-    private Tests doctorTest;
-    private Tests appearance;
+    private TestsDto densityAt15;
+    private TestsDto densityAt20;
+    private TestsDto commercialColour;
+    private TestsDto doctorTest;
+    private TestsDto appearance;
     
-	public TestResult() {
-		densityAt15 = new Tests();
-	    densityAt20 = new Tests();
-	    commercialColour = new Tests();
-	    doctorTest = new Tests();
-	    appearance = new Tests();
+	public TestResultDto() {
+		densityAt15 = new TestsDto();
+	    densityAt20 = new TestsDto();
+	    commercialColour = new TestsDto();
+	    doctorTest = new TestsDto();
+	    appearance = new TestsDto();
 	}
 /*
 	public TestResult(String densityAt15, String densityAt20, String commercialColour, String doctorTest,

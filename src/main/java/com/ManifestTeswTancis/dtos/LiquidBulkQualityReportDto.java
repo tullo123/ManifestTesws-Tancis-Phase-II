@@ -15,7 +15,7 @@ public class LiquidBulkQualityReportDto implements Serializable {
 	private String controlReferenceNumber;
 	private String tbsCodeNo;
 	private String mrn;
-	private String call_id;
+	private String communicationAgreedId;
 	private String client;
 	private String clientAddress;
 	private String sample;
@@ -32,6 +32,6 @@ public class LiquidBulkQualityReportDto implements Serializable {
 	private String requirement;
 	private String result;
 	private String passFail;
-	private TestResult testResult = new TestResult();
+	private TestResultDto testResultDto = new TestResultDto();
 
 }

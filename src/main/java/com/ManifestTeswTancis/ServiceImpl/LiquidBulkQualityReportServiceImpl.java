@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class LiquidBulkQualityReportServiceImpl implements LiquidBulkQualityReportService {
-	
-
-	final
-	LiquidBulkRepotRepository liquidBulkRepotRepository;
+	final LiquidBulkRepotRepository liquidBulkRepotRepository;
 
 	public LiquidBulkQualityReportServiceImpl(LiquidBulkRepotRepository liquidBulkRepotRepository) {
 		this.liquidBulkRepotRepository = liquidBulkRepotRepository;
@@ -35,7 +32,7 @@ public class LiquidBulkQualityReportServiceImpl implements LiquidBulkQualityRepo
 		LiquidBulkQualityReportEntity lb = new LiquidBulkQualityReportEntity();
 		lb.setTbsCodeNo(liquidBulkQualityReportDto.getTbsCodeNo());
 		lb.setMrn(liquidBulkQualityReportDto.getMrn());
-		lb.setCall_id(liquidBulkQualityReportDto.getCall_id());
+		lb.setCommunicationAgreedId(liquidBulkQualityReportDto.getCommunicationAgreedId());
 		lb.setClient(liquidBulkQualityReportDto.getClient());
 		lb.setClientAddress(liquidBulkQualityReportDto.getClientAddress());
 		lb.setSample(liquidBulkQualityReportDto.getSample());
@@ -49,26 +46,26 @@ public class LiquidBulkQualityReportServiceImpl implements LiquidBulkQualityRepo
 		lb.setTestMethod(liquidBulkQualityReportDto.getTestMethod());
 		lb.setReportUrl(liquidBulkQualityReportDto.getReportUrl());
 		lb.setReportDate(liquidBulkQualityReportDto.getReportDate());
-		lb.setTestMethodDensityAt15(liquidBulkQualityReportDto.getTestResult().getDensityAt15().getTestMethod());
-		lb.setRequirementDensityAt15(liquidBulkQualityReportDto.getTestResult().getDensityAt15().getRequirement());
-		lb.setResultDensityAt15(liquidBulkQualityReportDto.getTestResult().getDensityAt15().getResult());
-		lb.setPassFailAtDensity15(liquidBulkQualityReportDto.getTestResult().getDensityAt15().getPassFail());
-		lb.setTestMethodDensityAt20(liquidBulkQualityReportDto.getTestResult().getDensityAt20().getTestMethod());
-		lb.setRequirementDensityAt20(liquidBulkQualityReportDto.getTestResult().getDensityAt20().getRequirement());
-		lb.setResultDensityAt20(liquidBulkQualityReportDto.getTestResult().getDensityAt20().getResult());
-		lb.setPassFailDensityAt20(liquidBulkQualityReportDto.getTestResult().getDensityAt20().getPassFail());
-		lb.setTestMethodCommercialColour(liquidBulkQualityReportDto.getTestResult().getCommercialColour().getTestMethod());
-		lb.setRequirementCommercialColour(liquidBulkQualityReportDto.getTestResult().getCommercialColour().getRequirement());
-		lb.setResultCommercialColour(liquidBulkQualityReportDto.getTestResult().getCommercialColour().getResult());
-		lb.setPassFailCommercialColour(liquidBulkQualityReportDto.getTestResult().getCommercialColour().getPassFail());
-		lb.setTestMethodDoctorTest(liquidBulkQualityReportDto.getTestResult().getDoctorTest().getTestMethod());
-		lb.setRequirementDoctorTest(liquidBulkQualityReportDto.getTestResult().getDoctorTest().getRequirement());
-		lb.setResultDoctorTest(liquidBulkQualityReportDto.getTestResult().getDoctorTest().getResult());
-		lb.setPassFailDoctorTest(liquidBulkQualityReportDto.getTestResult().getDoctorTest().getPassFail());
-		lb.setTestMethodAppearance(liquidBulkQualityReportDto.getTestResult().getAppearance().getTestMethod());
-		lb.setRequirementAppearance(liquidBulkQualityReportDto.getTestResult().getAppearance().getRequirement());
-		lb.setResultAppearance(liquidBulkQualityReportDto.getTestResult().getAppearance().getResult());
-		lb.setPassFailAppearance(liquidBulkQualityReportDto.getTestResult().getAppearance().getPassFail());
+		lb.setTestMethodDensityAt15(liquidBulkQualityReportDto.getTestResultDto().getDensityAt15().getTestMethod());
+		lb.setRequirementDensityAt15(liquidBulkQualityReportDto.getTestResultDto().getDensityAt15().getRequirement());
+		lb.setResultDensityAt15(liquidBulkQualityReportDto.getTestResultDto().getDensityAt15().getResult());
+		lb.setPassFailAtDensity15(liquidBulkQualityReportDto.getTestResultDto().getDensityAt15().getPassFail());
+		lb.setTestMethodDensityAt20(liquidBulkQualityReportDto.getTestResultDto().getDensityAt20().getTestMethod());
+		lb.setRequirementDensityAt20(liquidBulkQualityReportDto.getTestResultDto().getDensityAt20().getRequirement());
+		lb.setResultDensityAt20(liquidBulkQualityReportDto.getTestResultDto().getDensityAt20().getResult());
+		lb.setPassFailDensityAt20(liquidBulkQualityReportDto.getTestResultDto().getDensityAt20().getPassFail());
+		lb.setTestMethodCommercialColour(liquidBulkQualityReportDto.getTestResultDto().getCommercialColour().getTestMethod());
+		lb.setRequirementCommercialColour(liquidBulkQualityReportDto.getTestResultDto().getCommercialColour().getRequirement());
+		lb.setResultCommercialColour(liquidBulkQualityReportDto.getTestResultDto().getCommercialColour().getResult());
+		lb.setPassFailCommercialColour(liquidBulkQualityReportDto.getTestResultDto().getCommercialColour().getPassFail());
+		lb.setTestMethodDoctorTest(liquidBulkQualityReportDto.getTestResultDto().getDoctorTest().getTestMethod());
+		lb.setRequirementDoctorTest(liquidBulkQualityReportDto.getTestResultDto().getDoctorTest().getRequirement());
+		lb.setResultDoctorTest(liquidBulkQualityReportDto.getTestResultDto().getDoctorTest().getResult());
+		lb.setPassFailDoctorTest(liquidBulkQualityReportDto.getTestResultDto().getDoctorTest().getPassFail());
+		lb.setTestMethodAppearance(liquidBulkQualityReportDto.getTestResultDto().getAppearance().getTestMethod());
+		lb.setRequirementAppearance(liquidBulkQualityReportDto.getTestResultDto().getAppearance().getRequirement());
+		lb.setResultAppearance(liquidBulkQualityReportDto.getTestResultDto().getAppearance().getResult());
+		lb.setPassFailAppearance(liquidBulkQualityReportDto.getTestResultDto().getAppearance().getPassFail());
 		lb.setFirstRegisterId("TESWS");
 		lb.setLastUpdateId("TESWS");
 		liquidBulkRepotRepository.save(lb);

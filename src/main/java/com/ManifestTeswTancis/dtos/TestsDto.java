@@ -10,7 +10,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Tests implements Serializable {
+public class TestsDto implements Serializable {
 	private static final long serialVersionUID = 8926773317345367046L;
 	private String testMethod;
 	private String requirement;

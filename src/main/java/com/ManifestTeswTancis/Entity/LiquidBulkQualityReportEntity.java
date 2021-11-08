@@ -31,7 +31,7 @@ public class LiquidBulkQualityReportEntity implements Serializable {
 	private String mrn;
 
 	@Column(name = "CALL_ID")
-	private String call_id;
+	private String communicationAgreedId;
 
 	@Column(name = "CLIENT")
 	private String client;
