@@ -69,6 +69,8 @@ public class LiquidBulkQualityReportServiceImpl implements LiquidBulkQualityRepo
 		lb.setRequirementAppearance(liquidBulkQualityReportDto.getTestResult().getAppearance().getRequirement());
 		lb.setResultAppearance(liquidBulkQualityReportDto.getTestResult().getAppearance().getResult());
 		lb.setPassFailAppearance(liquidBulkQualityReportDto.getTestResult().getAppearance().getPassFail());
+		lb.setFirstRegisterId("TESWS");
+		lb.setLastUpdateId("TESWS");
 		liquidBulkRepotRepository.save(lb);
 		return response;
 	}

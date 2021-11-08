@@ -15,8 +15,7 @@ import java.util.Optional;
 @Transactional
 public class LiquidBulkFinalDischargeServiceImpl implements LiquidBulkFinalDischargeService {
 
-    final
-    LiquidBulkDischargeSequenceRepository liquidBulkDischargeSequenceRepository;
+    final LiquidBulkDischargeSequenceRepository liquidBulkDischargeSequenceRepository;
 
     public LiquidBulkFinalDischargeServiceImpl(LiquidBulkDischargeSequenceRepository liquidBulkDischargeSequenceRepository) {
         this.liquidBulkDischargeSequenceRepository = liquidBulkDischargeSequenceRepository;

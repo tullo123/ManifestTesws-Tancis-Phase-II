@@ -15,8 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class LiquidBulkDischargeSequenceServiceImpl implements LiquidBulkDischargeSequenceService {
 
-    final
-	LiquidBulkDischargeSequenceRepository liquidBulkDischargeSequenceRepository;
+    final LiquidBulkDischargeSequenceRepository liquidBulkDischargeSequenceRepository;
 
 	public LiquidBulkDischargeSequenceServiceImpl(LiquidBulkDischargeSequenceRepository liquidBulkDischargeSequenceRepository) {
 		this.liquidBulkDischargeSequenceRepository = liquidBulkDischargeSequenceRepository;
