@@ -61,7 +61,7 @@ public class CheckReceivedCustomClearanceStatusImpl {
                     ca.setNoticeDate(customClearanceStatus.getNoticeDate());
                     ca.setReceivedNoticeSent(true);
                     customClearanceApprovalRepository.save(ca);
-                    String response = sendStatusNoticeToQueue(customClearanceStatus);
+                    String response = sendCustomsClearanceStatusNoticeToQueue(customClearanceStatus);
                     System.out.println("--------------- Status Notice Response ---------------\n" + response);
                 }
             }
@@ -69,7 +69,7 @@ public class CheckReceivedCustomClearanceStatusImpl {
         }
     }
 
-    private String sendStatusNoticeToQueue(CustomClearanceStatus customClearanceStatus) {
+    private String sendCustomsClearanceStatusNoticeToQueue(CustomClearanceStatus customClearanceStatus) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String payload = mapper.writeValueAsString(customClearanceStatus);

@@ -70,14 +70,14 @@ public class CheckReceivedManifestAmendmentStatusImpl {
                     ma.setReceivedNoticeSent(true);
                     ma.setReceivedNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     manifestAmendmentApprovalStatusRepository.save(ma);
-                    String response = sendReceivedNoticeToQueue(manifestAmendmentReceivedRejectedStatus);
+                    String response = sendReceivedManifestAmendmentNoticeToQueue(manifestAmendmentReceivedRejectedStatus);
                     System.out.println("--------------- Received/Failed Notice Response --------------\n" + response);
                 }
             }
         }
     }
 
-    private String sendReceivedNoticeToQueue(ManifestAmendmentReceivedRejectedStatus manifestAmendmentReceivedRejectedStatus) {
+    private String sendReceivedManifestAmendmentNoticeToQueue(ManifestAmendmentReceivedRejectedStatus manifestAmendmentReceivedRejectedStatus) {
         ObjectMapper mapper = new ObjectMapper();
         try{
             String payload = mapper.writeValueAsString(manifestAmendmentReceivedRejectedStatus);
