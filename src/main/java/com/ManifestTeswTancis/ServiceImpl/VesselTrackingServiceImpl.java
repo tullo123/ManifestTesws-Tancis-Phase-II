@@ -4,7 +4,7 @@ import com.ManifestTeswTancis.Repository.InImportManifestRepository;
 import com.ManifestTeswTancis.Service.VesselTrackingService;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
-import com.ManifestTeswTancis.dtos.VesselTrackingNotice;
+import com.ManifestTeswTancis.dtos.VesselTrackingNoticeDto;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -20,23 +20,23 @@ public class VesselTrackingServiceImpl implements VesselTrackingService {
     }
 
     @Override
-    public TeswsResponse vesselTracking(VesselTrackingNotice vesselTrackingNotice) {
+    public TeswsResponse vesselTracking(VesselTrackingNoticeDto vesselTrackingNoticeDto) {
         TeswsResponse response = new TeswsResponse();
         response.setAckType("VESSEL_TRACKING_NOTICE");
-        response.setRefId(vesselTrackingNotice.getCommunicationAgreedId());
+        response.setRefId(vesselTrackingNoticeDto.getCommunicationAgreedId());
         response.setCode(200);
         response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
         response.setDescription("Vessel Tracking Received Successfully");
 
         try {
             Optional<InImportManifest> optional=inImportManifestRepository.
-                    findFirstByCommunicationAgreedId(vesselTrackingNotice.getCommunicationAgreedId());
+                    findFirstByCommunicationAgreedId(vesselTrackingNoticeDto.getCommunicationAgreedId());
             if (optional.isPresent()) {
                 InImportManifest inImportManifest=optional.get();
                 inImportManifest.setActualDateTimeOfArrival(DateFormatter.getDateFromLocalDateTime
-                        (vesselTrackingNotice.getActualDatetimeOfArrival()));
+                        (vesselTrackingNoticeDto.getActualDatetimeOfArrival()));
                 inImportManifest.setActualDatetimeOfDeparture(DateFormatter.getDateFromLocalDateTime
-                        (vesselTrackingNotice.getActualDatetimeOfDeparture()));
+                        (vesselTrackingNoticeDto.getActualDatetimeOfDeparture()));
                 inImportManifestRepository.save(inImportManifest);
             }
 

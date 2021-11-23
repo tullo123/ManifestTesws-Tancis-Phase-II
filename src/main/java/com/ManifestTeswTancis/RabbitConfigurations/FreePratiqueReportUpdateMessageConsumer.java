@@ -1,7 +1,7 @@
 package com.ManifestTeswTancis.RabbitConfigurations;
 
 import com.ManifestTeswTancis.ServiceImpl.UpdateFreePartiqueServiceImpl;
-import com.ManifestTeswTancis.dtos.FreePratiqueReport;
+import com.ManifestTeswTancis.dtos.FreePratiqueReportDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +29,9 @@ public class FreePratiqueReportUpdateMessageConsumer {
             LOGGER.info("[FreePratiqueReportUpdateMessageConsumer.listen()] - [Start: {}]", MESSAGE_NAME);
             FreePratiqueReportUpdateMessageDto freePratiqueReportUpdateMessageDto = objectMapper.readValue(message, FreePratiqueReportUpdateMessageDto.class);
             LOGGER.info("FreePratiqueReportUpdateMessageConsumer.listen()] - [FreePratiqueReportUpdateMessageConsumer: {}]", freePratiqueReportUpdateMessageDto);
-            FreePratiqueReport freePratiqueReport = freePratiqueReportUpdateMessageDto.getPayload();
-            System.out.println(freePratiqueReport);
-            updateFreePartiqueServiceImpl.updateFreePartiqueReport(freePratiqueReport);
+            FreePratiqueReportDto freePratiqueReportDto = freePratiqueReportUpdateMessageDto.getPayload();
+            System.out.println(freePratiqueReportDto);
+            updateFreePartiqueServiceImpl.updateFreePartiqueReport(freePratiqueReportDto);
             LOGGER.info("[FreePratiqueReportUpdateMessageConsumer.listen()] - [End: {}]", MESSAGE_NAME);
             TimeUnit.SECONDS.sleep(5);
         } catch (IOException ioe) {

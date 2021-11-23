@@ -5,13 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CustomClearanceDto {
+public class CustomClearanceDto implements Serializable {
      private String communicationAgreedId;
      private String vesselMaster;
      private String vesselMasterAddress;

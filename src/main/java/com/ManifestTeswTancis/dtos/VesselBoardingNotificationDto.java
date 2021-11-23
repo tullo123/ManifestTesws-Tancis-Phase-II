@@ -5,11 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class VesselBoardingNotificationDto {
+public class VesselBoardingNotificationDto implements Serializable {
     private String communicationAgreedId;
     private String vesselMaster;
     private String vesselMasterAddress;

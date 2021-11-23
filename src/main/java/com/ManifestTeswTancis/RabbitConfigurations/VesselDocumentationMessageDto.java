@@ -1,6 +1,6 @@
 package com.ManifestTeswTancis.RabbitConfigurations;
 
-import com.ManifestTeswTancis.dtos.VesselDocumentation;
+import com.ManifestTeswTancis.dtos.VesselDocumentationDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,5 +15,5 @@ public class VesselDocumentationMessageDto implements Serializable {
     private String messageName;
     private String requestId;
     private String callbackUrl;
-    private VesselDocumentation payload;
+    private VesselDocumentationDto payload;
 }

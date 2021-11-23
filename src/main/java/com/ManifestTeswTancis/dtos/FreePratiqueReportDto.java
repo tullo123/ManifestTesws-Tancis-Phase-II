@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class FreePratiqueReport implements Serializable {
+public class FreePratiqueReportDto implements Serializable {
     private String preparationDateTime;
     private String communicationAgreedId;
     private String vesselMaster;

@@ -143,32 +143,32 @@ public  class ManifestController  implements ManifestApi {
 	}
 
 	@Override
-	public ResponseEntity<TeswsResponse> vesselTracking(@Valid VesselTrackingNotice vesselTrackingNotice) {
-		TeswsResponse response =vesselTrackingService.vesselTracking(vesselTrackingNotice);
+	public ResponseEntity<TeswsResponse> vesselTracking(@Valid VesselTrackingNoticeDto vesselTrackingNoticeDto) {
+		TeswsResponse response =vesselTrackingService.vesselTracking(vesselTrackingNoticeDto);
 		return ResponseEntity.ok(response);
 	}
 
 	@Override
-	public ResponseEntity<TeswsResponse> freePartique(@Valid FreePratiqueReport freePratiqueReport) {
-		TeswsResponse response= freePartiqueService.freePartique(freePratiqueReport);
+	public ResponseEntity<TeswsResponse> freePartique(@Valid FreePratiqueReportDto freePratiqueReportDto) {
+		TeswsResponse response= freePartiqueService.freePartique(freePratiqueReportDto);
 		return ResponseEntity.ok(response);
 	}
 
 	@Override
-	public ResponseEntity<TeswsResponse> updateFreePartiqueReport(@Valid FreePratiqueReport freePratiqueReport) {
-		TeswsResponse response=updateFreePartiqueService.updateFreePartiqueReport(freePratiqueReport);
+	public ResponseEntity<TeswsResponse> updateFreePartiqueReport(@Valid FreePratiqueReportDto freePratiqueReportDto) {
+		TeswsResponse response=updateFreePartiqueService.updateFreePartiqueReport(freePratiqueReportDto);
 		return ResponseEntity.ok(response);
 	}
 
 	@Override
-	public ResponseEntity<TeswsResponse> vesselDocumentation(@Valid VesselDocumentation vesselDocumentation) {
-		TeswsResponse response=vesselDocumentationService.vesselDocumentationReceiving(vesselDocumentation);
+	public ResponseEntity<TeswsResponse> vesselDocumentation(@Valid VesselDocumentationDto vesselDocumentationDto) {
+		TeswsResponse response=vesselDocumentationService.vesselDocumentationReceiving(vesselDocumentationDto);
 		return ResponseEntity.ok(response);
 	}
 
 	@Override
-	public ResponseEntity<TeswsResponse> vesselDocumentationUpdate(@Valid VesselDocumentation vesselDocumentation) {
-		TeswsResponse response=vesselDocumentationUpdateService.vesselDocumentationUpdate(vesselDocumentation);
+	public ResponseEntity<TeswsResponse> vesselDocumentationUpdate(@Valid VesselDocumentationDto vesselDocumentationDto) {
+		TeswsResponse response=vesselDocumentationUpdateService.vesselDocumentationUpdate(vesselDocumentationDto);
 		return ResponseEntity.ok(response);
 	}
 

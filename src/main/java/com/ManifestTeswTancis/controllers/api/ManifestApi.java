@@ -88,27 +88,27 @@ public interface ManifestApi {
     @RequestMapping(value = "vessel/tracking/notice/v1", method = RequestMethod.POST,
             produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE })
-    ResponseEntity<TeswsResponse> vesselTracking(@RequestBody @Valid VesselTrackingNotice vesselTrackingNotice);
+    ResponseEntity<TeswsResponse> vesselTracking(@RequestBody @Valid VesselTrackingNoticeDto vesselTrackingNoticeDto);
 
     @RequestMapping(value = "freePratiqueReport/v1", method = RequestMethod.POST,
             produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE })
-    ResponseEntity<TeswsResponse> freePartique(@RequestBody @Valid FreePratiqueReport freePratiqueReport);
+    ResponseEntity<TeswsResponse> freePartique(@RequestBody @Valid FreePratiqueReportDto freePratiqueReportDto);
 
     @RequestMapping(value = "update/freePratiqueReport/v1", method = RequestMethod.POST,
             produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE })
-    ResponseEntity<TeswsResponse> updateFreePartiqueReport(@RequestBody @Valid FreePratiqueReport freePratiqueReport);
+    ResponseEntity<TeswsResponse> updateFreePartiqueReport(@RequestBody @Valid FreePratiqueReportDto freePratiqueReportDto);
 
     @RequestMapping(value = "vesselDocumentation/v1", method = RequestMethod.POST,
             produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE })
-    ResponseEntity<TeswsResponse> vesselDocumentation(@RequestBody @Valid VesselDocumentation vesselDocumentation);
+    ResponseEntity<TeswsResponse> vesselDocumentation(@RequestBody @Valid VesselDocumentationDto vesselDocumentationDto);
 
     @RequestMapping(value = "vesselDocumentation/update/v1", method = RequestMethod.POST,
             produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE })
-    ResponseEntity<TeswsResponse> vesselDocumentationUpdate(@RequestBody @Valid VesselDocumentation vesselDocumentation);
+    ResponseEntity<TeswsResponse> vesselDocumentationUpdate(@RequestBody @Valid VesselDocumentationDto vesselDocumentationDto);
 
 
 

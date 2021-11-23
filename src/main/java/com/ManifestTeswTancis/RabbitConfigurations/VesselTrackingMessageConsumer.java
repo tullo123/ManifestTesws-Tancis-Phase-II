@@ -1,7 +1,7 @@
 package com.ManifestTeswTancis.RabbitConfigurations;
 
 import com.ManifestTeswTancis.ServiceImpl.VesselTrackingServiceImpl;
-import com.ManifestTeswTancis.dtos.VesselTrackingNotice;
+import com.ManifestTeswTancis.dtos.VesselTrackingNoticeDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +29,9 @@ public class VesselTrackingMessageConsumer {
             LOGGER.info("[VesselTrackingMessageConsumer.listen()] - [Start: {}]", MESSAGE_NAME);
             VesselTrackingMessageNoticeDto vesselTrackingMessageNoticeDto = objectMapper.readValue(message, VesselTrackingMessageNoticeDto.class);
             LOGGER.info("VesselTrackingMessageConsumer.listen()] - [VesselTrackingMessageConsumer: {}]", vesselTrackingMessageNoticeDto);
-            VesselTrackingNotice vesselTrackingNotice = vesselTrackingMessageNoticeDto.getPayload();
-            System.out.println(vesselTrackingNotice);
-            vesselTrackingServiceImpl.vesselTracking(vesselTrackingNotice);
+            VesselTrackingNoticeDto vesselTrackingNoticeDto = vesselTrackingMessageNoticeDto.getPayload();
+            System.out.println(vesselTrackingNoticeDto);
+            vesselTrackingServiceImpl.vesselTracking(vesselTrackingNoticeDto);
             LOGGER.info("[VesselTrackingMessageConsumer.listen()] - [End: {}]", MESSAGE_NAME);
             TimeUnit.SECONDS.sleep(5);
         } catch (IOException ioe) {

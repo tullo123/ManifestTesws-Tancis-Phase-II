@@ -71,7 +71,7 @@ public  class PortCallIdServiceImpl implements PortCallIdService {
 				ExImportManifest exImportManifest = new ExImportManifest(callInfDetails);
 				ExportManifest exportManifest=new ExportManifest(callInfDetails);
 				exImportManifest.setMrn(generateMrn(exImportManifest.getCarrierId()));
-				exportManifest.setMrnOut(generatemrnOut(exportManifest.getCarrierId()));
+				exportManifest.setMrnOut(generateMrnOut(exportManifest.getCarrierId()));
 				if(exportManifest.getModeOfTransport().contentEquals("1")){
 					exportManifest.setModeOfTransport("10");
 				}
@@ -84,11 +84,7 @@ public  class PortCallIdServiceImpl implements PortCallIdService {
 				 exImportManifest.setBallast("N");
 				storedCallInfDetails = exImportManifestRepository.save(exImportManifest);
 				statusServiceImp.save(exImportManifest, callInfDetails.getControlReferenceNumber(), true, exportManifest);
-
-				if(storedCallInfDetails != null) {
-					submitCallInfoNotice(storedCallInfDetails,exportManifest);
-					//statusServiceImp.save(exImportManifest, callInfDetails.getControlReferenceNumber(), true);
-				}
+				submitCallInfoNotice(storedCallInfDetails,exportManifest);
 
 			} catch (Exception e) {
 				response.setDescription(e.getMessage());
@@ -184,7 +180,7 @@ private String generateMrn(String carrierCode) {
 	String suffix = String.format("%1$" + 6 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
 	return prefix +suffix;
 }
-	private String generatemrnOut(String carrierCode) {
+	private String generateMrnOut(String carrierCode) {
 		new CommonOrdinalEntity();
 		CommonOrdinalEntity commonOrdinalEntity;
 		DateFormat df = new SimpleDateFormat("yy");

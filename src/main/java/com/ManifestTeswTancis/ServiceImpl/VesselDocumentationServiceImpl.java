@@ -6,7 +6,7 @@ import com.ManifestTeswTancis.Service.VesselDocumentationService;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.DocumentDto;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
-import com.ManifestTeswTancis.dtos.VesselDocumentation;
+import com.ManifestTeswTancis.dtos.VesselDocumentationDto;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,41 +25,41 @@ public class VesselDocumentationServiceImpl implements VesselDocumentationServic
     }
 
     @Override
-    public TeswsResponse vesselDocumentationReceiving(VesselDocumentation vesselDocumentation) {
+    public TeswsResponse vesselDocumentationReceiving(VesselDocumentationDto vesselDocumentationDto) {
         TeswsResponse response = new TeswsResponse();
         response.setAckType("VESSEL_DOCUMENTATIONS");
-        response.setRefId(vesselDocumentation.getCommunicationAgreedId());
+        response.setRefId(vesselDocumentationDto.getCommunicationAgreedId());
         response.setCode(200);
         response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
         response.setDescription("Vessel Documentation Received Successfully");
 
         try{
             Optional<VesselDocumentationEntity> optional=vesselDocumentationRepository.
-                     findFirstByCommunicationAgreedId(vesselDocumentation.getCommunicationAgreedId());
+                     findFirstByCommunicationAgreedId(vesselDocumentationDto.getCommunicationAgreedId());
             if(!optional.isPresent()) {
                  VesselDocumentationEntity vessel = new VesselDocumentationEntity();
-                 vessel.setCommunicationAgreedId(vesselDocumentation.getCommunicationAgreedId());
-                 vessel.setControlReferenceNumber(vesselDocumentation.getControlReferenceNumber());
-                 vessel.setVesselMaster(vesselDocumentation.getVesselMaster());
-                 vessel.setVesselMasterAddress(vesselDocumentation.getVesselMasterAddress());
-                 vessel.setAgentCode(vesselDocumentation.getAgentCode());
-                 vessel.setAgentAddress(vesselDocumentation.getAgentAddress());
-                 vessel.setTerminalOperatorCode(vesselDocumentation.getTerminalOperatorCode());
-                 vessel.setVoyageNumber(vesselDocumentation.getVoyageNumber());
-                 vessel.setCarrierId(vesselDocumentation.getCarrierId());
-                 vessel.setCarrierName(vesselDocumentation.getCarrierName());
-                 vessel.setCallSign(vesselDocumentation.getCallSign());
-                 vessel.setTransportMeansId(vesselDocumentation.getTransportMeansId());
-                 vessel.setTransportMeansName(vesselDocumentation.getTransportMeansName());
-                 vessel.setTransportMeansNationality(vesselDocumentation.getTransportMeansNationality());
-                 vessel.setTerminal(vesselDocumentation.getTerminal());
-                 vessel.setDestinationPort(vesselDocumentation.getDestinationPort());
-                 vessel.setPortOfCall(vesselDocumentation.getPortOfCall());
-                 vessel.setNextPortOfCall(vesselDocumentation.getNextPortOfCall());
+                 vessel.setCommunicationAgreedId(vesselDocumentationDto.getCommunicationAgreedId());
+                 vessel.setControlReferenceNumber(vesselDocumentationDto.getControlReferenceNumber());
+                 vessel.setVesselMaster(vesselDocumentationDto.getVesselMaster());
+                 vessel.setVesselMasterAddress(vesselDocumentationDto.getVesselMasterAddress());
+                 vessel.setAgentCode(vesselDocumentationDto.getAgentCode());
+                 vessel.setAgentAddress(vesselDocumentationDto.getAgentAddress());
+                 vessel.setTerminalOperatorCode(vesselDocumentationDto.getTerminalOperatorCode());
+                 vessel.setVoyageNumber(vesselDocumentationDto.getVoyageNumber());
+                 vessel.setCarrierId(vesselDocumentationDto.getCarrierId());
+                 vessel.setCarrierName(vesselDocumentationDto.getCarrierName());
+                 vessel.setCallSign(vesselDocumentationDto.getCallSign());
+                 vessel.setTransportMeansId(vesselDocumentationDto.getTransportMeansId());
+                 vessel.setTransportMeansName(vesselDocumentationDto.getTransportMeansName());
+                 vessel.setTransportMeansNationality(vesselDocumentationDto.getTransportMeansNationality());
+                 vessel.setTerminal(vesselDocumentationDto.getTerminal());
+                 vessel.setDestinationPort(vesselDocumentationDto.getDestinationPort());
+                 vessel.setPortOfCall(vesselDocumentationDto.getPortOfCall());
+                 vessel.setNextPortOfCall(vesselDocumentationDto.getNextPortOfCall());
                  vessel.setLastUpdateId("TESWS");
                  vessel.setFirstRegisterId("TESWS");
 
-                for (DocumentDto documentDto : vesselDocumentation.getDocuments()) {
+                for (DocumentDto documentDto : vesselDocumentationDto.getDocuments()) {
                     vessel.setDocumentName(documentDto.getDocumentName());
                     vessel.setDocumentLink(documentDto.getDocumentLink());
                 }
@@ -69,7 +69,7 @@ public class VesselDocumentationServiceImpl implements VesselDocumentationServic
         } catch (Exception e) {
             e.printStackTrace();
         }
-        response.setDescription("Vessel Documentation with CommunicationAgreedId " + vesselDocumentation.getCommunicationAgreedId()
+        response.setDescription("Vessel Documentation with CommunicationAgreedId " + vesselDocumentationDto.getCommunicationAgreedId()
                 + " is already present in Tancis");
         response.setCode(405);
         return response;

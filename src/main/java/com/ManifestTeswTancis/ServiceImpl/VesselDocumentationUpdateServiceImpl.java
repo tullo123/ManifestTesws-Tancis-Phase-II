@@ -6,7 +6,7 @@ import com.ManifestTeswTancis.Service.VesselDocumentationUpdateService;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.DocumentDto;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
-import com.ManifestTeswTancis.dtos.VesselDocumentation;
+import com.ManifestTeswTancis.dtos.VesselDocumentationDto;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,35 +25,35 @@ public class VesselDocumentationUpdateServiceImpl implements VesselDocumentation
     }
 
     @Override
-    public TeswsResponse vesselDocumentationUpdate(VesselDocumentation vesselDocumentation) {
+    public TeswsResponse vesselDocumentationUpdate(VesselDocumentationDto vesselDocumentationDto) {
         TeswsResponse response = new TeswsResponse();
         response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-        response.setRefId(vesselDocumentation.getCommunicationAgreedId());
+        response.setRefId(vesselDocumentationDto.getCommunicationAgreedId());
         response.setDescription("Vessel Documentation Update Received Successfully");
         response.setAckType("VESSEL_DOCUMENTATIONS_UPDATE");
 
         try{
             Optional<VesselDocumentationEntity> optional=vesselDocumentationRepository.
-                    findFirstByCommunicationAgreedId(vesselDocumentation.getCommunicationAgreedId());
+                    findFirstByCommunicationAgreedId(vesselDocumentationDto.getCommunicationAgreedId());
             if(optional.isPresent()){
                 VesselDocumentationEntity vesselDocument= optional.get();
-                vesselDocument.setControlReferenceNumber(vesselDocumentation.getControlReferenceNumber());
-                vesselDocument.setVesselMaster(vesselDocumentation.getVesselMaster());
-                vesselDocument.setVesselMasterAddress(vesselDocumentation.getVesselMasterAddress());
-                vesselDocument.setAgentCode(vesselDocumentation.getAgentCode());
-                vesselDocument.setAgentAddress(vesselDocumentation.getAgentAddress());
-                vesselDocument.setTerminalOperatorCode(vesselDocumentation.getTerminalOperatorCode());
-                vesselDocument.setVoyageNumber(vesselDocumentation.getVoyageNumber());
-                vesselDocument.setCarrierId(vesselDocumentation.getCarrierId());
-                vesselDocument.setCarrierName(vesselDocumentation.getCarrierName());
-                vesselDocument.setCallSign(vesselDocumentation.getCallSign());
-                vesselDocument.setTransportMeansId(vesselDocumentation.getTransportMeansId());
-                vesselDocument.setTransportMeansName(vesselDocumentation.getTransportMeansName());
-                vesselDocument.setTransportMeansNationality(vesselDocumentation.getTransportMeansNationality());
-                vesselDocument.setTerminal(vesselDocumentation.getTerminal());
-                vesselDocument.setDestinationPort(vesselDocumentation.getDestinationPort());
+                vesselDocument.setControlReferenceNumber(vesselDocumentationDto.getControlReferenceNumber());
+                vesselDocument.setVesselMaster(vesselDocumentationDto.getVesselMaster());
+                vesselDocument.setVesselMasterAddress(vesselDocumentationDto.getVesselMasterAddress());
+                vesselDocument.setAgentCode(vesselDocumentationDto.getAgentCode());
+                vesselDocument.setAgentAddress(vesselDocumentationDto.getAgentAddress());
+                vesselDocument.setTerminalOperatorCode(vesselDocumentationDto.getTerminalOperatorCode());
+                vesselDocument.setVoyageNumber(vesselDocumentationDto.getVoyageNumber());
+                vesselDocument.setCarrierId(vesselDocumentationDto.getCarrierId());
+                vesselDocument.setCarrierName(vesselDocumentationDto.getCarrierName());
+                vesselDocument.setCallSign(vesselDocumentationDto.getCallSign());
+                vesselDocument.setTransportMeansId(vesselDocumentationDto.getTransportMeansId());
+                vesselDocument.setTransportMeansName(vesselDocumentationDto.getTransportMeansName());
+                vesselDocument.setTransportMeansNationality(vesselDocumentationDto.getTransportMeansNationality());
+                vesselDocument.setTerminal(vesselDocumentationDto.getTerminal());
+                vesselDocument.setDestinationPort(vesselDocumentationDto.getDestinationPort());
 
-                for(DocumentDto documentDto:vesselDocumentation.getDocuments()){
+                for(DocumentDto documentDto: vesselDocumentationDto.getDocuments()){
                     vesselDocument.setDocumentName(documentDto.getDocumentName());
                     vesselDocument.setDocumentLink(documentDto.getDocumentLink());
                 }

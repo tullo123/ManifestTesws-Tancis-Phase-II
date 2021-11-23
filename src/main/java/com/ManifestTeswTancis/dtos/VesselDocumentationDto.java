@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class VesselDocumentation implements Serializable {
+public class VesselDocumentationDto implements Serializable {
      private String preparationDateTime;
      private String communicationAgreedId;
      private String controlReferenceNumber;
