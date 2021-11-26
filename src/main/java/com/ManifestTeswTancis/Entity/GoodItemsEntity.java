@@ -37,7 +37,7 @@ public class GoodItemsEntity implements Serializable {
 
     @NotNull
     @Column(name = "GOOD_ITEM_NO")
-    private Integer goodsItemNo;
+    private String goodsItemNo;
 
     @Column(name = "GOOD_DESCRIPTIONS")
     private String description;

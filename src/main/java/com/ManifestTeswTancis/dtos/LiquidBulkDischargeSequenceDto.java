@@ -12,8 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class LiquidBulkDischargeSequence implements Serializable {
-	private static final long serialVersionUID = -5560619972028068859L;
+public class LiquidBulkDischargeSequenceDto implements Serializable {
 	private String refNo;
 	private String voyageNo;
 	private String vesselName;
@@ -23,6 +22,6 @@ public class LiquidBulkDischargeSequence implements Serializable {
 	private LocalDateTime refDate;
 	private Double blQnt;
 	private String oilType;
-	private List<PumpingSequence> pumpingSequence;
+	private List<PumpingSequenceDto> pumpingSequence;
 }
 

@@ -13,7 +13,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class LiquidBulkDischargeSequenceUpdateDto implements Serializable {
-	private static final long serialVersionUID = 8813889591984640144L;
 	private String refNo;
 	private String voyageNo;
 	private String mrn;

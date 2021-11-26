@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class PumpingSequenceFinalDischarge implements Serializable {
+public class PumpingSequenceFinalDischargeDto implements Serializable {
         private String terminal;
         private Double quantity;
         private LocalDateTime startDateTime;

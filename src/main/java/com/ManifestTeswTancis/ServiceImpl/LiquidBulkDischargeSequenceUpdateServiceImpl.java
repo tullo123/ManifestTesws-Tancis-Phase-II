@@ -13,6 +13,7 @@ import com.ManifestTeswTancis.dtos.TeswsResponse;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 public class LiquidBulkDischargeSequenceUpdateServiceImpl implements LiquidBulkDischargeSequenceUpdateService {
 
 	final LiquidBulkDischargeSequenceRepository liquidBulkDischargeSequenceRepository;
@@ -22,7 +23,6 @@ public class LiquidBulkDischargeSequenceUpdateServiceImpl implements LiquidBulkD
 	}
 
 	@Override
-	@Transactional
 	public TeswsResponse saveLiquidBulkDischargeSequenceUpdate(
 			LiquidBulkDischargeSequenceUpdateDto liquidBulkDischargeSequenceUpdateDto) {
 		TeswsResponse response = new TeswsResponse();

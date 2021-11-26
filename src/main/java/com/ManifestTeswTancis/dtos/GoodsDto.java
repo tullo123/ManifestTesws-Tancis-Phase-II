@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class GoodsDto implements Serializable {
-	 private Integer goodsItemNo;
+	 private String goodsItemNo;
      private String description;
      private String packingType;
      private Double packageQuantity;

@@ -114,9 +114,9 @@ public  class ManifestController  implements ManifestApi {
 	}
 	@Override
 	public ResponseEntity<TeswsResponse> saveLiquidBulkDischargeSequence(
-			LiquidBulkDischargeSequence liquidBulkDischargeSequence) {
+			LiquidBulkDischargeSequenceDto liquidBulkDischargeSequenceDto) {
 		//System.out.println(liquidBulkDischargeSequence.getPumpingSequence());
-		TeswsResponse response = liquidBulkDischargeSequenceService.saveLiquidBulkDischargeSequence(liquidBulkDischargeSequence);
+		TeswsResponse response = liquidBulkDischargeSequenceService.saveLiquidBulkDischargeSequence(liquidBulkDischargeSequenceDto);
 		//return null;
 		return ResponseEntity.ok(response);
 	}

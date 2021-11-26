@@ -25,5 +25,5 @@ public class LiquidBulkFinalDischargeSequence implements Serializable {
     private LocalDateTime refDate;
     private Double blQnt;
     private String oilType;
-    private List<PumpingSequenceFinalDischarge>pumpingSequenceFinal;
+    private List<PumpingSequenceFinalDischargeDto>pumpingSequenceFinal;
 }

@@ -13,7 +13,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class PumpingSequenceDto implements Serializable {
-	private static final long serialVersionUID = -7243803141042722111L;
 	private String terminal;
 	private Double quantity;
 	private LocalDateTime startDateTime;

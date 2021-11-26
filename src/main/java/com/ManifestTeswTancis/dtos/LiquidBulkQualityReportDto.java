@@ -1,6 +1,9 @@
 package com.ManifestTeswTancis.dtos;
 
 import java.io.Serializable;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,10 +14,15 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class LiquidBulkQualityReportDto implements Serializable {
-	private static final long serialVersionUID = 7244342455199470988L;
+	@NotNull(message="controlReferenceNumber should not be null")
+	@NotEmpty(message = "controlReferenceNumber should not be empty")
 	private String controlReferenceNumber;
 	private String tbsCodeNo;
+	@NotNull(message="mrn should not be null")
+	@NotEmpty(message = "mrn should not be empty")
 	private String mrn;
+	@NotNull(message="communicationAgreedId should not be null")
+	@NotEmpty(message = "communicationAgreedId should not be empty")
 	private String communicationAgreedId;
 	private String client;
 	private String clientAddress;
@@ -32,6 +40,6 @@ public class LiquidBulkQualityReportDto implements Serializable {
 	private String requirement;
 	private String result;
 	private String passFail;
-	private TestResultDto testResultDto = new TestResultDto();
+	private TestResultDto testResult;
 
 }
