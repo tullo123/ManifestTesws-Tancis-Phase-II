@@ -13,5 +13,5 @@ import java.io.Serializable;
 public class GoodItemsId implements Serializable {
     private String mrn;
     private String masterBillOfLading;
-    private Integer goodsItemNo;
+    private String goodsItemNo;
 }
