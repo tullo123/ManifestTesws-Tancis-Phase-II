@@ -59,7 +59,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             Optional<ExImportManifest> optional = exImportManifestRepository.
                     findFirstByMrn(manifestAmendmentDto.getMrn());
             if (optional.isPresent()) {
-                Bl bl = manifestAmendmentDto.getBl();
+                BlDto bl = manifestAmendmentDto.getBl();
                 List<Containers> containers = manifestAmendmentDto.getContainers();
                 saveGeneralAmendment(bl, manifestAmendmentDto);
                 if(manifestAmendmentDto.getBl()!=null && manifestAmendmentDto.getAmendType().
@@ -90,7 +90,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
 
 
 
-    private void saveGeneralAmendment(Bl bl, ManifestAmendmentDto manifestAmendmentDto) {
+    private void saveGeneralAmendment(BlDto bl, ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendGeneral amendGeneral = new ExImportAmendGeneral();
         CommonOrdinalEntity commonOrdinalEntity;
         Optional<CoCompanyCodeEntity> optional = coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
@@ -130,7 +130,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             amendGeneral.setCustomOfficeCode(amend.getCustomOfficeCode());
         }
         amendGeneral.setMrn(manifestAmendmentDto.getMrn());
-        String crn=bl.getCrn().trim();
+        String crn= bl.getCrn().trim();
         if(crn.length()==15) {
             amendGeneral.setMsn(bl.getCrn().substring(11, 15));
         }else if (crn.length()==18){
@@ -178,7 +178,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
 
     }
 
-    private void saveBl(Bl bl, ManifestAmendmentDto manifestAmendmentDto) {
+    private void saveBl(BlDto bl, ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendBl amendBl = new ExImportAmendBl();
         ManifestAmendmentApprovalStatus manifestAmendmentApprovalStatus= new ManifestAmendmentApprovalStatus(manifestAmendmentDto);
         BlMeasurement blMeasurement = new BlMeasurement();
@@ -269,7 +269,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         manifestAmendmentApprovalStatusRepository.save(manifestAmendmentApprovalStatus);
     }
 
-    private void saveAmendBl(Bl bl, ManifestAmendmentDto manifestAmendmentDto) {
+    private void saveAmendBl(BlDto bl, ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendItem amendItem = new ExImportAmendItem();
         BlMeasurement blMeasurement = new BlMeasurement();
         Optional<CoCompanyCodeEntity> optional = coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
@@ -386,7 +386,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         }
         importAmendItemRepository.save(amendItem);
     }
-    private void saveAmendedContainerDetail(List<Containers> containers, Bl bl, ManifestAmendmentDto manifestAmendmentDto) {
+    private void saveAmendedContainerDetail(List<Containers> containers, BlDto bl, ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendItemContainer itemContainer = new ExImportAmendItemContainer();
         BlMeasurement blMeasurement = new BlMeasurement();
         for (Containers container : containers) {
@@ -427,7 +427,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             itemContainer.setFirstRegisterId("TESWS");
             itemContainer.setLastUpdateId("TESWS");
             Optional<ExImportBlContainer> option=exImportBlContainerRepository.
-                    findByMrnAndMasterBillOfLading(manifestAmendmentDto.getMrn(),bl.getMasterBillOfLading());
+                    findByMrnAndMasterBillOfLading(manifestAmendmentDto.getMrn(), bl.getMasterBillOfLading());
             if(option.isPresent()){
                 ExImportBlContainer blContainer= option.get();
                 itemContainer.setOldContainerNumber(blContainer.getContainerNo());
@@ -472,7 +472,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         amendItemContainerRepository.save(itemContainer);
     }
 
-    private void saveContainers(List<Containers> containers, Bl bl) {
+    private void saveContainers(List<Containers> containers, BlDto bl) {
         for (Containers container : containers) {
             ExImportAmendBlContainer cn = new ExImportAmendBlContainer();
             Optional<CoCompanyCodeEntity> optional = coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
@@ -535,7 +535,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
     }
 
 
-    private String getTradeType(Bl bl) {
+    private String getTradeType(BlDto bl) {
         String tradeType = bl.getTradeType();
         if (tradeType != null && tradeType.equalsIgnoreCase("IMPORT")) {
             return "IM";
@@ -553,7 +553,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         }
     }
 
-    private void createEdNotice(ManifestAmendmentDto manifestAmendmentDto, Bl bl) {
+    private void createEdNotice(ManifestAmendmentDto manifestAmendmentDto, BlDto bl) {
         EdNoticeEntity edNotice = new EdNoticeEntity();
         Optional<InImportManifest> optional = inImportManifestRepository.findFirstByCommunicationAgreedId(manifestAmendmentDto.getCommunicationAgreedId());
         if (optional.isPresent()) {

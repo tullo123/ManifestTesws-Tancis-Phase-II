@@ -20,6 +20,6 @@ public class ManifestAmendmentDto implements Serializable {
    private String mrn;
    private String voyageNumber;
    private String amendType;
-   private Bl bl;
+   private BlDto bl;
    private List<Containers> containers= new ArrayList<>();
 }

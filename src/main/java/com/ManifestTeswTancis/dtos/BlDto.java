@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Bl implements Serializable {
+public class BlDto implements Serializable {
     private String action;
     private String blId;
     private String masterBillOfLading;
