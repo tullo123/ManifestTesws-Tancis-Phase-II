@@ -1,6 +1,6 @@
 package com.ManifestTeswTancis.RabbitConfigurations;
 
-import com.ManifestTeswTancis.Response.ManifestAmendmentApprovalResponseStatus;
+import com.ManifestTeswTancis.Response.ManifestAmendmentApprovalStatusResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,5 +16,5 @@ public class ManifestAmendmentNoticeMessageDto implements Serializable {
     private String messageName;
     private String requestId;
     private String callbackUrl;
-    private ManifestAmendmentApprovalResponseStatus payload;
+    private ManifestAmendmentApprovalStatusResponse payload;
 }

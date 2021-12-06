@@ -11,7 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ManifestAmendmentReceivedRejectedStatus implements Serializable {
+public class ManifestAmendmentReceivedRejectedStatusResponse implements Serializable {
     private String communicationAgreedId;
     private String noticeDate;
     private String amendmentReference;

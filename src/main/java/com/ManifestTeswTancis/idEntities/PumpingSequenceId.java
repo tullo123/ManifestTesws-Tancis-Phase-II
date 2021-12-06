@@ -11,7 +11,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class PumpingSequenceId implements Serializable{
-	private static final long serialVersionUID = -912602300331560417L;
 	private String terminal;
 	private String refNo;
 	

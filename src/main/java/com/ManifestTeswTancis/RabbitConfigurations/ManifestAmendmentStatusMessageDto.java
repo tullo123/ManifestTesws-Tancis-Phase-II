@@ -1,6 +1,6 @@
 package com.ManifestTeswTancis.RabbitConfigurations;
 
-import com.ManifestTeswTancis.Response.ManifestAmendmentReceivedRejectedStatus;
+import com.ManifestTeswTancis.Response.ManifestAmendmentReceivedRejectedStatusResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,5 +16,5 @@ public class ManifestAmendmentStatusMessageDto implements Serializable {
     private String messageName;
     private String requestId;
     private String callbackUrl;
-    private ManifestAmendmentReceivedRejectedStatus payload;
+    private ManifestAmendmentReceivedRejectedStatusResponse payload;
 }

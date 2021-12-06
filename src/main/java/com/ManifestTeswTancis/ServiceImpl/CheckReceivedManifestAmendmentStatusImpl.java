@@ -7,7 +7,7 @@ import com.ManifestTeswTancis.RabbitConfigurations.*;
 import com.ManifestTeswTancis.Repository.ExImportAmendGeneralRepository;
 import com.ManifestTeswTancis.Repository.ManifestAmendmentApprovalStatusRepository;
 import com.ManifestTeswTancis.Repository.QueueMessageStatusRepository;
-import com.ManifestTeswTancis.Response.ManifestAmendmentReceivedRejectedStatus;
+import com.ManifestTeswTancis.Response.ManifestAmendmentReceivedRejectedStatusResponse;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.Util.ManifestAmendmentStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,47 +52,47 @@ public class CheckReceivedManifestAmendmentStatusImpl {
             if(!ma.isApprovedStatus()){
                 ExImportAmendGeneral general=exImportAmendGeneralRepository.findByMrn(ma.getMrn());
                 if(ManifestAmendmentStatus.RECEIVED.equals(general.getProcessingStatus()) || ManifestAmendmentStatus.REJECTED.equals(general.getProcessingStatus())){
-                    ManifestAmendmentReceivedRejectedStatus manifestAmendmentReceivedRejectedStatus = new ManifestAmendmentReceivedRejectedStatus();
-                    manifestAmendmentReceivedRejectedStatus.setCommunicationAgreedId(ma.getCommunicationAgreedId());
-                    manifestAmendmentReceivedRejectedStatus.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-                    manifestAmendmentReceivedRejectedStatus.setAmendmentReference(ma.getAmendReference());
-                    manifestAmendmentReceivedRejectedStatus.setMrn(ma.getMrn());
-                    manifestAmendmentReceivedRejectedStatus.setVoyageNumber(ma.getVoyageNumber());
-                    manifestAmendmentReceivedRejectedStatus.setStatus(getStatus(general.getProcessingStatus()));
-                    manifestAmendmentReceivedRejectedStatus.setMsn(general.getMsn());
-                    manifestAmendmentReceivedRejectedStatus.setHsn(general.getHsn());
+                    ManifestAmendmentReceivedRejectedStatusResponse manifestAmendmentReceivedRejectedStatusResponse = new ManifestAmendmentReceivedRejectedStatusResponse();
+                    manifestAmendmentReceivedRejectedStatusResponse.setCommunicationAgreedId(ma.getCommunicationAgreedId());
+                    manifestAmendmentReceivedRejectedStatusResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                    manifestAmendmentReceivedRejectedStatusResponse.setAmendmentReference(ma.getAmendReference());
+                    manifestAmendmentReceivedRejectedStatusResponse.setMrn(ma.getMrn());
+                    manifestAmendmentReceivedRejectedStatusResponse.setVoyageNumber(ma.getVoyageNumber());
+                    manifestAmendmentReceivedRejectedStatusResponse.setStatus(getStatus(general.getProcessingStatus()));
+                    manifestAmendmentReceivedRejectedStatusResponse.setMsn(general.getMsn());
+                    manifestAmendmentReceivedRejectedStatusResponse.setHsn(general.getHsn());
                     if(general.getHsn()!=null){
-                        manifestAmendmentReceivedRejectedStatus.setCrn(general.getMrn()+general.getMsn()+general.getHsn());
+                        manifestAmendmentReceivedRejectedStatusResponse.setCrn(general.getMrn()+general.getMsn()+general.getHsn());
                     }else{
-                        manifestAmendmentReceivedRejectedStatus.setCrn(general.getMrn()+general.getMsn());
+                        manifestAmendmentReceivedRejectedStatusResponse.setCrn(general.getMrn()+general.getMsn());
                     }
-                    manifestAmendmentReceivedRejectedStatus.setComment(general.getAuditComment());
+                    manifestAmendmentReceivedRejectedStatusResponse.setComment(general.getAuditComment());
                     ma.setReceivedNoticeSent(true);
                     ma.setReceivedNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     manifestAmendmentApprovalStatusRepository.save(ma);
-                    String response = sendReceivedManifestAmendmentNoticeToQueue(manifestAmendmentReceivedRejectedStatus);
+                    String response = sendReceivedManifestAmendmentNoticeToQueue(manifestAmendmentReceivedRejectedStatusResponse);
                     System.out.println("--------------- Received/Failed Notice Response --------------\n" + response);
                 }
             }
         }
     }
 
-    private String sendReceivedManifestAmendmentNoticeToQueue(ManifestAmendmentReceivedRejectedStatus manifestAmendmentReceivedRejectedStatus) {
+    private String sendReceivedManifestAmendmentNoticeToQueue(ManifestAmendmentReceivedRejectedStatusResponse manifestAmendmentReceivedRejectedStatusResponse) {
         ObjectMapper mapper = new ObjectMapper();
         try{
-            String payload = mapper.writeValueAsString(manifestAmendmentReceivedRejectedStatus);
+            String payload = mapper.writeValueAsString(manifestAmendmentReceivedRejectedStatusResponse);
             System.out.println("----------- Received/Failed Notice Response ------------\n"+payload);
             MessageDto messageDto = new MessageDto();
             ManifestAmendmentStatusMessageDto manifestAmendmentStatusMessageDto = new ManifestAmendmentStatusMessageDto();
             manifestAmendmentStatusMessageDto.setMessageName(MessageNames.MANIFEST_AMENDMENT_STATUS);
             RequestIdDto requestIdDto = mapper.readValue(getId(), RequestIdDto.class);
             manifestAmendmentStatusMessageDto.setRequestId(requestIdDto.getMessageId());
-            messageDto.setPayload(manifestAmendmentReceivedRejectedStatus);
+            messageDto.setPayload(manifestAmendmentReceivedRejectedStatusResponse);
             AcknowledgementDto queueResponse = rabbitMqMessageProducer.
                     sendMessage(OUTBOUND_EXCHANGE, MessageNames.MANIFEST_AMENDMENT_STATUS, manifestAmendmentStatusMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
             System.out.println(queueResponse);
             QueueMessageStatusEntity queueMessage = new QueueMessageStatusEntity();
-            queueMessage.setMessageId(manifestAmendmentReceivedRejectedStatus.getCommunicationAgreedId());
+            queueMessage.setMessageId(manifestAmendmentReceivedRejectedStatusResponse.getCommunicationAgreedId());
             queueMessage.setReferenceId(manifestAmendmentStatusMessageDto.getRequestId());
             queueMessage.setMessageName(MessageNames.MANIFEST_AMENDMENT_STATUS);
             queueMessage.setProcessStatus("1");

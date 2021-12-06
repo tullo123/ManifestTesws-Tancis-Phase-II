@@ -5,7 +5,7 @@ import com.ManifestTeswTancis.Entity.ManifestAmendmentApprovalStatus;
 import com.ManifestTeswTancis.Entity.QueueMessageStatusEntity;
 import com.ManifestTeswTancis.RabbitConfigurations.*;
 import com.ManifestTeswTancis.Repository.*;
-import com.ManifestTeswTancis.Response.ManifestAmendmentApprovalResponseStatus;
+import com.ManifestTeswTancis.Response.ManifestAmendmentApprovalStatusResponse;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.Util.ManifestAmendmentStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,24 +50,24 @@ public class CheckApprovedManifestAmendmentStatusImpl {
             if(!ma.isApprovedStatus()){
                 ExImportAmendGeneral general=exImportAmendGeneralRepository.findByMrn(ma.getMrn());
                 if(ManifestAmendmentStatus.APPROVED.equals(general.getProcessingStatus())){
-                    ManifestAmendmentApprovalResponseStatus manifestAmendmentApprovalResponseStatus = new ManifestAmendmentApprovalResponseStatus();
-                    manifestAmendmentApprovalResponseStatus.setCommunicationAgreedId(ma.getCommunicationAgreedId());
-                    manifestAmendmentApprovalResponseStatus.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-                    manifestAmendmentApprovalResponseStatus.setAmendmentReference(ma.getAmendReference());
-                    manifestAmendmentApprovalResponseStatus.setMrn(general.getMrn());
-                    manifestAmendmentApprovalResponseStatus.setVoyageNumber(ma.getVoyageNumber());
-                    manifestAmendmentApprovalResponseStatus.setApprovalStatus(getStatus(general.getProcessingStatus()));
-                    manifestAmendmentApprovalResponseStatus.setMsn(general.getMsn());
-                    manifestAmendmentApprovalResponseStatus.setHsn(general.getHsn());
+                    ManifestAmendmentApprovalStatusResponse manifestAmendmentApprovalStatusResponse = new ManifestAmendmentApprovalStatusResponse();
+                    manifestAmendmentApprovalStatusResponse.setCommunicationAgreedId(ma.getCommunicationAgreedId());
+                    manifestAmendmentApprovalStatusResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                    manifestAmendmentApprovalStatusResponse.setAmendmentReference(ma.getAmendReference());
+                    manifestAmendmentApprovalStatusResponse.setMrn(general.getMrn());
+                    manifestAmendmentApprovalStatusResponse.setVoyageNumber(ma.getVoyageNumber());
+                    manifestAmendmentApprovalStatusResponse.setApprovalStatus(getStatus(general.getProcessingStatus()));
+                    manifestAmendmentApprovalStatusResponse.setMsn(general.getMsn());
+                    manifestAmendmentApprovalStatusResponse.setHsn(general.getHsn());
                     if(general.getHsn()!=null){
-                        manifestAmendmentApprovalResponseStatus.setCrn(general.getMrn()+general.getMsn()+general.getHsn());
+                        manifestAmendmentApprovalStatusResponse.setCrn(general.getMrn()+general.getMsn()+general.getHsn());
                     }else{
-                        manifestAmendmentApprovalResponseStatus.setCrn(general.getMrn()+general.getMsn());
+                        manifestAmendmentApprovalStatusResponse.setCrn(general.getMrn()+general.getMsn());
                     }
-                    manifestAmendmentApprovalResponseStatus.setComment(general.getAuditComment());
+                    manifestAmendmentApprovalStatusResponse.setComment(general.getAuditComment());
                     ma.setApprovedStatus(true);
                     manifestAmendmentApprovalStatusRepository.save(ma);
-                    String response = sendApprovalNoticeToQueue(manifestAmendmentApprovalResponseStatus);
+                    String response = sendApprovalNoticeToQueue(manifestAmendmentApprovalStatusResponse);
                     System.out.println("--------------- Approval Notice Response --------------\n" + response);
 
                 }
@@ -75,22 +75,22 @@ public class CheckApprovedManifestAmendmentStatusImpl {
         }
     }
 
-    private String sendApprovalNoticeToQueue(ManifestAmendmentApprovalResponseStatus manifestAmendmentApprovalResponseStatus) {
+    private String sendApprovalNoticeToQueue(ManifestAmendmentApprovalStatusResponse manifestAmendmentApprovalStatusResponse) {
         ObjectMapper mapper = new ObjectMapper();
         try{
-            String payload = mapper.writeValueAsString(manifestAmendmentApprovalResponseStatus);
+            String payload = mapper.writeValueAsString(manifestAmendmentApprovalStatusResponse);
             System.out.println("----------- Approval notice payload ------------\n"+payload);
             MessageDto messageDto = new MessageDto();
             ManifestAmendmentNoticeMessageDto manifestAmendmentNoticeMessageDto = new ManifestAmendmentNoticeMessageDto();
             manifestAmendmentNoticeMessageDto.setMessageName(MessageNames.MANIFEST_AMENDMENT_NOTICE);
             RequestIdDto requestIdDto = mapper.readValue( getId(), RequestIdDto.class);
             manifestAmendmentNoticeMessageDto.setRequestId(requestIdDto.getMessageId());
-            messageDto.setPayload(manifestAmendmentApprovalResponseStatus);
+            messageDto.setPayload(manifestAmendmentApprovalStatusResponse);
             AcknowledgementDto queueResponse = rabbitMqMessageProducer.
                     sendMessage(OUTBOUND_EXCHANGE, MessageNames.MANIFEST_AMENDMENT_NOTICE, manifestAmendmentNoticeMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
             System.out.println(queueResponse);
             QueueMessageStatusEntity queueMessage = new QueueMessageStatusEntity();
-            queueMessage.setMessageId(manifestAmendmentApprovalResponseStatus.getCommunicationAgreedId());
+            queueMessage.setMessageId(manifestAmendmentApprovalStatusResponse.getCommunicationAgreedId());
             queueMessage.setReferenceId(manifestAmendmentNoticeMessageDto.getRequestId());
             queueMessage.setMessageName(MessageNames.MANIFEST_AMENDMENT_NOTICE);
             queueMessage.setProcessStatus("1");
