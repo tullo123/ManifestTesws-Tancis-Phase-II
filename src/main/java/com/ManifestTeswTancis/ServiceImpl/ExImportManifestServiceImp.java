@@ -153,7 +153,9 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 
 				if(container.getTemperatureType() != null) {
 					cnEn.setReferPlugYn(container.getTemperatureType().contentEquals("1")?"Y":"N");
-				}
+				} else
+					cnEn.setReferPlugYn("N");
+
 
 				int i = 0;
 				int l = 0;
