@@ -1,10 +1,10 @@
 package com.ManifestTeswTancis.ServiceImpl;
-
-import com.ManifestTeswTancis.Entity.ExImportAmendGeneral;
+import com.ManifestTeswTancis.Entity.InImportAmendGeneral;
 import com.ManifestTeswTancis.Entity.ManifestAmendmentApprovalStatus;
 import com.ManifestTeswTancis.Entity.QueueMessageStatusEntity;
 import com.ManifestTeswTancis.RabbitConfigurations.*;
 import com.ManifestTeswTancis.Repository.ExImportAmendGeneralRepository;
+import com.ManifestTeswTancis.Repository.InImportAmendGeneralRepository;
 import com.ManifestTeswTancis.Repository.ManifestAmendmentApprovalStatusRepository;
 import com.ManifestTeswTancis.Repository.QueueMessageStatusRepository;
 import com.ManifestTeswTancis.Response.ManifestAmendmentReceivedRejectedStatusResponse;
@@ -37,12 +37,14 @@ public class CheckReceivedManifestAmendmentStatusImpl {
     final QueueMessageStatusRepository queueMessageStatusRepository;
     final ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository;
     final ExImportAmendGeneralRepository exImportAmendGeneralRepository;
+    final InImportAmendGeneralRepository inImportAmendGeneralRepository;
 
-    public CheckReceivedManifestAmendmentStatusImpl(MessageProducer rabbitMqMessageProducer, QueueMessageStatusRepository queueMessageStatusRepository, ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository, ExImportAmendGeneralRepository exImportAmendGeneralRepository) {
+    public CheckReceivedManifestAmendmentStatusImpl(MessageProducer rabbitMqMessageProducer, QueueMessageStatusRepository queueMessageStatusRepository, ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository, ExImportAmendGeneralRepository exImportAmendGeneralRepository, InImportAmendGeneralRepository inImportAmendGeneralRepository) {
         this.rabbitMqMessageProducer = rabbitMqMessageProducer;
         this.queueMessageStatusRepository = queueMessageStatusRepository;
         this.manifestAmendmentApprovalStatusRepository = manifestAmendmentApprovalStatusRepository;
         this.exImportAmendGeneralRepository = exImportAmendGeneralRepository;
+        this.inImportAmendGeneralRepository = inImportAmendGeneralRepository;
     }
     @Transactional
     @Scheduled(fixedRate = 300000)
@@ -50,7 +52,7 @@ public class CheckReceivedManifestAmendmentStatusImpl {
         List<ManifestAmendmentApprovalStatus> status=manifestAmendmentApprovalStatusRepository.findByReceivedNoticeSentFalse();
         for(ManifestAmendmentApprovalStatus ma: status ){
             if(!ma.isApprovedStatus()){
-                ExImportAmendGeneral general=exImportAmendGeneralRepository.findByMrn(ma.getMrn());
+                InImportAmendGeneral general =inImportAmendGeneralRepository.findByMrn(ma.getMrn());
                 if(ManifestAmendmentStatus.RECEIVED.equals(general.getProcessingStatus()) || ManifestAmendmentStatus.REJECTED.equals(general.getProcessingStatus())){
                     ManifestAmendmentReceivedRejectedStatusResponse manifestAmendmentReceivedRejectedStatusResponse = new ManifestAmendmentReceivedRejectedStatusResponse();
                     manifestAmendmentReceivedRejectedStatusResponse.setCommunicationAgreedId(ma.getCommunicationAgreedId());
