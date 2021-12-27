@@ -175,12 +175,17 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         amendGeneral.setSubmitDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
         amendGeneral.setLastUpdateId("TESWS");
         exImportAmendGeneralRepository.save(amendGeneral);
+        ManifestAmendmentApprovalStatus manifestAmendmentApprovalStatus= new ManifestAmendmentApprovalStatus(manifestAmendmentDto);
+        manifestAmendmentApprovalStatus.setCommunicationAgreedId(manifestAmendmentDto.getCommunicationAgreedId());
+        manifestAmendmentApprovalStatus.setMrn(manifestAmendmentDto.getMrn());
+        manifestAmendmentApprovalStatus.setAmendReference(manifestAmendmentDto.getAmendmentReference());
+        manifestAmendmentApprovalStatusRepository.save(manifestAmendmentApprovalStatus);
 
     }
 
     private void saveBl(BlDto bl, ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendBl amendBl = new ExImportAmendBl();
-        ManifestAmendmentApprovalStatus manifestAmendmentApprovalStatus= new ManifestAmendmentApprovalStatus(manifestAmendmentDto);
+
         BlMeasurement blMeasurement = new BlMeasurement();
         Optional<CoCompanyCodeEntity> optional = coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
         if (optional.isPresent()) {
@@ -216,9 +221,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         amendBl.setNotifyTin(bl.getNotifyTin());
         amendBl.setNotifyName(bl.getNotifyName());
         amendBl.setNotifyTel(bl.getNotifyTel());
-        manifestAmendmentApprovalStatus.setCommunicationAgreedId(manifestAmendmentDto.getCommunicationAgreedId());
-        manifestAmendmentApprovalStatus.setMrn(manifestAmendmentDto.getMrn());
-        manifestAmendmentApprovalStatus.setAmendReference(manifestAmendmentDto.getAmendmentReference());
+
         amendBl.setNotifyAddress(bl.getNotifyAddress());
         amendBl.setDescription(bl.getBlDescription());
         amendBl.setBlPackage(blMeasurement.getPkQuantity());
@@ -266,32 +269,39 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             amendBl.setFirstDestinationPlace(masterBl.getPlaceOfDestination());
         }
         exImportAmendBlRepository.save(amendBl);
-        manifestAmendmentApprovalStatusRepository.save(manifestAmendmentApprovalStatus);
+
     }
 
     private void saveAmendBl(BlDto bl, ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendItem amendItem = new ExImportAmendItem();
         BlMeasurement blMeasurement = new BlMeasurement();
+        CommonOrdinalEntity commonOrdinalEntity = new CommonOrdinalEntity();
         Optional<CoCompanyCodeEntity> optional = coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
         if (optional.isPresent()) {
             CoCompanyCodeEntity entity = optional.get();
             amendItem.setDeclarantTin(entity.getTin());
+            Optional<CoCompanyCodeEntity> opt = coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
+            if (opt.isPresent()) {
+                CoCompanyCodeEntity coCompanyCodeEntity = optional.get();
+                String tin = coCompanyCodeEntity.getTin();
+                DateFormat dT = new SimpleDateFormat("yyyy");
+                String prefix = tin + dT.format(Calendar.getInstance().getTime()) + "M";
+                Optional<CommonOrdinalEntity> optionalCommonOrdinalEntity = commonOrdinalRepository.findByPrefix(prefix);
+                if (optionalCommonOrdinalEntity.isPresent()) {
+                    commonOrdinalEntity = optionalCommonOrdinalEntity.get();
+                    commonOrdinalEntity.setSequenceNo(commonOrdinalEntity.getSequenceNo());
+                }
+                String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
+                amendItem.setAmendSerialNumber(suffix);
+                amendItem.setProcessType("M");
+                DateFormat df = new SimpleDateFormat("yyyy");
+                amendItem.setAmendYear(df.format(Calendar.getInstance().getTime()));
+                amendItem.setLastUpdateId("TESWS");
+                amendItem.setFirstRegisterId("TESWS");
+            }
+
         }
-        DateFormat df = new SimpleDateFormat("yyyy");
-        amendItem.setAmendYear(df.format(Calendar.getInstance().getTime()));
-        amendItem.setProcessType("M");
-        CommonOrdinalEntity commonOrdinalEntity = new CommonOrdinalEntity();
-        DateFormat dT = new SimpleDateFormat("yyyy");
-        String prefix =amendItem.getDeclarantTin()+ dT.format(Calendar.getInstance().getTime()) + "M";
-        Optional<CommonOrdinalEntity> optionalCommonOrdinalEntity = commonOrdinalRepository.findByPrefix(prefix);
-        if (optionalCommonOrdinalEntity.isPresent()) {
-            commonOrdinalEntity = optionalCommonOrdinalEntity.get();
-            commonOrdinalEntity.setSequenceNo(commonOrdinalEntity.getSequenceNo());
-        }
-        String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
-        amendItem.setAmendSerialNumber(suffix);
-        amendItem.setLastUpdateId("TESWS");
-        amendItem.setFirstRegisterId("TESWS");
+
         if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()==null){
             Optional<ExImportMasterBl> opt=exImportMasterBlRepository.
                     findFirstByMrnAndMasterBillOfLading(manifestAmendmentDto.getMrn(), bl.getMasterBillOfLading());
@@ -383,6 +393,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
                     amendItem.setItemNumber("B21");
                 }
             }
+
         }
         importAmendItemRepository.save(amendItem);
     }
@@ -583,6 +594,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         } else {
             System.out.println("Manifest Amendment with This Mrn is not present in TANCIS");
         }
+
 
 
     }

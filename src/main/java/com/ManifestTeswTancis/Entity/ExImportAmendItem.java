@@ -21,7 +21,6 @@ import java.util.Date;
 @Table(name = "TANCISEXT.EX_MF_IMPORT_AMEND_ITEM")
 @IdClass(AmendItemId.class)
 public class ExImportAmendItem implements Serializable{
-	private static final long serialVersionUID = -7032664307929468473L;
     @Id
 	@NotNull
 	@Column(name = "DECLARANT_TIN")
@@ -52,7 +51,7 @@ public class ExImportAmendItem implements Serializable{
 	@Column(name = "FIRST_REGISTER_ID")
 	private String firstRegisterId;
 
-	@Column(name = "'FIRST_REGISTER_DT")
+	@Column(name = "FIRST_REGISTER_DT")
 	@CreationTimestamp
 	private Date firstRegisterDate;
 

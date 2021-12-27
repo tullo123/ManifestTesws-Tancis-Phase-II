@@ -11,7 +11,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 public class AmendItemId implements Serializable {
-	private static final long serialVersionUID = -229985121363009905L;
 	private String declarantTin;
 	private String amendYear;
 	private String processType;
