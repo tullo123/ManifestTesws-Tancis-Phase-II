@@ -64,6 +64,12 @@ public class ManifestAmendmentApprovalStatus {
     @Column(name="LAST_UPDATE_ID")
     private String lastUpdateId;
 
+    @Column(name="AMEND_TYPE")
+    private String amendType;
+
+    @Column(name="AMEND_SERIAL_NO")
+    private String amendSerialNo;
+
     public ManifestAmendmentApprovalStatus(ManifestAmendmentDto manifestAmendmentDto){
         this.mrn=manifestAmendmentDto.getMrn();
         this.communicationAgreedId=manifestAmendmentDto.getCommunicationAgreedId();

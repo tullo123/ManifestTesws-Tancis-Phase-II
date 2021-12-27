@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ExImportAmendGeneralRepository extends JpaRepository<ExImportAmendGeneral, AmendGenId> {
 
+    ExImportAmendGeneral findFirstByMrnAndAmendSerialNumber(String mrn, String amendSerialNo);
 }

@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InImportAmendGeneralRepository extends JpaRepository<InImportAmendGeneral, InAmendGenId> {
-    InImportAmendGeneral findByMrn(String mrn);
+    InImportAmendGeneral findFirstByMrnAndAmendSerialNumber(String mrn, String amendSerialNo);
 }
