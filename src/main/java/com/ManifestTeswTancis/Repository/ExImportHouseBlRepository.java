@@ -13,4 +13,5 @@ public interface ExImportHouseBlRepository extends JpaRepository<ExImportHouseBl
 	
 	Optional<ExImportHouseBl> findByMrnAndMasterBillOfLading(String mrn, String mbl);
 
+    Optional<ExImportHouseBl> findByMrnAndMasterBillOfLadingAndHouseBillOfLading(String mrn, String masterBillOfLading, String houseBillOfLading);
 }

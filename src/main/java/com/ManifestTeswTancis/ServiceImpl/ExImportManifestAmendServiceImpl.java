@@ -29,9 +29,10 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
     final ExImportMasterBlRepository exImportMasterBlRepository;
     final ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository;
     final ExImportBlContainerRepository exImportBlContainerRepository;
+    final ExImportHouseBlRepository exImportHouseBlRepository;
 
     @Autowired
-    public ExImportManifestAmendServiceImpl(AmendItemContainerRepository amendItemContainerRepository, BlGoodItemsRepository blGoodItemsRepository, EdNoticeRepository edNoticeRepository, ExImportAmendGeneralRepository exImportAmendGeneralRepository, ExImportAmendItemRepository importAmendItemRepository, ExImportAmendBlRepository exImportAmendBlRepository, ExImportManifestRepository exImportManifestRepository, CoCompanyCodeRepository coCompanyCodeRepository, CommonOrdinalRepository commonOrdinalRepository, InImportManifestRepository inImportManifestRepository, ExImportMasterBlRepository exImportMasterBlRepository, ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository, ExImportBlContainerRepository exImportBlContainerRepository) {
+    public ExImportManifestAmendServiceImpl(AmendItemContainerRepository amendItemContainerRepository, BlGoodItemsRepository blGoodItemsRepository, EdNoticeRepository edNoticeRepository, ExImportAmendGeneralRepository exImportAmendGeneralRepository, ExImportAmendItemRepository importAmendItemRepository, ExImportAmendBlRepository exImportAmendBlRepository, ExImportManifestRepository exImportManifestRepository, CoCompanyCodeRepository coCompanyCodeRepository, CommonOrdinalRepository commonOrdinalRepository, InImportManifestRepository inImportManifestRepository, ExImportMasterBlRepository exImportMasterBlRepository, ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository, ExImportBlContainerRepository exImportBlContainerRepository, ExImportHouseBlRepository exImportHouseBlRepository) {
         this.amendItemContainerRepository = amendItemContainerRepository;
         this.blGoodItemsRepository = blGoodItemsRepository;
         this.edNoticeRepository = edNoticeRepository;
@@ -45,6 +46,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         this.exImportMasterBlRepository = exImportMasterBlRepository;
         this.manifestAmendmentApprovalStatusRepository = manifestAmendmentApprovalStatusRepository;
         this.exImportBlContainerRepository = exImportBlContainerRepository;
+        this.exImportHouseBlRepository = exImportHouseBlRepository;
     }
 
     @Override
@@ -187,7 +189,6 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
 
     private void saveBl(BlDto bl, ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendBl amendBl = new ExImportAmendBl();
-
         BlMeasurement blMeasurement = new BlMeasurement();
         Optional<CoCompanyCodeEntity> optional = coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
         if (optional.isPresent()) {
@@ -303,7 +304,6 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             }
 
         }
-
         if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()==null){
             Optional<ExImportMasterBl> opt=exImportMasterBlRepository.
                     findFirstByMrnAndMasterBillOfLading(manifestAmendmentDto.getMrn(), bl.getMasterBillOfLading());
@@ -312,90 +312,238 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
                 if(!bl.getPlaceOfDelivery().equalsIgnoreCase(blItem.getPlaceOfDelivery())){
                     amendItem.setBeforeItemComments(blItem.getPlaceOfDelivery());
                     amendItem.setAfterItemComments(bl.getPlaceOfDelivery());
-                    amendItem.setItemNumber("B01");
+                    amendItem.setItemNumber("M33");
                 }else if(!bl.getBlDescription().equalsIgnoreCase(blItem.getBlDescription())){
                     amendItem.setBeforeItemComments(blItem.getBlDescription());
                     amendItem.setAfterItemComments(bl.getBlDescription());
-                    amendItem.setItemNumber("B02");
+                    amendItem.setItemNumber("M22");
                 }else if(!blMeasurement.getPkQuantity().equals(blItem.getBlPackage())){
                     amendItem.setBeforeItemComments(blItem.getBlPackage().toString());
                     amendItem.setAfterItemComments(blMeasurement.getPkQuantity().toString());
-                    amendItem.setItemNumber("B03");
+                    amendItem.setItemNumber("M23");
                 }else if(!blMeasurement.getPkType().equalsIgnoreCase(blItem.getPackageUnit())){
                     amendItem.setBeforeItemComments(blItem.getPackageUnit());
                     amendItem.setAfterItemComments(blMeasurement.getPkType());
-                    amendItem.setItemNumber("B04");
+                    amendItem.setItemNumber("M24");
                 }else if(!bl.getBlSummary().getBlGrossWeight().equals(blItem.getBlGrossWeight())){
                     amendItem.setBeforeItemComments(blItem.getBlGrossWeight().toString());
                     amendItem.setAfterItemComments(bl.getBlSummary().getBlGrossWeight().toString());
-                    amendItem.setItemNumber("B05");
+                    amendItem.setItemNumber("M25");
                 }else if(!blMeasurement.getWeightUnit().equalsIgnoreCase(blItem.getGrossWeightUnit())){
                     amendItem.setBeforeItemComments(blItem.getGrossWeightUnit());
                     amendItem.setAfterItemComments(blMeasurement.getWeightUnit());
-                    amendItem.setItemNumber("B06");
+                    amendItem.setItemNumber("M26");
                 }else if(!blMeasurement.getVolume().equals(blItem.getVolume())){
                     amendItem.setBeforeItemComments(blItem.getVolume().toString());
                     amendItem.setAfterItemComments(blMeasurement.getVolume().toString());
-                    amendItem.setItemNumber("B07");
+                    amendItem.setItemNumber("M29");
                 }else if(!blMeasurement.getVolumeUnit().equalsIgnoreCase(blItem.getVolumeUnit())){
                     amendItem.setBeforeItemComments(blItem.getVolumeUnit());
                     amendItem.setAfterItemComments(blMeasurement.getVolumeUnit());
-                    amendItem.setItemNumber("B08");
+                    amendItem.setItemNumber("M30");
                 }else if(!bl.getExporterName().equalsIgnoreCase(blItem.getExporterName())){
                     amendItem.setBeforeItemComments(blItem.getExporterName());
                     amendItem.setAfterItemComments(bl.getExporterName());
-                    amendItem.setItemNumber("B09");
+                    amendItem.setItemNumber("M11");
                 }else if(!bl.getExporterTel().equalsIgnoreCase(blItem.getExporterTel())){
                     amendItem.setBeforeItemComments(blItem.getExporterTel());
                     amendItem.setAfterItemComments(bl.getExporterTel());
-                    amendItem.setItemNumber("B10");
+                    amendItem.setItemNumber("M12");
                 }else if(!bl.getExporterAddress().equalsIgnoreCase(blItem.getExporterAddress())){
                     amendItem.setBeforeItemComments(blItem.getExporterAddress());
                     amendItem.setAfterItemComments(bl.getExporterAddress());
-                    amendItem.setItemNumber("B11");
+                    amendItem.setItemNumber("M13");
                 }else if(!bl.getExporterTin().equalsIgnoreCase(blItem.getExporterTin())){
                     amendItem.setBeforeItemComments(blItem.getExporterTin());
                     amendItem.setAfterItemComments(bl.getExporterTin());
-                    amendItem.setItemNumber("B12");
+                    amendItem.setItemNumber("M10");
                 }else if(!bl.getConsigneeName().equalsIgnoreCase(blItem.getConsigneeName())){
                     amendItem.setBeforeItemComments(blItem.getConsigneeName());
                     amendItem.setAfterItemComments(bl.getConsigneeName());
-                    amendItem.setItemNumber("B13");
+                    amendItem.setItemNumber("M15");
                 }else if(!bl.getConsigneeTel().equalsIgnoreCase(blItem.getConsigneeTel())){
                     amendItem.setBeforeItemComments(blItem.getConsigneeTel());
                     amendItem.setAfterItemComments(bl.getConsigneeTel());
-                    amendItem.setItemNumber("B14");
+                    amendItem.setItemNumber("M16");
                 }else if(!bl.getConsigneeAddress().equalsIgnoreCase(blItem.getConsigneeAddress())){
                     amendItem.setBeforeItemComments(blItem.getConsigneeAddress());
                     amendItem.setAfterItemComments(bl.getConsigneeAddress());
-                    amendItem.setItemNumber("B15");
+                    amendItem.setItemNumber("M17");
                 }else if(!bl.getConsigneeTin().equalsIgnoreCase(blItem.getConsigneeTin())){
                     amendItem.setBeforeItemComments(blItem.getConsigneeTin());
                     amendItem.setAfterItemComments(bl.getConsigneeTin());
-                    amendItem.setItemNumber("B16");
+                    amendItem.setItemNumber("M14");
                 }else if(!bl.getNotifyName().equalsIgnoreCase(blItem.getNotifyName())){
                     amendItem.setBeforeItemComments(blItem.getNotifyName());
                     amendItem.setAfterItemComments(bl.getNotifyName());
-                    amendItem.setItemNumber("B17");
+                    amendItem.setItemNumber("M19");
                 }else if(!bl.getNotifyTel().equalsIgnoreCase(blItem.getNotifyTel())){
                     amendItem.setBeforeItemComments(blItem.getNotifyTel());
                     amendItem.setAfterItemComments(bl.getNotifyTel());
-                    amendItem.setItemNumber("B18");
+                    amendItem.setItemNumber("M20");
                 }else if(!bl.getNotifyAddress().equalsIgnoreCase(blItem.getNotifyAddress())){
                     amendItem.setBeforeItemComments(blItem.getNotifyAddress());
                     amendItem.setAfterItemComments(bl.getNotifyAddress());
-                    amendItem.setItemNumber("B19");
+                    amendItem.setItemNumber("M21");
                 }else if(!bl.getNotifyTin().equalsIgnoreCase(blItem.getNotifyTin())){
                     amendItem.setBeforeItemComments(blItem.getNotifyTin());
                     amendItem.setAfterItemComments(bl.getNotifyTin());
-                    amendItem.setItemNumber("B20");
+                    amendItem.setItemNumber("M18");
                 }else if(!bl.getBlSummary().getNumberOfContainers().equals(blItem.getContainerCount())){
                     amendItem.setBeforeItemComments(blItem.getContainerCount().toString());
                     amendItem.setAfterItemComments(bl.getBlSummary().getNumberOfContainers().toString());
-                    amendItem.setItemNumber("B21");
+                    amendItem.setItemNumber("M45");
+                }else if(!bl.getForwarderTel().equalsIgnoreCase(blItem.getForwarderTel())){
+                    amendItem.setBeforeItemComments(blItem.getForwarderTel());
+                    amendItem.setAfterItemComments(bl.getForwarderTel());
+                    amendItem.setItemNumber("M09");
+                }else if(!bl.getForwarderName().equalsIgnoreCase(blItem.getForwarderName())){
+                    amendItem.setBeforeItemComments(blItem.getForwarderName());
+                    amendItem.setAfterItemComments(bl.getForwarderName());
+                    amendItem.setItemNumber("M08");
+                }else if(!bl.getForwarderCode().equalsIgnoreCase(blItem.getForwarderCode())){
+                    amendItem.setBeforeItemComments(blItem.getForwarderCode());
+                    amendItem.setAfterItemComments(bl.getForwarderCode());
+                    amendItem.setItemNumber("M07");
+                }else if(!bl.getShippingAgentCode().equalsIgnoreCase(blItem.getShippingAgentCode())){
+                    amendItem.setBeforeItemComments(blItem.getShippingAgentCode());
+                    amendItem.setAfterItemComments(bl.getShippingAgentCode());
+                    amendItem.setItemNumber("M06");
+                }else if(!bl.getBlType().substring(0,1).equalsIgnoreCase(blItem.getBlType())){
+                    amendItem.setBeforeItemComments(blItem.getBlType());
+                    amendItem.setAfterItemComments(bl.getBlType());
+                    amendItem.setItemNumber("M05");
+                }else if(!bl.getTradeType().substring(0,2).equalsIgnoreCase(blItem.getTradeType())){
+                    amendItem.setBeforeItemComments(blItem.getTradeType());
+                    amendItem.setAfterItemComments(bl.getTradeType());
+                    amendItem.setItemNumber("M04");
+                }else if(!bl.getMasterBillOfLading().equalsIgnoreCase(blItem.getMasterBillOfLading())){
+                    amendItem.setBeforeItemComments(blItem.getMasterBillOfLading());
+                    amendItem.setAfterItemComments(bl.getMasterBillOfLading());
+                    amendItem.setItemNumber("M03");
+                }else if(!bl.getPlaceOfDestination().equalsIgnoreCase(blItem.getPlaceOfDestination())){
+                    amendItem.setBeforeItemComments(blItem.getPlaceOfDestination());
+                    amendItem.setAfterItemComments(bl.getPlaceOfDestination());
+                    amendItem.setItemNumber("M32");
+                }else if(!bl.getPortOfLoading().equalsIgnoreCase(blItem.getPortOfLoading())){
+                    amendItem.setBeforeItemComments(blItem.getPortOfLoading());
+                    amendItem.setAfterItemComments(bl.getPortOfLoading());
+                    amendItem.setItemNumber("M31");
+                }else if(!blMeasurement.getNetWeight().equals(blItem.getBlNetWeight())){
+                    amendItem.setBeforeItemComments(blItem.getBlNetWeight().toString());
+                    amendItem.setAfterItemComments(blMeasurement.getNetWeight().toString());
+                    amendItem.setItemNumber("M27");
+                }else if(!blMeasurement.getOilType().equalsIgnoreCase(blItem.getOilType())){
+                    amendItem.setBeforeItemComments(blItem.getOilType());
+                    amendItem.setAfterItemComments(blMeasurement.getOilType());
+                    amendItem.setItemNumber("M40");
+                }else if(!bl.getBlPackingType().equalsIgnoreCase(blItem.getBlPackingType())){
+                    amendItem.setBeforeItemComments(blItem.getBlPackingType());
+                    amendItem.setAfterItemComments(bl.getBlPackingType());
+                    amendItem.setItemNumber("M39");
                 }
             }
 
+        }else if(bl.getMasterBillOfLading()!=null && bl.getHouseBillOfLading()!=null && bl.getForwarderCode()!=null){
+            Optional<ExImportHouseBl> option =exImportHouseBlRepository.
+                    findByMrnAndMasterBillOfLadingAndHouseBillOfLading(manifestAmendmentDto.getMrn(),bl.getMasterBillOfLading(),bl.getHouseBillOfLading());
+            if(option.isPresent()){
+                ExImportHouseBl houseBlItem =option.get();
+                if(!bl.getConsigneeAddress().equalsIgnoreCase(houseBlItem.getConsigneeAddress())){
+                    amendItem.setBeforeItemComments(houseBlItem.getConsigneeAddress());
+                    amendItem.setAfterItemComments(bl.getConsigneeAddress());
+                    amendItem.setItemNumber("H14");
+                }else if(!bl.getNotifyTin().equalsIgnoreCase(houseBlItem.getNotifyTin())){
+                    amendItem.setBeforeItemComments(houseBlItem.getNotifyTin());
+                    amendItem.setAfterItemComments(bl.getNotifyTin());
+                    amendItem.setItemNumber("H15");
+                }else if(!bl.getNotifyName().equalsIgnoreCase(houseBlItem.getNotifyName())){
+                    amendItem.setBeforeItemComments(houseBlItem.getNotifyName());
+                    amendItem.setAfterItemComments(bl.getNotifyName());
+                    amendItem.setItemNumber("H16");
+                }else if(!bl.getNotifyTel().equalsIgnoreCase(houseBlItem.getNotifyTel())){
+                    amendItem.setBeforeItemComments(houseBlItem.getNotifyTel());
+                    amendItem.setAfterItemComments(bl.getNotifyTel());
+                    amendItem.setItemNumber("H17");
+                }else if(!bl.getNotifyAddress().equalsIgnoreCase(houseBlItem.getNotifyAddress())){
+                    amendItem.setBeforeItemComments(houseBlItem.getNotifyAddress());
+                    amendItem.setAfterItemComments(bl.getNotifyAddress());
+                    amendItem.setItemNumber("H18");
+                }else if(!bl.getBlDescription().equalsIgnoreCase(houseBlItem.getDescription())){
+                    amendItem.setBeforeItemComments(houseBlItem.getDescription());
+                    amendItem.setAfterItemComments(bl.getBlDescription());
+                    amendItem.setItemNumber("H19");
+                }else if(!blMeasurement.getPkQuantity().equals(houseBlItem.getBlPackage())){
+                    amendItem.setBeforeItemComments(houseBlItem.getBlPackage().toString());
+                    amendItem.setAfterItemComments(blMeasurement.getPkQuantity().toString());
+                    amendItem.setItemNumber("H20");
+                }else if(!blMeasurement.getPkType().equalsIgnoreCase(houseBlItem.getPackageUnit())){
+                    amendItem.setBeforeItemComments(houseBlItem.getPackageUnit());
+                    amendItem.setAfterItemComments(blMeasurement.getPkType());
+                    amendItem.setItemNumber("H21");
+                }else if(!bl.getBlSummary().getBlGrossWeight().equals(houseBlItem.getBlGrossWeight())){
+                    amendItem.setBeforeItemComments(houseBlItem.getBlGrossWeight().toString());
+                    amendItem.setAfterItemComments(bl.getBlSummary().getBlGrossWeight().toString());
+                    amendItem.setItemNumber("H22");
+                }else if(!blMeasurement.getWeightUnit().equalsIgnoreCase(houseBlItem.getGrossWeightUnit())){
+                    amendItem.setBeforeItemComments(houseBlItem.getGrossWeightUnit());
+                    amendItem.setAfterItemComments(blMeasurement.getWeightUnit());
+                    amendItem.setItemNumber("H23");
+                }else if(!bl.getBlSummary().getBlNetWeight().equals(houseBlItem.getBlNetWeight())){
+                    amendItem.setBeforeItemComments(houseBlItem.getBlNetWeight().toString());
+                    amendItem.setAfterItemComments(bl.getBlSummary().getBlNetWeight().toString());
+                    amendItem.setItemNumber("H24");
+                }else if(!blMeasurement.getVolume().equals(houseBlItem.getVolume())){
+                    amendItem.setBeforeItemComments(houseBlItem.getVolume().toString());
+                    amendItem.setAfterItemComments(blMeasurement.getVolume().toString());
+                    amendItem.setItemNumber("H26");
+                }else if(!blMeasurement.getVolumeUnit().equalsIgnoreCase(houseBlItem.getVolumeUnit())){
+                    amendItem.setBeforeItemComments(houseBlItem.getVolumeUnit());
+                    amendItem.setAfterItemComments(blMeasurement.getVolumeUnit());
+                    amendItem.setItemNumber("H27");
+                }else if(!bl.getPlaceOfDestination().equalsIgnoreCase(houseBlItem.getPlaceOfDestination())){
+                    amendItem.setBeforeItemComments(houseBlItem.getPlaceOfDestination());
+                    amendItem.setAfterItemComments(bl.getPlaceOfDestination());
+                    amendItem.setItemNumber("H28");
+                }else if(!bl.getConsigneeTel().equalsIgnoreCase(houseBlItem.getConsigneeTel())){
+                    amendItem.setBeforeItemComments(houseBlItem.getConsigneeTel());
+                    amendItem.setAfterItemComments(bl.getConsigneeTel());
+                    amendItem.setItemNumber("H13");
+                }else if(!bl.getConsigneeName().equalsIgnoreCase(houseBlItem.getConsigneeName())){
+                    amendItem.setBeforeItemComments(houseBlItem.getConsigneeName());
+                    amendItem.setAfterItemComments(bl.getConsigneeName());
+                    amendItem.setItemNumber("H12");
+                }else if(!bl.getConsigneeTin().equalsIgnoreCase(houseBlItem.getConsigneeTin())){
+                    amendItem.setBeforeItemComments(houseBlItem.getConsigneeTin());
+                    amendItem.setAfterItemComments(bl.getConsigneeTin());
+                    amendItem.setItemNumber("H11");
+                }else if(!bl.getExporterAddress().equalsIgnoreCase(houseBlItem.getExporterAddress())){
+                    amendItem.setBeforeItemComments(houseBlItem.getExporterAddress());
+                    amendItem.setAfterItemComments(bl.getExporterAddress());
+                    amendItem.setItemNumber("H10");
+                }else if(!bl.getExporterTel().equalsIgnoreCase(houseBlItem.getExporterTel())){
+                    amendItem.setBeforeItemComments(houseBlItem.getExporterTel());
+                    amendItem.setAfterItemComments(bl.getExporterTel());
+                    amendItem.setItemNumber("H09");
+                }else if(!bl.getExporterName().equalsIgnoreCase(houseBlItem.getExporterName())){
+                    amendItem.setBeforeItemComments(houseBlItem.getExporterName());
+                    amendItem.setAfterItemComments(bl.getExporterName());
+                    amendItem.setItemNumber("H08");
+                }else if(!bl.getExporterTin().equalsIgnoreCase(houseBlItem.getExporterTin())){
+                    amendItem.setBeforeItemComments(houseBlItem.getExporterTin());
+                    amendItem.setAfterItemComments(bl.getExporterTin());
+                    amendItem.setItemNumber("H07");
+                }else if(!bl.getTradeType().substring(0,2).equalsIgnoreCase(houseBlItem.getTradeType())){
+                    amendItem.setBeforeItemComments(houseBlItem.getTradeType());
+                    amendItem.setAfterItemComments(bl.getTradeType());
+                    amendItem.setItemNumber("H06");
+                }else if(!bl.getBlPackingType().equalsIgnoreCase(houseBlItem.getBlPackingType())){
+                    amendItem.setBeforeItemComments(houseBlItem.getBlPackingType());
+                    amendItem.setAfterItemComments(bl.getBlPackingType());
+                    amendItem.setItemNumber("H34");
+                }
+
+            }
         }
         importAmendItemRepository.save(amendItem);
     }
