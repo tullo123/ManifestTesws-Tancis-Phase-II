@@ -88,10 +88,6 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
 
         return responseData;
     }
-
-
-
-
     private void saveGeneralAmendment(BlDto bl, ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendGeneral amendGeneral = new ExImportAmendGeneral();
         CommonOrdinalEntity commonOrdinalEntity;
@@ -273,13 +269,17 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
     }
 
     private void saveAmendBl(BlDto bl, ManifestAmendmentDto manifestAmendmentDto) {
-        ExImportAmendItem amendItem = new ExImportAmendItem();
+        ExImportAmendItem amendItem ;
+        List<ExImportAmendItem>  amendItems = new ArrayList<>();
         BlMeasurement blMeasurement = new BlMeasurement();
         CommonOrdinalEntity commonOrdinalEntity = new CommonOrdinalEntity();
+        String declarantTin = null;
+        String amendSerialNumber = null;
+        String amendYear= null;
         Optional<CoCompanyCodeEntity> optional = coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
         if (optional.isPresent()) {
             CoCompanyCodeEntity entity = optional.get();
-            amendItem.setDeclarantTin(entity.getTin());
+            declarantTin = entity.getTin();
             Optional<CoCompanyCodeEntity> opt = coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
             if (opt.isPresent()) {
                 CoCompanyCodeEntity coCompanyCodeEntity = optional.get();
@@ -291,13 +291,9 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
                     commonOrdinalEntity = optionalCommonOrdinalEntity.get();
                     commonOrdinalEntity.setSequenceNo(commonOrdinalEntity.getSequenceNo());
                 }
-                String suffix = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
-                amendItem.setAmendSerialNumber(suffix);
-                amendItem.setProcessType("M");
+                amendSerialNumber = String.format("%1$" + 7 + "s", commonOrdinalEntity.getSequenceNo()).replace(' ', '0');
                 DateFormat df = new SimpleDateFormat("yyyy");
-                amendItem.setAmendYear(df.format(Calendar.getInstance().getTime()));
-                amendItem.setLastUpdateId("TESWS");
-                amendItem.setFirstRegisterId("TESWS");
+                amendYear=df.format(Calendar.getInstance().getTime());
             }
 
         }
@@ -307,137 +303,235 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             if(opt.isPresent()){
                 ExImportMasterBl blItem = opt.get();
                 if(bl.getPlaceOfDelivery()!=null && !bl.getPlaceOfDelivery().equalsIgnoreCase(blItem.getPlaceOfDelivery())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getPlaceOfDelivery());
                     amendItem.setAfterItemComments(bl.getPlaceOfDelivery());
                     amendItem.setItemNumber("M33");
-                }if(bl.getBlDescription()!=null && !bl.getBlDescription().equalsIgnoreCase(blItem.getBlDescription())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getBlDescription()!=null && !bl.getBlDescription().equalsIgnoreCase(blItem.getBlDescription())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getBlDescription());
                     amendItem.setAfterItemComments(bl.getBlDescription());
                     amendItem.setItemNumber("M22");
-                }if(blMeasurement.getPkQuantity()!=null && !blMeasurement.getPkQuantity().equals(blItem.getBlPackage())){
+                    amendItems.add(amendItem);
+                }
+                if(blMeasurement.getPkQuantity()!=null && !blMeasurement.getPkQuantity().equals(blItem.getBlPackage())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getBlPackage().toString());
                     amendItem.setAfterItemComments(blMeasurement.getPkQuantity().toString());
                     amendItem.setItemNumber("M23");
-                }if(blMeasurement.getPkType()!=null && !blMeasurement.getPkType().equalsIgnoreCase(blItem.getPackageUnit())){
+                    amendItems.add(amendItem);
+                }
+                if(blMeasurement.getPkType()!=null && !blMeasurement.getPkType().equalsIgnoreCase(blItem.getPackageUnit())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getPackageUnit());
                     amendItem.setAfterItemComments(blMeasurement.getPkType());
                     amendItem.setItemNumber("M24");
-                }if(bl.getBlSummary()!=null && !bl.getBlSummary().getBlGrossWeight().equals(blItem.getBlGrossWeight())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getBlSummary()!=null && !bl.getBlSummary().getBlGrossWeight().equals(blItem.getBlGrossWeight())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getBlGrossWeight().toString());
                     amendItem.setAfterItemComments(bl.getBlSummary().getBlGrossWeight().toString());
                     amendItem.setItemNumber("M25");
-                }if(blMeasurement.getWeightUnit()!=null && !blMeasurement.getWeightUnit().equalsIgnoreCase(blItem.getGrossWeightUnit())){
+                    amendItems.add(amendItem);
+                }
+                if(blMeasurement.getWeightUnit()!=null && !blMeasurement.getWeightUnit().equalsIgnoreCase(blItem.getGrossWeightUnit())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getGrossWeightUnit());
                     amendItem.setAfterItemComments(blMeasurement.getWeightUnit());
                     amendItem.setItemNumber("M26");
-                }if(blMeasurement.getVolume()!=null && !blMeasurement.getVolume().equals(blItem.getVolume())){
+                    amendItems.add(amendItem);
+                }
+                if(blMeasurement.getVolume()!=null && !blMeasurement.getVolume().equals(blItem.getVolume())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getVolume().toString());
                     amendItem.setAfterItemComments(blMeasurement.getVolume().toString());
                     amendItem.setItemNumber("M29");
-                }if(blMeasurement.getVolumeUnit()!=null && !blMeasurement.getVolumeUnit().equalsIgnoreCase(blItem.getVolumeUnit())){
+                    amendItems.add(amendItem);
+                }
+                if(blMeasurement.getVolumeUnit()!=null && !blMeasurement.getVolumeUnit().equalsIgnoreCase(blItem.getVolumeUnit())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getVolumeUnit());
                     amendItem.setAfterItemComments(blMeasurement.getVolumeUnit());
                     amendItem.setItemNumber("M30");
-                }if(bl.getExporterName()!=null && !bl.getExporterName().equalsIgnoreCase(blItem.getExporterName())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getExporterName()!=null && !bl.getExporterName().equalsIgnoreCase(blItem.getExporterName())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getExporterName());
                     amendItem.setAfterItemComments(bl.getExporterName());
                     amendItem.setItemNumber("M11");
-                }if(bl.getExporterTel()!=null && !bl.getExporterTel().equalsIgnoreCase(blItem.getExporterTel())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getExporterTel()!=null && !bl.getExporterTel().equalsIgnoreCase(blItem.getExporterTel())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getExporterTel());
                     amendItem.setAfterItemComments(bl.getExporterTel());
                     amendItem.setItemNumber("M12");
-                }if(bl.getExporterAddress()!=null && !bl.getExporterAddress().equalsIgnoreCase(blItem.getExporterAddress())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getExporterAddress()!=null && !bl.getExporterAddress().equalsIgnoreCase(blItem.getExporterAddress())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getExporterAddress());
                     amendItem.setAfterItemComments(bl.getExporterAddress());
                     amendItem.setItemNumber("M13");
-                }if(bl.getExporterTin()!=null && !bl.getExporterTin().equalsIgnoreCase(blItem.getExporterTin())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getExporterTin()!=null && !bl.getExporterTin().equalsIgnoreCase(blItem.getExporterTin())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getExporterTin());
                     amendItem.setAfterItemComments(bl.getExporterTin());
                     amendItem.setItemNumber("M10");
-                }if(bl.getConsigneeName()!=null && !bl.getConsigneeName().equalsIgnoreCase(blItem.getConsigneeName())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getConsigneeName()!=null && !bl.getConsigneeName().equalsIgnoreCase(blItem.getConsigneeName())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getConsigneeName());
                     amendItem.setAfterItemComments(bl.getConsigneeName());
                     amendItem.setItemNumber("M15");
-                }if(bl.getConsigneeTel()!=null && !bl.getConsigneeTel().equalsIgnoreCase(blItem.getConsigneeTel())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getConsigneeTel()!=null && !bl.getConsigneeTel().equalsIgnoreCase(blItem.getConsigneeTel())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getConsigneeTel());
                     amendItem.setAfterItemComments(bl.getConsigneeTel());
                     amendItem.setItemNumber("M16");
-                }if(bl.getConsigneeAddress()!=null && !bl.getConsigneeAddress().equalsIgnoreCase(blItem.getConsigneeAddress())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getConsigneeAddress()!=null && !bl.getConsigneeAddress().equalsIgnoreCase(blItem.getConsigneeAddress())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getConsigneeAddress());
                     amendItem.setAfterItemComments(bl.getConsigneeAddress());
                     amendItem.setItemNumber("M17");
-                }if(bl.getConsigneeTin()!=null && !bl.getConsigneeTin().equalsIgnoreCase(blItem.getConsigneeTin())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getConsigneeTin()!=null && !bl.getConsigneeTin().equalsIgnoreCase(blItem.getConsigneeTin())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getConsigneeTin());
                     amendItem.setAfterItemComments(bl.getConsigneeTin());
                     amendItem.setItemNumber("M14");
-                }if(bl.getNotifyName()!=null && !bl.getNotifyName().equalsIgnoreCase(blItem.getNotifyName())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getNotifyName()!=null && !bl.getNotifyName().equalsIgnoreCase(blItem.getNotifyName())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getNotifyName());
                     amendItem.setAfterItemComments(bl.getNotifyName());
                     amendItem.setItemNumber("M19");
-                }if(bl.getNotifyTel()!=null && !bl.getNotifyTel().equalsIgnoreCase(blItem.getNotifyTel())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getNotifyTel()!=null && !bl.getNotifyTel().equalsIgnoreCase(blItem.getNotifyTel())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getNotifyTel());
                     amendItem.setAfterItemComments(bl.getNotifyTel());
                     amendItem.setItemNumber("M20");
-                }if(bl.getNotifyAddress()!=null && !bl.getNotifyAddress().equalsIgnoreCase(blItem.getNotifyAddress())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getNotifyAddress()!=null && !bl.getNotifyAddress().equalsIgnoreCase(blItem.getNotifyAddress())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getNotifyAddress());
                     amendItem.setAfterItemComments(bl.getNotifyAddress());
                     amendItem.setItemNumber("M21");
-                }if(bl.getNotifyTin()!=null && !bl.getNotifyTin().equalsIgnoreCase(blItem.getNotifyTin())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getNotifyTin()!=null && !bl.getNotifyTin().equalsIgnoreCase(blItem.getNotifyTin())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getNotifyTin());
                     amendItem.setAfterItemComments(bl.getNotifyTin());
                     amendItem.setItemNumber("M18");
-                }if(bl.getBlSummary()!=null && !bl.getBlSummary().getNumberOfContainers().equals(blItem.getContainerCount())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getBlSummary()!=null && !bl.getBlSummary().getNumberOfContainers().equals(blItem.getContainerCount())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getContainerCount().toString());
                     amendItem.setAfterItemComments(bl.getBlSummary().getNumberOfContainers().toString());
                     amendItem.setItemNumber("M45");
-                }if(bl.getForwarderTel()!=null && !bl.getForwarderTel().equalsIgnoreCase(blItem.getForwarderTel())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getForwarderTel()!=null && !bl.getForwarderTel().equalsIgnoreCase(blItem.getForwarderTel())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getForwarderTel());
                     amendItem.setAfterItemComments(bl.getForwarderTel());
                     amendItem.setItemNumber("M09");
-                }if(bl.getForwarderName()!=null && !bl.getForwarderName().equalsIgnoreCase(blItem.getForwarderName())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getForwarderName()!=null && !bl.getForwarderName().equalsIgnoreCase(blItem.getForwarderName())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getForwarderName());
                     amendItem.setAfterItemComments(bl.getForwarderName());
                     amendItem.setItemNumber("M08");
-                }if(bl.getForwarderCode()!=null && !bl.getForwarderCode().equalsIgnoreCase(blItem.getForwarderCode())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getForwarderCode()!=null && !bl.getForwarderCode().equalsIgnoreCase(blItem.getForwarderCode())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getForwarderCode());
                     amendItem.setAfterItemComments(bl.getForwarderCode());
                     amendItem.setItemNumber("M07");
-                }if(bl.getShippingAgentCode()!=null && !bl.getShippingAgentCode().equalsIgnoreCase(blItem.getShippingAgentCode())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getShippingAgentCode()!=null && !bl.getShippingAgentCode().equalsIgnoreCase(blItem.getShippingAgentCode())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getShippingAgentCode());
                     amendItem.setAfterItemComments(bl.getShippingAgentCode());
                     amendItem.setItemNumber("M06");
-                }if(bl.getBlType()!=null && !bl.getBlType().substring(0,1).equalsIgnoreCase(blItem.getBlType())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getBlType()!=null && !bl.getBlType().substring(0,1).equalsIgnoreCase(blItem.getBlType())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getBlType());
-                    amendItem.setAfterItemComments(bl.getBlType());
+                    amendItem.setAfterItemComments(bl.getBlType().substring(0,1));
                     amendItem.setItemNumber("M05");
-                }if(bl.getTradeType()!=null && !bl.getTradeType().substring(0,2).equalsIgnoreCase(blItem.getTradeType())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getTradeType()!=null && !bl.getTradeType().substring(0,2).equalsIgnoreCase(blItem.getTradeType())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getTradeType());
-                    amendItem.setAfterItemComments(bl.getTradeType());
+                    amendItem.setAfterItemComments(bl.getTradeType().substring(0,2));
                     amendItem.setItemNumber("M04");
-                }if(bl.getMasterBillOfLading()!=null && !bl.getMasterBillOfLading().equalsIgnoreCase(blItem.getMasterBillOfLading())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getMasterBillOfLading()!=null && !bl.getMasterBillOfLading().equalsIgnoreCase(blItem.getMasterBillOfLading())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getMasterBillOfLading());
                     amendItem.setAfterItemComments(bl.getMasterBillOfLading());
                     amendItem.setItemNumber("M03");
-                }if(bl.getPlaceOfDestination()!=null && !bl.getPlaceOfDestination().equalsIgnoreCase(blItem.getPlaceOfDestination())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getPlaceOfDestination()!=null && !bl.getPlaceOfDestination().equalsIgnoreCase(blItem.getPlaceOfDestination())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getPlaceOfDestination());
                     amendItem.setAfterItemComments(bl.getPlaceOfDestination());
                     amendItem.setItemNumber("M32");
-                }if(bl.getPortOfLoading()!=null && !bl.getPortOfLoading().equalsIgnoreCase(blItem.getPortOfLoading())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getPortOfLoading()!=null && !bl.getPortOfLoading().equalsIgnoreCase(blItem.getPortOfLoading())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getPortOfLoading());
                     amendItem.setAfterItemComments(bl.getPortOfLoading());
                     amendItem.setItemNumber("M31");
-                }if(blMeasurement.getNetWeight()!=null && !blMeasurement.getNetWeight().equals(blItem.getBlNetWeight())){
+                    amendItems.add(amendItem);
+                }
+                if(blMeasurement.getNetWeight()!=null && !blMeasurement.getNetWeight().equals(blItem.getBlNetWeight())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getBlNetWeight().toString());
                     amendItem.setAfterItemComments(blMeasurement.getNetWeight().toString());
                     amendItem.setItemNumber("M27");
-                }if(blMeasurement.getOilType()!=null && !blMeasurement.getOilType().equalsIgnoreCase(blItem.getOilType())){
+                    amendItems.add(amendItem);
+                }
+                if(blMeasurement.getOilType()!=null && !blMeasurement.getOilType().equalsIgnoreCase(blItem.getOilType())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getOilType());
                     amendItem.setAfterItemComments(blMeasurement.getOilType());
                     amendItem.setItemNumber("M40");
-                }if(bl.getBlPackingType()!=null && !bl.getBlPackingType().equalsIgnoreCase(blItem.getBlPackingType())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getBlPackingType()!=null && !bl.getBlPackingType().equalsIgnoreCase(blItem.getBlPackingType())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getBlPackingType());
                     amendItem.setAfterItemComments(bl.getBlPackingType());
                     amendItem.setItemNumber("M39");
+                    amendItems.add(amendItem);
                 }
             }
 
@@ -447,102 +541,180 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             if(option.isPresent()){
                 ExImportHouseBl houseBlItem =option.get();
                 if(bl.getConsigneeAddress()!=null && !bl.getConsigneeAddress().equalsIgnoreCase(houseBlItem.getConsigneeAddress())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getConsigneeAddress());
                     amendItem.setAfterItemComments(bl.getConsigneeAddress());
                     amendItem.setItemNumber("H14");
-                }if(bl.getNotifyTin()!=null && !bl.getNotifyTin().equalsIgnoreCase(houseBlItem.getNotifyTin())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getNotifyTin()!=null && !bl.getNotifyTin().equalsIgnoreCase(houseBlItem.getNotifyTin())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getNotifyTin());
                     amendItem.setAfterItemComments(bl.getNotifyTin());
                     amendItem.setItemNumber("H15");
-                }if(bl.getNotifyName()!=null && !bl.getNotifyName().equalsIgnoreCase(houseBlItem.getNotifyName())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getNotifyName()!=null && !bl.getNotifyName().equalsIgnoreCase(houseBlItem.getNotifyName())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getNotifyName());
                     amendItem.setAfterItemComments(bl.getNotifyName());
                     amendItem.setItemNumber("H16");
-                }if(bl.getNotifyTel()!=null && !bl.getNotifyTel().equalsIgnoreCase(houseBlItem.getNotifyTel())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getNotifyTel()!=null && !bl.getNotifyTel().equalsIgnoreCase(houseBlItem.getNotifyTel())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getNotifyTel());
                     amendItem.setAfterItemComments(bl.getNotifyTel());
                     amendItem.setItemNumber("H17");
-                }if(bl.getNotifyAddress()!=null && !bl.getNotifyAddress().equalsIgnoreCase(houseBlItem.getNotifyAddress())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getNotifyAddress()!=null && !bl.getNotifyAddress().equalsIgnoreCase(houseBlItem.getNotifyAddress())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getNotifyAddress());
                     amendItem.setAfterItemComments(bl.getNotifyAddress());
                     amendItem.setItemNumber("H18");
-                }if(bl.getBlDescription()!=null && !bl.getBlDescription().equalsIgnoreCase(houseBlItem.getDescription())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getBlDescription()!=null && !bl.getBlDescription().equalsIgnoreCase(houseBlItem.getDescription())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getDescription());
                     amendItem.setAfterItemComments(bl.getBlDescription());
                     amendItem.setItemNumber("H19");
-                }if(blMeasurement.getPkQuantity()!=null && !blMeasurement.getPkQuantity().equals(houseBlItem.getBlPackage())){
+                    amendItems.add(amendItem);
+                }
+                if(blMeasurement.getPkQuantity()!=null && !blMeasurement.getPkQuantity().equals(houseBlItem.getBlPackage())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getBlPackage().toString());
                     amendItem.setAfterItemComments(blMeasurement.getPkQuantity().toString());
                     amendItem.setItemNumber("H20");
-                }if(blMeasurement.getPkType()!=null && !blMeasurement.getPkType().equalsIgnoreCase(houseBlItem.getPackageUnit())){
+                    amendItems.add(amendItem);
+                }
+                if(blMeasurement.getPkType()!=null && !blMeasurement.getPkType().equalsIgnoreCase(houseBlItem.getPackageUnit())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getPackageUnit());
                     amendItem.setAfterItemComments(blMeasurement.getPkType());
                     amendItem.setItemNumber("H21");
-                }if(bl.getBlSummary()!=null && !bl.getBlSummary().getBlGrossWeight().equals(houseBlItem.getBlGrossWeight())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getBlSummary()!=null && !bl.getBlSummary().getBlGrossWeight().equals(houseBlItem.getBlGrossWeight())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getBlGrossWeight().toString());
                     amendItem.setAfterItemComments(bl.getBlSummary().getBlGrossWeight().toString());
                     amendItem.setItemNumber("H22");
-                }if(blMeasurement.getWeightUnit()!=null && !blMeasurement.getWeightUnit().equalsIgnoreCase(houseBlItem.getGrossWeightUnit())){
+                    amendItems.add(amendItem);
+                }
+                if(blMeasurement.getWeightUnit()!=null && !blMeasurement.getWeightUnit().equalsIgnoreCase(houseBlItem.getGrossWeightUnit())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getGrossWeightUnit());
                     amendItem.setAfterItemComments(blMeasurement.getWeightUnit());
                     amendItem.setItemNumber("H23");
-                }if(bl.getBlSummary()!=null && !bl.getBlSummary().getBlNetWeight().equals(houseBlItem.getBlNetWeight())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getBlSummary()!=null && !bl.getBlSummary().getBlNetWeight().equals(houseBlItem.getBlNetWeight())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getBlNetWeight().toString());
                     amendItem.setAfterItemComments(bl.getBlSummary().getBlNetWeight().toString());
                     amendItem.setItemNumber("H24");
-                }if(blMeasurement.getVolume()!=null && !blMeasurement.getVolume().equals(houseBlItem.getVolume())){
+                    amendItems.add(amendItem);
+                }
+                if(blMeasurement.getVolume()!=null && !blMeasurement.getVolume().equals(houseBlItem.getVolume())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getVolume().toString());
                     amendItem.setAfterItemComments(blMeasurement.getVolume().toString());
                     amendItem.setItemNumber("H26");
-                }if(blMeasurement.getVolumeUnit()!=null && !blMeasurement.getVolumeUnit().equalsIgnoreCase(houseBlItem.getVolumeUnit())){
+                    amendItems.add(amendItem);
+                }
+                if(blMeasurement.getVolumeUnit()!=null && !blMeasurement.getVolumeUnit().equalsIgnoreCase(houseBlItem.getVolumeUnit())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getVolumeUnit());
                     amendItem.setAfterItemComments(blMeasurement.getVolumeUnit());
                     amendItem.setItemNumber("H27");
-                }if(bl.getPlaceOfDestination()!=null && !bl.getPlaceOfDestination().equalsIgnoreCase(houseBlItem.getPlaceOfDestination())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getPlaceOfDestination()!=null && !bl.getPlaceOfDestination().equalsIgnoreCase(houseBlItem.getPlaceOfDestination())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getPlaceOfDestination());
                     amendItem.setAfterItemComments(bl.getPlaceOfDestination());
                     amendItem.setItemNumber("H28");
-                }if(bl.getConsigneeTel()!=null && !bl.getConsigneeTel().equalsIgnoreCase(houseBlItem.getConsigneeTel())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getConsigneeTel()!=null && !bl.getConsigneeTel().equalsIgnoreCase(houseBlItem.getConsigneeTel())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getConsigneeTel());
                     amendItem.setAfterItemComments(bl.getConsigneeTel());
                     amendItem.setItemNumber("H13");
-                }if(bl.getConsigneeName()!=null && !bl.getConsigneeName().equalsIgnoreCase(houseBlItem.getConsigneeName())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getConsigneeName()!=null && !bl.getConsigneeName().equalsIgnoreCase(houseBlItem.getConsigneeName())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getConsigneeName());
                     amendItem.setAfterItemComments(bl.getConsigneeName());
                     amendItem.setItemNumber("H12");
-                }if(bl.getConsigneeTin()!=null && !bl.getConsigneeTin().equalsIgnoreCase(houseBlItem.getConsigneeTin())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getConsigneeTin()!=null && !bl.getConsigneeTin().equalsIgnoreCase(houseBlItem.getConsigneeTin())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getConsigneeTin());
                     amendItem.setAfterItemComments(bl.getConsigneeTin());
                     amendItem.setItemNumber("H11");
-                }if(bl.getExporterAddress()!=null && !bl.getExporterAddress().equalsIgnoreCase(houseBlItem.getExporterAddress())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getExporterAddress()!=null && !bl.getExporterAddress().equalsIgnoreCase(houseBlItem.getExporterAddress())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getExporterAddress());
                     amendItem.setAfterItemComments(bl.getExporterAddress());
                     amendItem.setItemNumber("H10");
-                }if(bl.getExporterTel()!=null && !bl.getExporterTel().equalsIgnoreCase(houseBlItem.getExporterTel())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getExporterTel()!=null && !bl.getExporterTel().equalsIgnoreCase(houseBlItem.getExporterTel())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getExporterTel());
                     amendItem.setAfterItemComments(bl.getExporterTel());
                     amendItem.setItemNumber("H09");
-                }if(bl.getExporterName()!=null && !bl.getExporterName().equalsIgnoreCase(houseBlItem.getExporterName())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getExporterName()!=null && !bl.getExporterName().equalsIgnoreCase(houseBlItem.getExporterName())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getExporterName());
                     amendItem.setAfterItemComments(bl.getExporterName());
                     amendItem.setItemNumber("H08");
-                }if(bl.getExporterTin()!=null && !bl.getExporterTin().equalsIgnoreCase(houseBlItem.getExporterTin())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getExporterTin()!=null && !bl.getExporterTin().equalsIgnoreCase(houseBlItem.getExporterTin())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getExporterTin());
                     amendItem.setAfterItemComments(bl.getExporterTin());
                     amendItem.setItemNumber("H07");
-                }if(bl.getTradeType()!=null && !bl.getTradeType().substring(0,2).equalsIgnoreCase(houseBlItem.getTradeType())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getTradeType()!=null && !bl.getTradeType().substring(0,2).equalsIgnoreCase(houseBlItem.getTradeType())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getTradeType());
                     amendItem.setAfterItemComments(bl.getTradeType());
                     amendItem.setItemNumber("H06");
-                }if(bl.getBlPackingType()!=null && !bl.getBlPackingType().equalsIgnoreCase(houseBlItem.getBlPackingType())){
+                    amendItems.add(amendItem);
+                }
+                if(bl.getBlPackingType()!=null && !bl.getBlPackingType().equalsIgnoreCase(houseBlItem.getBlPackingType())){
+                    amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(houseBlItem.getBlPackingType());
                     amendItem.setAfterItemComments(bl.getBlPackingType());
                     amendItem.setItemNumber("H34");
+                    amendItems.add(amendItem);
                 }
 
             }
         }
-        importAmendItemRepository.save(amendItem);
+        for(ExImportAmendItem amendedItem : amendItems){
+            amendedItem.setDeclarantTin(declarantTin);
+            amendedItem.setAmendSerialNumber(amendSerialNumber);
+            amendedItem.setProcessType("M");
+            amendedItem.setAmendYear(amendYear);
+            amendedItem.setLastUpdateId("TESWS");
+            amendedItem.setFirstRegisterId("TESWS");
+            System.out.println(amendedItem.toString()) ;
+            importAmendItemRepository.save(amendedItem);
+        }
+
     }
     private void saveAmendedContainerDetail(List<Containers> containers, BlDto bl, ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendItemContainer itemContainer = new ExImportAmendItemContainer();

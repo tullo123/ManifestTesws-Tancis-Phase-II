@@ -1,6 +1,6 @@
 package com.ManifestTeswTancis.ServiceImpl;
 
-import com.ManifestTeswTancis.Entity.InImportAmendGeneral;
+import com.ManifestTeswTancis.Entity.ExImportAmendGeneral;
 import com.ManifestTeswTancis.Entity.ManifestAmendmentApprovalStatus;
 import com.ManifestTeswTancis.Entity.QueueMessageStatusEntity;
 import com.ManifestTeswTancis.RabbitConfigurations.*;
@@ -50,7 +50,7 @@ public class CheckApprovedManifestAmendmentStatusImpl {
         List<ManifestAmendmentApprovalStatus> status=manifestAmendmentApprovalStatusRepository.findByApprovedStatusFalse();
         for(ManifestAmendmentApprovalStatus ma: status ){
             if(!ma.isApprovedStatus()){
-                InImportAmendGeneral general =inImportAmendGeneralRepository.findFirstByMrnAndAmendSerialNumber(ma.getMrn(),ma.getAmendSerialNo());
+                ExImportAmendGeneral general =exImportAmendGeneralRepository.findFirstByMrnAndAmendSerialNumber(ma.getMrn(),ma.getAmendSerialNo());
                 if(ManifestAmendmentStatus.APPROVED.equals(general.getProcessingStatus())){
                     ManifestAmendmentApprovalStatusResponse manifestAmendmentApprovalStatusResponse = new ManifestAmendmentApprovalStatusResponse();
                     manifestAmendmentApprovalStatusResponse.setCommunicationAgreedId(ma.getCommunicationAgreedId());
