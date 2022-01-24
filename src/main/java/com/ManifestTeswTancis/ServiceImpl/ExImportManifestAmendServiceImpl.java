@@ -176,6 +176,8 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         manifestAmendmentApprovalStatus.setAmendReference(manifestAmendmentDto.getAmendmentReference());
         manifestAmendmentApprovalStatus.setAmendType(manifestAmendmentDto.getAmendType());
         manifestAmendmentApprovalStatus.setAmendSerialNo(amendGeneral.getAmendSerialNumber());
+        manifestAmendmentApprovalStatus.setDeclarantTin(amendGeneral.getDeclarantTin());
+        manifestAmendmentApprovalStatus.setAmendYear(amendGeneral.getAmendYear());
         manifestAmendmentApprovalStatusRepository.save(manifestAmendmentApprovalStatus);
 
     }

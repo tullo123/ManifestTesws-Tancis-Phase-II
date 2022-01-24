@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Service
@@ -49,29 +50,32 @@ public class CheckApprovedManifestAmendmentStatusImpl {
     public void CheckManifestAmendmentApprovalStatusImpl(){
         List<ManifestAmendmentApprovalStatus> status=manifestAmendmentApprovalStatusRepository.findByApprovedStatusFalse();
         for(ManifestAmendmentApprovalStatus ma: status ){
-            if(!ma.isApprovedStatus()){
-                ExImportAmendGeneral general =exImportAmendGeneralRepository.findFirstByMrnAndAmendSerialNumber(ma.getMrn(),ma.getAmendSerialNo());
-                if(ManifestAmendmentStatus.APPROVED.equals(general.getProcessingStatus())){
-                    ManifestAmendmentApprovalStatusResponse manifestAmendmentApprovalStatusResponse = new ManifestAmendmentApprovalStatusResponse();
-                    manifestAmendmentApprovalStatusResponse.setCommunicationAgreedId(ma.getCommunicationAgreedId());
-                    manifestAmendmentApprovalStatusResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-                    manifestAmendmentApprovalStatusResponse.setAmendmentReference(ma.getAmendReference());
-                    manifestAmendmentApprovalStatusResponse.setMrn(general.getMrn());
-                    manifestAmendmentApprovalStatusResponse.setVoyageNumber(ma.getVoyageNumber());
-                    manifestAmendmentApprovalStatusResponse.setApprovalStatus(getStatus(general.getProcessingStatus()));
-                    manifestAmendmentApprovalStatusResponse.setMsn(general.getMsn());
-                    manifestAmendmentApprovalStatusResponse.setHsn(general.getHsn());
-                    if(general.getHsn()!=null){
-                        manifestAmendmentApprovalStatusResponse.setCrn(general.getMrn()+general.getMsn()+general.getHsn());
-                    }else{
-                        manifestAmendmentApprovalStatusResponse.setCrn(general.getMrn()+general.getMsn());
-                    }
-                    manifestAmendmentApprovalStatusResponse.setComment(general.getAuditComment());
-                    ma.setApprovedStatus(true);
-                    manifestAmendmentApprovalStatusRepository.save(ma);
-                    String response = sendApprovalNoticeToQueue(manifestAmendmentApprovalStatusResponse);
-                    System.out.println("--------------- Approval Notice Response --------------\n" + response);
+            if(!ma.isApprovedStatus()) {
+                Optional<ExImportAmendGeneral> optional = exImportAmendGeneralRepository.findFirstByMrnAndAmendSerialNumber(ma.getMrn(), ma.getAmendSerialNo());
+                if (optional.isPresent()) {
+                    ExImportAmendGeneral general = optional.get();
+                    if (ManifestAmendmentStatus.APPROVED.equals(general.getProcessingStatus())) {
+                        ManifestAmendmentApprovalStatusResponse manifestAmendmentApprovalStatusResponse = new ManifestAmendmentApprovalStatusResponse();
+                        manifestAmendmentApprovalStatusResponse.setCommunicationAgreedId(ma.getCommunicationAgreedId());
+                        manifestAmendmentApprovalStatusResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                        manifestAmendmentApprovalStatusResponse.setAmendmentReference(ma.getAmendReference());
+                        manifestAmendmentApprovalStatusResponse.setMrn(general.getMrn());
+                        manifestAmendmentApprovalStatusResponse.setVoyageNumber(ma.getVoyageNumber());
+                        manifestAmendmentApprovalStatusResponse.setApprovalStatus(getStatus(general.getProcessingStatus()));
+                        manifestAmendmentApprovalStatusResponse.setMsn(general.getMsn());
+                        manifestAmendmentApprovalStatusResponse.setHsn(general.getHsn());
+                        if (general.getHsn() != null) {
+                            manifestAmendmentApprovalStatusResponse.setCrn(general.getMrn() + general.getMsn() + general.getHsn());
+                        } else {
+                            manifestAmendmentApprovalStatusResponse.setCrn(general.getMrn() + general.getMsn());
+                        }
+                        manifestAmendmentApprovalStatusResponse.setComment(general.getAuditComment());
+                        ma.setApprovedStatus(true);
+                        manifestAmendmentApprovalStatusRepository.save(ma);
+                        String response = sendApprovalNoticeToQueue(manifestAmendmentApprovalStatusResponse);
+                        System.out.println("--------------- Approval Notice Response --------------\n" + response);
 
+                    }
                 }
             }
         }

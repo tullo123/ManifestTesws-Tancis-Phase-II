@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Service
@@ -50,30 +51,33 @@ public class CheckReceivedManifestAmendmentStatusImpl {
     @Scheduled(fixedRate = 300000)
     public void CheckManifestAmendmentReceivedStatusImpl(){
         List<ManifestAmendmentApprovalStatus> status=manifestAmendmentApprovalStatusRepository.findByReceivedNoticeSentFalse();
-        for(ManifestAmendmentApprovalStatus ma: status ){
-            if(!ma.isApprovedStatus()){
-                ExImportAmendGeneral general =exImportAmendGeneralRepository.findFirstByMrnAndAmendSerialNumber(ma.getMrn(),ma.getAmendSerialNo());
-                if(ManifestAmendmentStatus.RECEIVED.equals(general.getProcessingStatus()) || ManifestAmendmentStatus.REJECTED.equals(general.getProcessingStatus())){
-                    ManifestAmendmentReceivedRejectedStatusResponse manifestAmendmentReceivedRejectedStatusResponse = new ManifestAmendmentReceivedRejectedStatusResponse();
-                    manifestAmendmentReceivedRejectedStatusResponse.setCommunicationAgreedId(ma.getCommunicationAgreedId());
-                    manifestAmendmentReceivedRejectedStatusResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-                    manifestAmendmentReceivedRejectedStatusResponse.setAmendmentReference(ma.getAmendReference());
-                    manifestAmendmentReceivedRejectedStatusResponse.setMrn(ma.getMrn());
-                    manifestAmendmentReceivedRejectedStatusResponse.setVoyageNumber(ma.getVoyageNumber());
-                    manifestAmendmentReceivedRejectedStatusResponse.setStatus(getStatus(general.getProcessingStatus()));
-                    manifestAmendmentReceivedRejectedStatusResponse.setMsn(general.getMsn());
-                    manifestAmendmentReceivedRejectedStatusResponse.setHsn(general.getHsn());
-                    if(general.getHsn()!=null){
-                        manifestAmendmentReceivedRejectedStatusResponse.setCrn(general.getMrn()+general.getMsn()+general.getHsn());
-                    }else{
-                        manifestAmendmentReceivedRejectedStatusResponse.setCrn(general.getMrn()+general.getMsn());
+        for(ManifestAmendmentApprovalStatus ma: status ) {
+            if (!ma.isApprovedStatus()) {
+                Optional<ExImportAmendGeneral> optional = exImportAmendGeneralRepository.findFirstByMrnAndAmendSerialNumber(ma.getMrn(), ma.getAmendSerialNo());
+                if (optional.isPresent()) {
+                    ExImportAmendGeneral general = optional.get();
+                    if (ManifestAmendmentStatus.RECEIVED.equals(general.getProcessingStatus()) || ManifestAmendmentStatus.REJECTED.equals(general.getProcessingStatus())) {
+                        ManifestAmendmentReceivedRejectedStatusResponse manifestAmendmentReceivedRejectedStatusResponse = new ManifestAmendmentReceivedRejectedStatusResponse();
+                        manifestAmendmentReceivedRejectedStatusResponse.setCommunicationAgreedId(ma.getCommunicationAgreedId());
+                        manifestAmendmentReceivedRejectedStatusResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                        manifestAmendmentReceivedRejectedStatusResponse.setAmendmentReference(ma.getAmendReference());
+                        manifestAmendmentReceivedRejectedStatusResponse.setMrn(ma.getMrn());
+                        manifestAmendmentReceivedRejectedStatusResponse.setVoyageNumber(ma.getVoyageNumber());
+                        manifestAmendmentReceivedRejectedStatusResponse.setStatus(getStatus(general.getProcessingStatus()));
+                        manifestAmendmentReceivedRejectedStatusResponse.setMsn(general.getMsn());
+                        manifestAmendmentReceivedRejectedStatusResponse.setHsn(general.getHsn());
+                        if (general.getHsn() != null) {
+                            manifestAmendmentReceivedRejectedStatusResponse.setCrn(general.getMrn() + general.getMsn() + general.getHsn());
+                        } else {
+                            manifestAmendmentReceivedRejectedStatusResponse.setCrn(general.getMrn() + general.getMsn());
+                        }
+                        manifestAmendmentReceivedRejectedStatusResponse.setComment(general.getAuditComment());
+                        ma.setReceivedNoticeSent(true);
+                        ma.setReceivedNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                        manifestAmendmentApprovalStatusRepository.save(ma);
+                        String response = sendReceivedManifestAmendmentNoticeToQueue(manifestAmendmentReceivedRejectedStatusResponse);
+                        System.out.println("--------------- Received/Failed Notice Response --------------\n" + response);
                     }
-                    manifestAmendmentReceivedRejectedStatusResponse.setComment(general.getAuditComment());
-                    ma.setReceivedNoticeSent(true);
-                    ma.setReceivedNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
-                    manifestAmendmentApprovalStatusRepository.save(ma);
-                    String response = sendReceivedManifestAmendmentNoticeToQueue(manifestAmendmentReceivedRejectedStatusResponse);
-                    System.out.println("--------------- Received/Failed Notice Response --------------\n" + response);
                 }
             }
         }

@@ -70,6 +70,21 @@ public class ManifestAmendmentApprovalStatus {
     @Column(name="AMEND_SERIAL_NO")
     private String amendSerialNo;
 
+    @Column(name="PENALTY_IMPOSED")
+    private boolean penaltyImposed;
+
+    @Column(name="AMOUNT")
+    private Double amount;
+
+    @Column(name = "DECLARANT_TIN")
+    private String declarantTin;
+
+    @Column(name = "AMEND_YEAR")
+    private String amendYear;
+
+    @Column(name="PENALTY_PAID")
+    private boolean penaltyPaid;
+
     public ManifestAmendmentApprovalStatus(ManifestAmendmentDto manifestAmendmentDto){
         this.mrn=manifestAmendmentDto.getMrn();
         this.communicationAgreedId=manifestAmendmentDto.getCommunicationAgreedId();
