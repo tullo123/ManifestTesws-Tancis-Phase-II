@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface BillGePGRepository extends JpaRepository<BillGePGEntity,String> {
-    Optional<BillGePGEntity> findByBillSerialNumber(String billSerialNo);
+    Optional<BillGePGEntity> findByBillSerialNumberAndBillYear(String billSerialNo, String billYy);
 }

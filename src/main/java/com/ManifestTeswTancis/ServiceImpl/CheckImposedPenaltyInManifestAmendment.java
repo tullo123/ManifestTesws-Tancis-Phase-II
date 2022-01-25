@@ -72,7 +72,7 @@ public class CheckImposedPenaltyInManifestAmendment {
                     manifestAmendmentBillNotice.setBillId(penalty.getBillRegisterId());
                     manifestAmendmentBillNotice.setBillAmount(penalty.getTotalBillTaxAmt());
                     manifestAmendmentBillNotice.setCcy("Tsh");
-                    Optional<BillGePGEntity> bill=billGePGRepository.findByBillSerialNumber(penalty.getBillSerialNo());
+                    Optional<BillGePGEntity> bill=billGePGRepository.findByBillSerialNumberAndBillYear(penalty.getBillSerialNo(),penalty.getBillYy());
                     if(bill.isPresent()){
                         BillGePGEntity gepgControlNumber=bill.get();
                         manifestAmendmentBillNotice.setControlNumber(gepgControlNumber.getGepgControlNo());

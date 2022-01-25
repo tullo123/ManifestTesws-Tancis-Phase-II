@@ -66,7 +66,7 @@ public class CheckPaidPenaltyInManifestAmendment {
                         manifestAmendmentPaymentNotice.setMsgRefNumb(ma.getAmendReference());
                         manifestAmendmentPaymentNotice.setPaymentDate(penalty.getBillDate().toString());
                         manifestAmendmentPaymentNotice.setBillId(penalty.getBillRegisterId());
-                        Optional<BillGePGEntity> bill=billGePGRepository.findByBillSerialNumber(penalty.getBillSerialNo());
+                        Optional<BillGePGEntity> bill=billGePGRepository.findByBillSerialNumberAndBillYear(penalty.getBillSerialNo(),penalty.getBillYy());
                         if(bill.isPresent()){
                             BillGePGEntity gepgControlNumber=bill.get();
                             manifestAmendmentPaymentNotice.setControlNumber(gepgControlNumber.getGepgControlNo());

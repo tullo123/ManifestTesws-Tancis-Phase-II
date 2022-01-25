@@ -25,7 +25,7 @@ public class BillGePGEntity implements Serializable {
     private String billCustomsOfficeCd;
 
     @Column(name="BILL_YY")
-    private String billYy;
+    private String billYear;
 
 	@Column(name="BILL_TYPE_CD")
     private String billTypeCd;
