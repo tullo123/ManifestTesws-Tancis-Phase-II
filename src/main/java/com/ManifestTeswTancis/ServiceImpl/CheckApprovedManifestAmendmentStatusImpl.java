@@ -46,7 +46,7 @@ public class CheckApprovedManifestAmendmentStatusImpl {
         this.inImportAmendGeneralRepository = inImportAmendGeneralRepository;
     }
     @Transactional
-    @Scheduled(fixedRate = 400000)
+    @Scheduled(fixedRate = 700000)
     public void CheckManifestAmendmentApprovalStatusImpl(){
         List<ManifestAmendmentApprovalStatus> status=manifestAmendmentApprovalStatusRepository.findByApprovedStatusFalse();
         for(ManifestAmendmentApprovalStatus ma: status ){

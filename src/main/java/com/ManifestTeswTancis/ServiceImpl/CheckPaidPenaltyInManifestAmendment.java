@@ -50,7 +50,7 @@ public class CheckPaidPenaltyInManifestAmendment {
         this.billGePGRepository = billGePGRepository;
     }
     @Transactional
-    @Scheduled(fixedRate = 900000)
+    @Scheduled(fixedRate = 600000)
     public void CheckPidPenalty(){
         List<ManifestAmendmentApprovalStatus> status = manifestAmendmentApprovalStatusRepository.findByPenaltyPaidFalse();
         for (ManifestAmendmentApprovalStatus ma : status) {
@@ -81,7 +81,7 @@ public class CheckPaidPenaltyInManifestAmendment {
                         ma.setPenaltyPaid(true);
                         manifestAmendmentApprovalStatusRepository.save(ma);
                         String response = sendPaymentNoticeToQueue(manifestAmendmentPaymentNotice);
-                        System.out.println("Payment Notice\n" + response);
+                        System.out.println("--Payment Notice--\n" + response);
 
                     }
                 }
@@ -93,7 +93,7 @@ public class CheckPaidPenaltyInManifestAmendment {
         ObjectMapper mapper = new ObjectMapper();
         try{
             String payload = mapper.writeValueAsString(manifestAmendmentPaymentNotice);
-            System.out.println("Payment Notice\n" + payload);
+            System.out.println("--Payment Notice--\n" + payload);
             MessageDto messageDto = new MessageDto();
             PaymentNoticeMessageDto paymentNoticeMessageDto = new PaymentNoticeMessageDto();
             paymentNoticeMessageDto.setMessageName(MessageNames.TESWS_PAYMENT_NOTICE);

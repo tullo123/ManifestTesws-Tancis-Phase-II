@@ -50,7 +50,7 @@ public class CheckImposedPenaltyInManifestAmendment {
     }
 
     @Transactional
-    @Scheduled(fixedRate = 800000)
+    @Scheduled(fixedRate = 500000)
     public void CheckImposedPenalty() {
         List<ManifestAmendmentApprovalStatus> status = manifestAmendmentApprovalStatusRepository.findFirstByApprovedStatusFalseAndPenaltyImposedFalse();
         for (ManifestAmendmentApprovalStatus ma : status) {
@@ -89,7 +89,7 @@ public class CheckImposedPenaltyInManifestAmendment {
                     ma.setPenaltyImposed(true);
                     manifestAmendmentApprovalStatusRepository.save(ma);
                     String response = sendBillNoticeToQueue(manifestAmendmentBillNotice);
-                    System.out.println("Bill Notice\n" + response);
+                    System.out.println("--Bill Notice--\n" + response);
                 }
 
                 }
@@ -101,7 +101,7 @@ public class CheckImposedPenaltyInManifestAmendment {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String payload = mapper.writeValueAsString(manifestAmendmentBillNotice);
-            System.out.println("Bill Notice\n" + payload);
+            System.out.println("--Bill Notice--\n" + payload);
             MessageDto messageDto = new MessageDto();
             BillNoticeMessageDto billNoticeMessageDto = new BillNoticeMessageDto();
             billNoticeMessageDto.setMessageName(MessageNames.TESWS_BILL_NOTICE);
