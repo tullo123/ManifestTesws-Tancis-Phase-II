@@ -9,6 +9,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 @Data
 @NoArgsConstructor
@@ -58,7 +59,7 @@ public class BillGeneralEntity implements Serializable {
     private String oilDeclarationYn;
 
 	@Column(name="BILL_DT")
-    private Date billDate;
+    private LocalDateTime billDate;
 
 	@Column(name="PAYMENT_DEADLINE_DAY")
     private String paymentDeadlineDay;
