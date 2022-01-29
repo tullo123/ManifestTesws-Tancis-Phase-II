@@ -13,7 +13,7 @@ public interface ManifestAmendmentApprovalStatusRepository extends JpaRepository
 
     List<ManifestAmendmentApprovalStatus> findByReceivedNoticeSentFalse();
 
-    List<ManifestAmendmentApprovalStatus> findFirstByApprovedStatusFalseAndPenaltyImposedFalse();
-
     List<ManifestAmendmentApprovalStatus> findByPenaltyPaidFalse();
+
+    List<ManifestAmendmentApprovalStatus> findByPenaltyImposedFalse();
 }

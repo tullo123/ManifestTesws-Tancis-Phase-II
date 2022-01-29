@@ -52,7 +52,7 @@ public class CheckImposedPenaltyInManifestAmendment {
     @Transactional
     @Scheduled(fixedRate = 500000)
     public void CheckImposedPenalty() {
-        List<ManifestAmendmentApprovalStatus> status = manifestAmendmentApprovalStatusRepository.findFirstByApprovedStatusFalseAndPenaltyImposedFalse();
+        List<ManifestAmendmentApprovalStatus> status = manifestAmendmentApprovalStatusRepository.findByPenaltyImposedFalse();
         for (ManifestAmendmentApprovalStatus ma : status) {
             if (!ma.isPenaltyImposed()) {
                 Optional<BillGeneralEntity>optional=billGeneralRepository.
@@ -76,17 +76,20 @@ public class CheckImposedPenaltyInManifestAmendment {
                     if(bill.isPresent()){
                         BillGePGEntity gepgControlNumber=bill.get();
                         manifestAmendmentBillNotice.setControlNumber(gepgControlNumber.getGepgControlNo());
+                    }else {
+                        manifestAmendmentBillNotice.setControlNumber(penalty.getErrorMessage());
                     }
                     manifestAmendmentBillNotice.setGeneratedBy("TRA");
                     manifestAmendmentBillNotice.setApprovedBy("TRA");
                     manifestAmendmentBillNotice.setApprovedDate(penalty.getBillDate().toString());
                     manifestAmendmentBillNotice.setDescription("PENALTY IMPOSED");
-                    billItem.setBillAmount(penalty.getPenaltyAmt());
+                    billItem.setBillAmount(penalty.getTotalBillTaxAmt());
                     billItem.setDescription("PENALTY IMPOSED");
                     billItem.setGfsCode("100126");
                     billItems.add(billItem);
                     manifestAmendmentBillNotice.setBillItems(billItems);
                     ma.setPenaltyImposed(true);
+                    ma.setAmount(penalty.getTotalBillTaxAmt());
                     manifestAmendmentApprovalStatusRepository.save(ma);
                     String response = sendBillNoticeToQueue(manifestAmendmentBillNotice);
                     System.out.println("--Bill Notice--\n" + response);
