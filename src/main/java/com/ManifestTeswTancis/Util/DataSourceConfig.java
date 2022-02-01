@@ -36,4 +36,14 @@ public class DataSourceConfig { // Added 21/04/2021
         return datasource;
 
     }
+    @Bean
+    public DataSource itaxDataSourceConfiguration(){
+        DriverManagerDataSource datasource = new DriverManagerDataSource();
+        datasource.setDriverClassName(Objects.requireNonNull(env.getProperty("spring.datasource.driver-class-name")));
+        datasource.setUrl(env.getProperty("oracle.datasource2.url"));
+        datasource.setUsername(env.getProperty("oracle.datasource2.username"));
+        datasource.setPassword(env.getProperty("oracle.datasource2.password"));
+        return datasource;
+
+    }
 }
