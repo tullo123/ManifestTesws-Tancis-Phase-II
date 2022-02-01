@@ -1,6 +1,4 @@
 package com.ManifestTeswTancis.Util;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +20,6 @@ public class WebUtils {
         return remoteAddr;
     }
 
-    @Autowired
     public void setRequest(HttpServletRequest request) {
         WebUtils.request = request;
     }

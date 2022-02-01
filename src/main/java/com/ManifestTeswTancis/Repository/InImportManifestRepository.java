@@ -1,6 +1,4 @@
 package com.ManifestTeswTancis.Repository;
-
-import com.ManifestTeswTancis.Entity.ExImportManifest;
 import com.ManifestTeswTancis.Entity.InImportManifest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
