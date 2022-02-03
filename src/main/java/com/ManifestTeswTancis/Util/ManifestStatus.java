@@ -4,6 +4,6 @@ package com.ManifestTeswTancis.Util;
 public interface ManifestStatus {
     String APPROVED = "E";
     String RECEIVED = "B";
-    String REJECTED = "F";
+    String REJECTED = "Z";
     String CANCELED = "X";
 }

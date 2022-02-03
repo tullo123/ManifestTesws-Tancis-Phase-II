@@ -10,7 +10,8 @@ import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.CustomClearanceDto;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
 import org.springframework.stereotype.Service;
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -27,8 +28,9 @@ public class CustomClearanceServiceImpl implements CustomClearanceService {
     }
 
 
-    @Transactional
+
     @Override
+    @Transactional
     public TeswsResponse customService(CustomClearanceDto customClearanceDto) {
         TeswsResponse response = new TeswsResponse();
         response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
