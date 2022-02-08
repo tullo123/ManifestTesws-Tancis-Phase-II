@@ -70,6 +70,31 @@ public class CheckApprovedManifestAmendmentStatusImpl {
                             manifestAmendmentApprovalStatusResponse.setCrn(general.getMrn() + general.getMsn());
                         }
                         manifestAmendmentApprovalStatusResponse.setComment(general.getAuditComment());
+                        ma.setRejectedYn("N");
+                        ma.setApprovedStatus(true);
+                        manifestAmendmentApprovalStatusRepository.save(ma);
+                        String response = sendApprovalNoticeToQueue(manifestAmendmentApprovalStatusResponse);
+                        System.out.println("--------------- Approval Notice Response --------------\n" + response);
+
+                    }
+
+                    if(ManifestAmendmentStatus.REJECTED.equals(general.getProcessingStatus())){
+                        ManifestAmendmentApprovalStatusResponse manifestAmendmentApprovalStatusResponse = new ManifestAmendmentApprovalStatusResponse();
+                        manifestAmendmentApprovalStatusResponse.setCommunicationAgreedId(ma.getCommunicationAgreedId());
+                        manifestAmendmentApprovalStatusResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                        manifestAmendmentApprovalStatusResponse.setAmendmentReference(ma.getAmendReference());
+                        manifestAmendmentApprovalStatusResponse.setMrn(general.getMrn());
+                        manifestAmendmentApprovalStatusResponse.setVoyageNumber(ma.getVoyageNumber());
+                        manifestAmendmentApprovalStatusResponse.setApprovalStatus(getStatus(general.getProcessingStatus()));
+                        manifestAmendmentApprovalStatusResponse.setMsn(general.getMsn());
+                        manifestAmendmentApprovalStatusResponse.setHsn(general.getHsn());
+                        if (general.getHsn() != null) {
+                            manifestAmendmentApprovalStatusResponse.setCrn(general.getMrn() + general.getMsn() + general.getHsn());
+                        } else {
+                            manifestAmendmentApprovalStatusResponse.setCrn(general.getMrn() + general.getMsn());
+                        }
+                        manifestAmendmentApprovalStatusResponse.setComment(general.getAuditComment());
+                        ma.setRejectedYn("Y");
                         ma.setApprovedStatus(true);
                         manifestAmendmentApprovalStatusRepository.save(ma);
                         String response = sendApprovalNoticeToQueue(manifestAmendmentApprovalStatusResponse);
@@ -129,6 +154,9 @@ public class CheckApprovedManifestAmendmentStatusImpl {
     private String getStatus(String processingStatus) {
         if (processingStatus.contentEquals("D")) {
             return "A";
-        } else return processingStatus;
+        }else if(processingStatus.contentEquals("E")){
+            return "R";
+        }
+        else return processingStatus;
     }
 }

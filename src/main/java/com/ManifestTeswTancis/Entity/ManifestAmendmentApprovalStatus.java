@@ -85,6 +85,9 @@ public class ManifestAmendmentApprovalStatus {
     @Column(name="PENALTY_PAID")
     private boolean penaltyPaid;
 
+    @Column(name="REJECTED_YN")
+    private String rejectedYn;
+
     public ManifestAmendmentApprovalStatus(ManifestAmendmentDto manifestAmendmentDto){
         this.mrn=manifestAmendmentDto.getMrn();
         this.communicationAgreedId=manifestAmendmentDto.getCommunicationAgreedId();

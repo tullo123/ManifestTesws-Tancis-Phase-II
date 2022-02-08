@@ -52,7 +52,7 @@ public class CheckReceivedCustomClearanceStatusImpl {
         for (CustomClearanceApprovalStatus ca : status) {
             if (!ca.isApprovedStatus()) {
                 CustomClearanceEntity cs = customClearanceRepository.findFirstByCommunicationAgreedId(ca.getCommunicationAgreedId());
-                if (ClearanceStatus.RECEIVED.equals(cs.getProcessingStatus())|| ClearanceStatus.REJECTED.equals(cs.getProcessingStatus())) {
+                if (ClearanceStatus.RECEIVED.equals(cs.getProcessingStatus())) {
                     CustomClearanceStatus customClearanceStatus = new CustomClearanceStatus();
                     customClearanceStatus.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     customClearanceStatus.setCommunicationAgreedId(cs.getCommunicationAgreedId());

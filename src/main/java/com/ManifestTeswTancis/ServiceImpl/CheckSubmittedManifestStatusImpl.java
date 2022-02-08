@@ -52,7 +52,7 @@ public class CheckSubmittedManifestStatusImpl {
         for (ManifestApprovalStatus mf : manifestStatusEntities) {
             if (!mf.isApprovedStatus()) {
                 ExImportManifest callInf = exImportManifestRepository.findByMrn(mf.getMrn());
-                if (ManifestStatus.RECEIVED.equals(callInf.getProcessingStatus()) || ManifestStatus.REJECTED.equals(callInf.getProcessingStatus())) {
+                if (ManifestStatus.RECEIVED.equals(callInf.getProcessingStatus())) {
                     SubmittedManifestStatusResponse submittedManifestStatusResponse = new SubmittedManifestStatusResponse();
                     submittedManifestStatusResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     submittedManifestStatusResponse.setCommunicationAgreedId(callInf.getCommunicationAgreedId());
@@ -67,8 +67,9 @@ public class CheckSubmittedManifestStatusImpl {
                     statusRepository.save(mf);
                     String response = submitManifestStatusToQueue(submittedManifestStatusResponse);
                     System.out.println("--------------- Approval Notice Response --------------\n" + response);
+                }
 
-                }else if(ManifestStatus.CANCELED.equals(callInf.getProcessingStatus())){
+                if(ManifestStatus.CANCELED.equals(callInf.getProcessingStatus())){
                     mf.setCancellationDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     mf.setCancellationStatus("CANCELED");
                     mf.setApprovedStatus(true);

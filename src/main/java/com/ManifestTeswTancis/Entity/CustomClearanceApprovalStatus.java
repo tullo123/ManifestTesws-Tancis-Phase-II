@@ -53,4 +53,7 @@ public class CustomClearanceApprovalStatus {
 
 	@Column(name="RECEIVED_FAILED_STATUS")
     private String receivedFailedStatus;
+
+	@Column(name="REJECTED_YN")
+    private String rejectedYn;
 }

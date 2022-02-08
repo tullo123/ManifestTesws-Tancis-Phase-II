@@ -83,4 +83,7 @@ public class ManifestApprovalStatus {
 	@Column(name="RECEIVED_NOTICE_DT")
 	private String noticeDate;
 
+	@Column(name="REJECTED_YN")
+	private String rejectedYN;
+
 }

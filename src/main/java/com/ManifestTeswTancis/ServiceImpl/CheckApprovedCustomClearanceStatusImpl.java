@@ -63,10 +63,26 @@ public class CheckApprovedCustomClearanceStatusImpl {
                     customClearanceApprovalResponse.setApprovalStatus(getStatus(cs.getProcessingStatus()));
                     customClearanceApprovalResponse.setComment(cs.getComments());
                     customClearanceApprovalResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                    ca.setRejectedYn("N");
                     ca.setApprovedStatus(true);
                     customClearanceApprovalRepository.save(ca);
                     String response = sendApprovalNoticeToQueue(customClearanceApprovalResponse);
                     System.out.println("--------------- Approval Notice Response --------------\n" + response);
+                }
+
+                if(ClearanceStatus.REJECTED.equals(cs.getProcessingStatus())){
+                    CustomClearanceApprovalResponse customClearanceApprovalResponse = new CustomClearanceApprovalResponse();
+                    customClearanceApprovalResponse.setCommunicationAgreedId(cs.getCommunicationAgreedId());
+                    customClearanceApprovalResponse.setClearanceReference(cs.getTaxClearanceNumber());
+                    customClearanceApprovalResponse.setApprovalStatus(getStatus(cs.getProcessingStatus()));
+                    customClearanceApprovalResponse.setComment(cs.getComments());
+                    customClearanceApprovalResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                    ca.setRejectedYn("Y");
+                    ca.setApprovedStatus(true);
+                    customClearanceApprovalRepository.save(ca);
+                    String response = sendApprovalNoticeToQueue(customClearanceApprovalResponse);
+                    System.out.println("--------------- Approval Notice Response --------------\n" + response);
+
                 }
             }
         }

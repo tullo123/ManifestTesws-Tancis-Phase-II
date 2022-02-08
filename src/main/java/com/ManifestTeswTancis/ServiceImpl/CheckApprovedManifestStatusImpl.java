@@ -73,6 +73,26 @@ public class CheckApprovedManifestStatusImpl {
 					mf.setApprovedNoticeStatus(true);
 					mf.setProcessingStatus(getStatus(callInf.getProcessingStatus()));
 					mf.setApprovalDt(manifestNotice.getApprovalDate());
+					mf.setRejectedYN("N");
+					statusRepository.save(mf);
+					String response = sendApprovedNoticeToQueue(manifestNotice);
+					System.out.println("--------------- Approval Notice Response ---------------\n" + response);
+				}
+
+				if(ManifestStatus.REJECTED.equals(callInf.getProcessingStatus())){
+					ManifestNotice manifestNotice = new ManifestNotice();
+					manifestNotice.setCommunicationAgreedId(callInf.getCommunicationAgreedId());
+					manifestNotice.setMessageReferenceNumber(callInf.getControlReferenceNumber());
+					manifestNotice.setApprovalDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+					manifestNotice.setMrn(mf.getMrn());
+					manifestNotice.setApprovalStatus(getStatus(callInf.getProcessingStatus()));
+					manifestNotice.setBls(getManifestNoticeBl(mf.getMrn()));
+					mf.setApprovedStatus(true);
+					mf.setApprovedNoticeStatus(true);
+					mf.setRejectedYN("Y");
+					mf.setCancellationStatus("REJECTED");
+					mf.setApprovedStatus(true);
+					mf.setApprovedNoticeStatus(true);
 					statusRepository.save(mf);
 					String response = sendApprovedNoticeToQueue(manifestNotice);
 					System.out.println("--------------- Approval Notice Response ---------------\n" + response);
@@ -82,6 +102,7 @@ public class CheckApprovedManifestStatusImpl {
 		
 
 	}
+
 
 	private List<ManifestNoticeBl> getManifestNoticeBl(String mrn){
 		List<ManifestNoticeBl> manifestNotices  = new ArrayList<>();
@@ -149,6 +170,8 @@ public class CheckApprovedManifestStatusImpl {
 	private String getStatus(String s) {
 		if (s.contentEquals("E")) {
 			return "A";
+		}else if (s.contentEquals("Z")) {
+			return "R";
 		}
 		else {
 			return s;

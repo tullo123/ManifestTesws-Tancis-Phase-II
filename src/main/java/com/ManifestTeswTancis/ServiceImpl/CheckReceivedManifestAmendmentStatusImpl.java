@@ -56,7 +56,7 @@ public class CheckReceivedManifestAmendmentStatusImpl {
                 Optional<ExImportAmendGeneral> optional = exImportAmendGeneralRepository.findFirstByMrnAndAmendSerialNumber(ma.getMrn(), ma.getAmendSerialNo());
                 if (optional.isPresent()) {
                     ExImportAmendGeneral general = optional.get();
-                    if (ManifestAmendmentStatus.RECEIVED.equals(general.getProcessingStatus()) || ManifestAmendmentStatus.REJECTED.equals(general.getProcessingStatus())) {
+                    if (ManifestAmendmentStatus.RECEIVED.equals(general.getProcessingStatus())) {
                         ManifestAmendmentReceivedRejectedStatusResponse manifestAmendmentReceivedRejectedStatusResponse = new ManifestAmendmentReceivedRejectedStatusResponse();
                         manifestAmendmentReceivedRejectedStatusResponse.setCommunicationAgreedId(ma.getCommunicationAgreedId());
                         manifestAmendmentReceivedRejectedStatusResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
@@ -124,7 +124,6 @@ public class CheckReceivedManifestAmendmentStatusImpl {
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = client.execute(request);
         HttpEntity entity = response.getEntity();
-
         return EntityUtils.toString(entity);
     }
 
@@ -132,7 +131,7 @@ public class CheckReceivedManifestAmendmentStatusImpl {
     public String getStatus(String processingStatus) {
         if(processingStatus.contentEquals("B")){
             return "RECEIVED";
-        }else if (processingStatus.contentEquals("R")){
+        }else if (processingStatus.contentEquals("E")){
             return "REJECTED";
         }
         else return processingStatus;
