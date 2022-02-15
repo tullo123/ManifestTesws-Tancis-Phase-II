@@ -15,8 +15,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class VesselBoardingServiceImpl implements VesselBoardingService {
-    final
-    ExImportManifestRepository exImportManifestRepository;
+    final ExImportManifestRepository exImportManifestRepository;
 
     public VesselBoardingServiceImpl(ExImportManifestRepository exImportManifestRepository) {
         this.exImportManifestRepository = exImportManifestRepository;

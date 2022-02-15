@@ -12,8 +12,7 @@ import java.util.Optional;
 
 @Service
 public class VesselCancellationServiceImpl implements VesselCancellationService {
-    final
-    ExImportManifestRepository exImportManifestRepository;
+    final ExImportManifestRepository exImportManifestRepository;
 
     public VesselCancellationServiceImpl(ExImportManifestRepository exImportManifestRepository) {
         this.exImportManifestRepository = exImportManifestRepository;

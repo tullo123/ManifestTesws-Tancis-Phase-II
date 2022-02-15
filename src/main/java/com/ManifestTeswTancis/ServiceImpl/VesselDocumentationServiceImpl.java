@@ -16,9 +16,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class VesselDocumentationServiceImpl implements VesselDocumentationService {
-
-    final
-    VesselDocumentationRepository vesselDocumentationRepository;
+    final VesselDocumentationRepository vesselDocumentationRepository;
 
     public VesselDocumentationServiceImpl(VesselDocumentationRepository vesselDocumentationRepository) {
         this.vesselDocumentationRepository = vesselDocumentationRepository;
