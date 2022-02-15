@@ -256,7 +256,11 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportMasterBl.setFirstRegisterDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
 		if(bl.getGoodDetails()!=null){
 			goodItemsEntity.setMasterBillOfLading(bl.getMasterBillOfLading());
-			goodItemsEntity.setHouseBillOfLading(bl.getHouseBillOfLading());
+			if(bl.getHouseBillOfLading()==null){
+				goodItemsEntity.setHouseBillOfLading("SIMPLE");
+			}else {
+				goodItemsEntity.setHouseBillOfLading(bl.getHouseBillOfLading());
+			}
 			for(GoodsDto goodsDto:bl.getGoodDetails()){
 				goodItemsEntity.setPackageType(goodsDto.getPackageType());
 				goodItemsEntity.setDescription(goodsDto.getDescription());
@@ -308,6 +312,8 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 					goodItemsEntity.setContainerNo("LOOSE");
 				}else if (goodsDto.getPackingType().equalsIgnoreCase("V") &&  goodsDto.getVehicleVIN()!=null){
 					goodItemsEntity.setContainerNo(goodsDto.getVehicleVIN());
+				} else if(goodsDto.getPlacements().isEmpty() && goodsDto.getPackingType().equalsIgnoreCase("B")){
+					goodItemsEntity.setContainerNo("LIQUID BULK");
 				}
 				for(GoodPlacementDto containerDto: goodsDto.getPlacements()){
 					goodItemsEntity.setContainerNo(containerDto.getContainerNo());
