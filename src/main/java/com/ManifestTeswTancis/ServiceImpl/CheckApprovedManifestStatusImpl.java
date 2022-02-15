@@ -53,10 +53,10 @@ public class CheckApprovedManifestStatusImpl {
 	@Scheduled(fixedRate = 150000)
 	public void checkManifestStatus() {
 		List<ManifestApprovalStatus> manifestStatusEntities = statusRepository.findByApprovedStatusFalse();
-			System.err.println("--------------- Checking for any approved manifest ---------------");
+			System.err.println("------ Checking for approved manifest ----------");
 		for (ManifestApprovalStatus mf : manifestStatusEntities) {
 			if (!mf.isApprovedStatus()) {
-				System.err.println("--------------- Approving Manifest with Voyage No. " + mf.getVoyageNumber()+ "---------------");
+				System.err.println("------ Approving Manifest with Voyage No. " + mf.getVoyageNumber()+ "----");
 				ExImportManifest callInf = exImportManifestRepository.findByMrn(mf.getMrn());
 				if (ManifestStatus.APPROVED.equals(callInf.getProcessingStatus())) {
 					ManifestNotice manifestNotice = new ManifestNotice();
@@ -76,7 +76,7 @@ public class CheckApprovedManifestStatusImpl {
 					mf.setRejectedYN("N");
 					statusRepository.save(mf);
 					String response = sendApprovedNoticeToQueue(manifestNotice);
-					System.out.println("--------------- Approval Notice Response ---------------\n" + response);
+					System.out.println("------ Approval Notice Response ------\n" + response);
 				}
 
 				if(ManifestStatus.REJECTED.equals(callInf.getProcessingStatus())){
@@ -95,7 +95,7 @@ public class CheckApprovedManifestStatusImpl {
 					mf.setApprovedNoticeStatus(true);
 					statusRepository.save(mf);
 					String response = sendApprovedNoticeToQueue(manifestNotice);
-					System.out.println("--------------- Approval Notice Response ---------------\n" + response);
+					System.out.println("------ Approval Notice Response -------\n" + response);
 				}
 			}
 		}
@@ -137,7 +137,7 @@ public class CheckApprovedManifestStatusImpl {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			String payload = mapper.writeValueAsString(manifestNotice);
-			System.out.println("----------- Approval notice payload ------------\n"+payload);
+			System.out.println("---- Approval notice payload ----\n"+payload);
 			MessageDto messageDto = new MessageDto();
 			ManifestNoticeMessageDto manifestNoticeMessageDto = new ManifestNoticeMessageDto();
 			manifestNoticeMessageDto.setMessageName(MessageNames.MANIFEST_APPROVAL_NOTICE);

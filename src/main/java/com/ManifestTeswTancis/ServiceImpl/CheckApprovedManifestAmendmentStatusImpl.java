@@ -74,7 +74,7 @@ public class CheckApprovedManifestAmendmentStatusImpl {
                         ma.setApprovedStatus(true);
                         manifestAmendmentApprovalStatusRepository.save(ma);
                         String response = sendApprovalNoticeToQueue(manifestAmendmentApprovalStatusResponse);
-                        System.out.println("--------------- Approval Notice Response --------------\n" + response);
+                        System.out.println("---- Approval Notice  -----\n" + response);
 
                     }
 
@@ -98,7 +98,7 @@ public class CheckApprovedManifestAmendmentStatusImpl {
                         ma.setApprovedStatus(true);
                         manifestAmendmentApprovalStatusRepository.save(ma);
                         String response = sendApprovalNoticeToQueue(manifestAmendmentApprovalStatusResponse);
-                        System.out.println("--------------- Approval Notice Response --------------\n" + response);
+                        System.out.println("----- Approval Notice ------\n" + response);
 
                     }
                 }
@@ -110,7 +110,7 @@ public class CheckApprovedManifestAmendmentStatusImpl {
         ObjectMapper mapper = new ObjectMapper();
         try{
             String payload = mapper.writeValueAsString(manifestAmendmentApprovalStatusResponse);
-            System.out.println("----------- Approval notice payload ------------\n"+payload);
+            System.out.println("------- Approval notice payload -------\n"+payload);
             MessageDto messageDto = new MessageDto();
             ManifestAmendmentNoticeMessageDto manifestAmendmentNoticeMessageDto = new ManifestAmendmentNoticeMessageDto();
             manifestAmendmentNoticeMessageDto.setMessageName(MessageNames.MANIFEST_AMENDMENT_NOTICE);
