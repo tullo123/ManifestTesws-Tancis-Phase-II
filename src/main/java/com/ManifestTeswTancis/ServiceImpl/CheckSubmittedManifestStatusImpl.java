@@ -73,6 +73,8 @@ public class CheckSubmittedManifestStatusImpl {
                     mf.setCancellationDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     mf.setCancellationStatus("CANCELED");
                     mf.setApprovedStatus(true);
+                    mf.setReceivedNoticeSent(true);
+                    statusRepository.save(mf);
                 }
             }
         }
