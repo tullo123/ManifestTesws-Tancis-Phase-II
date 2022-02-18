@@ -57,8 +57,8 @@ public class RabbitMqConfig {
         containerFactory.setConnectionFactory(connectionFactory());
         // Max number of consumers at the same time
         containerFactory.setMaxConcurrentConsumers(10);
-        // Listener will start with 3 concurrent consumers
-        containerFactory.setConcurrentConsumers(3);
+        // Listener will start with 1 concurrent consumers
+        containerFactory.setConcurrentConsumers(1);
         containerFactory.setAutoStartup(true);
         containerFactory.setPrefetchCount(1);
         return containerFactory;
