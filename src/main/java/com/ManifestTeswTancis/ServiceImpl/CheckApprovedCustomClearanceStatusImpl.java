@@ -136,8 +136,6 @@ public class CheckApprovedCustomClearanceStatusImpl {
             return "A";
         } else if (processingStatus.contentEquals("R")) {
             return "REJECTED";
-        } else if (processingStatus.contentEquals("B")) {
-            return "RECEIVED";
         } else return processingStatus;
     }
 }
