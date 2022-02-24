@@ -29,6 +29,9 @@ public class CustomClearanceEntity implements Serializable {
     @Column(name="PROCESSING_STATUS")
     private  String processingStatus;
 
+    @Column(name="PROCESSING_DT")
+    private  Date processingDate;
+
     @Column(name="VESSEL_MASTER")
     private String vesselMaster;
 
@@ -124,5 +127,8 @@ public class CustomClearanceEntity implements Serializable {
 
     @Column(name = "LOADING_CAR_WEIGHT")
     private Double carWeightLoaded;
+
+    @Column(name="AUDIT_DT")
+    private  Date auditDate;
 }
 

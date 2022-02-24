@@ -291,7 +291,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				goodItemsEntity.setVehicleOwnDrive(goodsDto.getVehicleOwnDrive());
 				goodItemsEntity.setFirstRegisterId("TESWS");
 				goodItemsEntity.setLastUpdateId("TESWS");
-				goodItemsEntity.setFirstRegisterDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
 				goodItemsEntity.setMrn(mrn);
 				if(goodsDto.getDangerousGoodsInformation()!=null){
 					goodItemsEntity.setClassCode(goodsDto.getDangerousGoodsInformation().getClassCode());
@@ -308,12 +307,12 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 					goodItemsEntity.setShipmFlashptValue(goodsDto.getDangerousGoodsInformation().getShipmFlashptValue());
 					goodItemsEntity.setShipmFlashptUnit(goodsDto.getDangerousGoodsInformation().getShipmFlashptUnit());
 				}
-				if(goodsDto.getPlacements().isEmpty() || goodsDto.getPlacements()==null){
+				if(goodsDto.getPlacements().isEmpty() && bl.getBlPackingType().equalsIgnoreCase("B")){
+					goodItemsEntity.setContainerNo("LIQUID BULK");
+				} else if(goodsDto.getPlacements().isEmpty() || goodsDto.getPlacements()==null){
 					goodItemsEntity.setContainerNo("LOOSE");
 				}else if (goodsDto.getPackingType().equalsIgnoreCase("V") &&  goodsDto.getVehicleVIN()!=null){
 					goodItemsEntity.setContainerNo(goodsDto.getVehicleVIN());
-				} else if(goodsDto.getPlacements().isEmpty() && goodsDto.getPackingType().equalsIgnoreCase("B")){
-					goodItemsEntity.setContainerNo("LIQUID BULK");
 				}
 				for(GoodPlacementDto containerDto: goodsDto.getPlacements()){
 					goodItemsEntity.setContainerNo(containerDto.getContainerNo());

@@ -72,6 +72,7 @@ public class CustomClearanceServiceImpl implements CustomClearanceService {
                 cu.setBkWeightLoaded(customClearanceDto.getBkWeightLoaded());
                 cu.setCarQuantityLoaded(customClearanceDto.getCarQuantityLoaded());
                 cu.setCarWeightLoaded(customClearanceDto.getCarWeightLoaded());
+                cu.setProcessingDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
                 cu.setEstimatedDatetimeOfArrival(DateFormatter.getDateFromLocalDateTime(customClearanceDto.getEstimatedDatetimeOfArrival()));
                 cu.setActualDatetimeOfArrival(DateFormatter.getDateFromLocalDateTime(customClearanceDto.getActualDatetimeOfArrival()));
                 cu.setClearanceRequestDate(DateFormatter.getDateFromLocalDateTime(customClearanceDto.getClearanceRequestDate()));

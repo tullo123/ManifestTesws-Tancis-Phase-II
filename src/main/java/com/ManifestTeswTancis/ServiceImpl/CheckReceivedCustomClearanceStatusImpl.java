@@ -9,7 +9,6 @@ import com.ManifestTeswTancis.Repository.CustomClearanceRepository;
 import com.ManifestTeswTancis.Repository.QueueMessageStatusRepository;
 import com.ManifestTeswTancis.Response.CustomClearanceStatus;
 import com.ManifestTeswTancis.Util.ClearanceStatus;
-import com.ManifestTeswTancis.Util.DateFormatter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -24,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -54,7 +54,8 @@ public class CheckReceivedCustomClearanceStatusImpl {
                 CustomClearanceEntity cs = customClearanceRepository.findFirstByCommunicationAgreedId(ca.getCommunicationAgreedId());
                 if (ClearanceStatus.RECEIVED.equals(cs.getProcessingStatus())) {
                     CustomClearanceStatus customClearanceStatus = new CustomClearanceStatus();
-                    customClearanceStatus.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    customClearanceStatus.setNoticeDate(formatter.format(cs.getProcessingDate()));
                     customClearanceStatus.setCommunicationAgreedId(cs.getCommunicationAgreedId());
                     customClearanceStatus.setStatus(getStatus(cs.getProcessingStatus()));
                     ca.setReceivedFailedStatus(getStatus(cs.getProcessingStatus()));

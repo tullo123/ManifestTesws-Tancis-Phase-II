@@ -9,7 +9,6 @@ import com.ManifestTeswTancis.Repository.CustomClearanceRepository;
 import com.ManifestTeswTancis.Repository.QueueMessageStatusRepository;
 import com.ManifestTeswTancis.Response.CustomClearanceApprovalResponse;
 import com.ManifestTeswTancis.Util.ClearanceStatus;
-import com.ManifestTeswTancis.Util.DateFormatter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -25,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -62,7 +62,8 @@ public class CheckApprovedCustomClearanceStatusImpl {
                     customClearanceApprovalResponse.setClearanceReference(cs.getTaxClearanceNumber());
                     customClearanceApprovalResponse.setApprovalStatus(getStatus(cs.getProcessingStatus()));
                     customClearanceApprovalResponse.setComment(cs.getComments());
-                    customClearanceApprovalResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    customClearanceApprovalResponse.setNoticeDate(formatter.format(cs.getAuditDate()));
                     ca.setRejectedYn("N");
                     ca.setApprovedStatus(true);
                     customClearanceApprovalRepository.save(ca);
@@ -76,7 +77,8 @@ public class CheckApprovedCustomClearanceStatusImpl {
                     customClearanceApprovalResponse.setClearanceReference(cs.getTaxClearanceNumber());
                     customClearanceApprovalResponse.setApprovalStatus(getStatus(cs.getProcessingStatus()));
                     customClearanceApprovalResponse.setComment(cs.getComments());
-                    customClearanceApprovalResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    customClearanceApprovalResponse.setNoticeDate(formatter.format(cs.getAuditDate()));
                     ca.setRejectedYn("Y");
                     ca.setApprovedStatus(true);
                     customClearanceApprovalRepository.save(ca);

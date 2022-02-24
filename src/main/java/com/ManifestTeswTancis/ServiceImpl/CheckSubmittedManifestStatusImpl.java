@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -54,7 +55,8 @@ public class CheckSubmittedManifestStatusImpl {
                 ExImportManifest callInf = exImportManifestRepository.findByMrn(mf.getMrn());
                 if (ManifestStatus.RECEIVED.equals(callInf.getProcessingStatus())) {
                     SubmittedManifestStatusResponse submittedManifestStatusResponse = new SubmittedManifestStatusResponse();
-                    submittedManifestStatusResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    submittedManifestStatusResponse.setNoticeDate(formatter.format(callInf.getProcessingDate()));
                     submittedManifestStatusResponse.setCommunicationAgreedId(callInf.getCommunicationAgreedId());
                     submittedManifestStatusResponse.setControlReferenceNumber(callInf.getControlReferenceNumber());
                     submittedManifestStatusResponse.setApplicationReference(callInf.getControlReferenceNumber());

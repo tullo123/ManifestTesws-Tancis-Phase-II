@@ -3,7 +3,6 @@ package com.ManifestTeswTancis.ServiceImpl;
 import com.ManifestTeswTancis.Entity.*;
 import com.ManifestTeswTancis.RabbitConfigurations.*;
 import com.ManifestTeswTancis.Repository.*;
-import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.*;
 import com.ManifestTeswTancis.dtos.ManifestNoticeBl;
 import com.ManifestTeswTancis.Util.ManifestStatus;
@@ -22,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -62,7 +62,9 @@ public class CheckApprovedManifestStatusImpl {
 					ManifestNotice manifestNotice = new ManifestNotice();
 					manifestNotice.setCommunicationAgreedId(callInf.getCommunicationAgreedId());
 					manifestNotice.setMessageReferenceNumber(callInf.getControlReferenceNumber());
-					manifestNotice.setApprovalDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+
+					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+					manifestNotice.setApprovalDate(formatter.format(callInf.getProcessingDate()));
 					manifestNotice.setMrn(mf.getMrn());
 					if (mf.getMrn() != null && mf.getMrnOut() != null) {
 						mf.setMrnStatus(true);
@@ -83,7 +85,8 @@ public class CheckApprovedManifestStatusImpl {
 					ManifestNotice manifestNotice = new ManifestNotice();
 					manifestNotice.setCommunicationAgreedId(callInf.getCommunicationAgreedId());
 					manifestNotice.setMessageReferenceNumber(callInf.getControlReferenceNumber());
-					manifestNotice.setApprovalDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+					manifestNotice.setApprovalDate(formatter.format(callInf.getProcessingDate()));
 					manifestNotice.setMrn(mf.getMrn());
 					manifestNotice.setApprovalStatus(getStatus(callInf.getProcessingStatus()));
 					manifestNotice.setBls(getManifestNoticeBl(mf.getMrn()));

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -57,7 +58,8 @@ public class CheckApprovedManifestAmendmentStatusImpl {
                     if (ManifestAmendmentStatus.APPROVED.equals(general.getProcessingStatus())) {
                         ManifestAmendmentApprovalStatusResponse manifestAmendmentApprovalStatusResponse = new ManifestAmendmentApprovalStatusResponse();
                         manifestAmendmentApprovalStatusResponse.setCommunicationAgreedId(ma.getCommunicationAgreedId());
-                        manifestAmendmentApprovalStatusResponse.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                        manifestAmendmentApprovalStatusResponse.setNoticeDate(formatter.format(general.getProcessingDate()));
                         manifestAmendmentApprovalStatusResponse.setAmendmentReference(ma.getAmendReference());
                         manifestAmendmentApprovalStatusResponse.setMrn(general.getMrn());
                         manifestAmendmentApprovalStatusResponse.setVoyageNumber(ma.getVoyageNumber());
