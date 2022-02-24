@@ -78,7 +78,7 @@ public class CheckApprovedManifestStatusImpl {
 					mf.setRejectedYN("N");
 					statusRepository.save(mf);
 					String response = sendApprovedNoticeToQueue(manifestNotice);
-					System.out.println("------ Approval Notice Response ------\n" + response);
+					System.out.println("--- Approval Notice ---\n" + response);
 				}
 
 				if(ManifestStatus.REJECTED.equals(callInf.getProcessingStatus())){
@@ -98,7 +98,7 @@ public class CheckApprovedManifestStatusImpl {
 					mf.setApprovedNoticeStatus(true);
 					statusRepository.save(mf);
 					String response = sendApprovedNoticeToQueue(manifestNotice);
-					System.out.println("------ Approval Notice Response -------\n" + response);
+					System.out.println("--- Rejection Notice ---\n" + response);
 				}
 			}
 		}

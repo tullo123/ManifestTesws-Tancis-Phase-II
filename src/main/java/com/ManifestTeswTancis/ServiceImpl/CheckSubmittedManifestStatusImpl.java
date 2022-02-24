@@ -67,8 +67,8 @@ public class CheckSubmittedManifestStatusImpl {
                     mf.setReceivedNoticeSent(true);
                     mf.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
                     statusRepository.save(mf);
-                    String response = submitManifestStatusToQueue(submittedManifestStatusResponse);
-                    System.out.println("--------------- Approval Notice Response --------------\n" + response);
+                    String response = sendSubmittedManifestStatusToQueue(submittedManifestStatusResponse);
+                    System.out.println("--- Approval Notice---\n" + response);
                 }
 
                 if(ManifestStatus.CANCELED.equals(callInf.getProcessingStatus())){
@@ -82,11 +82,11 @@ public class CheckSubmittedManifestStatusImpl {
         }
     }
 
-    private String submitManifestStatusToQueue(SubmittedManifestStatusResponse submittedManifestStatusResponse) {
+    private String sendSubmittedManifestStatusToQueue(SubmittedManifestStatusResponse submittedManifestStatusResponse) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String payload = mapper.writeValueAsString(submittedManifestStatusResponse);
-            System.out.println("----------- Submitted Manifest Status notice------------\n"+payload);
+            System.out.println("--- Submitted Manifest Status ---\n"+payload);
             MessageDto messageDto = new MessageDto();
             SubmittedManifestStatusMessageDto submittedManifestStatusMessageDto = new SubmittedManifestStatusMessageDto();
             submittedManifestStatusMessageDto.setMessageName(MessageNames.SUBMITTED_MANIFEST_STATUS);

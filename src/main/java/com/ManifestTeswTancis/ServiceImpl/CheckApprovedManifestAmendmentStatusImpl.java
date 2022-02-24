@@ -100,7 +100,7 @@ public class CheckApprovedManifestAmendmentStatusImpl {
                         ma.setApprovedStatus(true);
                         manifestAmendmentApprovalStatusRepository.save(ma);
                         String response = sendApprovalNoticeToQueue(manifestAmendmentApprovalStatusResponse);
-                        System.out.println("----- Approval Notice ------\n" + response);
+                        System.out.println("----- Rejection Notice ------\n" + response);
 
                     }
                 }

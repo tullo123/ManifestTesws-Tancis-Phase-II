@@ -68,7 +68,7 @@ public class CheckApprovedCustomClearanceStatusImpl {
                     ca.setApprovedStatus(true);
                     customClearanceApprovalRepository.save(ca);
                     String response = sendApprovalNoticeToQueue(customClearanceApprovalResponse);
-                    System.out.println("----Approval Notice Response -----\n" + response);
+                    System.out.println("---Approval Notice---\n" + response);
                 }
 
                 if(ClearanceStatus.REJECTED.equals(cs.getProcessingStatus())){
@@ -83,7 +83,7 @@ public class CheckApprovedCustomClearanceStatusImpl {
                     ca.setApprovedStatus(true);
                     customClearanceApprovalRepository.save(ca);
                     String response = sendApprovalNoticeToQueue(customClearanceApprovalResponse);
-                    System.out.println("-----Approval Notice Response ------\n" + response);
+                    System.out.println("---Rejection Notice---\n" + response);
 
                 }
             }
@@ -94,7 +94,7 @@ public class CheckApprovedCustomClearanceStatusImpl {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String payload = mapper.writeValueAsString(customClearanceApprovalResponse);
-            System.out.println("----- Custom Clearance Approval Notice Payload ----\n" + payload);
+            System.out.println("----Custom Clearance Approval Notice ----\n" + payload);
             MessageDto messageDto = new MessageDto();
             ResponseClearanceMessageDto responseClearanceMessageDto = new ResponseClearanceMessageDto();
             responseClearanceMessageDto.setMessageName(MessageNames.CUSTOM_CLEARANCE_NOTICE);
