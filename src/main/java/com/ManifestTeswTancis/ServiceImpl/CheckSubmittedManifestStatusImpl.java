@@ -118,8 +118,6 @@ public class CheckSubmittedManifestStatusImpl {
     private String getStatus(String processingStatus) {
         if (processingStatus.contentEquals("B")) {
             return "RECEIVED";
-        } else if (processingStatus.contentEquals("Z")) {
-            return "REJECT";
         }
         else {
             return processingStatus;

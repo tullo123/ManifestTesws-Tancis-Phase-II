@@ -131,8 +131,6 @@ public class CheckReceivedManifestAmendmentStatusImpl {
     public String getStatus(String processingStatus) {
         if(processingStatus.contentEquals("B")){
             return "RECEIVED";
-        }else if (processingStatus.contentEquals("E")){
-            return "REJECTED";
         }
         else return processingStatus;
     }

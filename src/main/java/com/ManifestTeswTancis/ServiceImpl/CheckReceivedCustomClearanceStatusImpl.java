@@ -105,11 +105,7 @@ public class CheckReceivedCustomClearanceStatusImpl {
     }
 
     public String getStatus(String processingStatus) {
-        if(processingStatus.contentEquals("D")){
-            return "A";
-        }else if (processingStatus.contentEquals("R")){
-            return "REJECTED";
-        } else if (processingStatus.contentEquals("B")){
+        if(processingStatus.contentEquals("B")){
             return "RECEIVED";
         }
         else return processingStatus;
