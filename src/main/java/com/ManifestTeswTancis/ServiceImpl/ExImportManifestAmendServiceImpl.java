@@ -163,6 +163,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         }
 
         amendGeneral.setAmendReasonCode("01");
+        amendGeneral.setAmendReasonComment("Simple Error");
         amendGeneral.setDeclarantCode(bl.getShippingAgentCode());
         amendGeneral.setDeclarantName(bl.getShippingAgentName());
         amendGeneral.setFirstRegisterId("TESWS");
