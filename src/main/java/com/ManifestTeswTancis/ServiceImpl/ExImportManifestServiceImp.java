@@ -352,7 +352,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportHouseBl.setOilType(blMeasurement.getOilType());
 		exImportHouseBl.setImdgclass(blMeasurement.getImdgClass());
 		exImportHouseBl.setDescription(bl.getBlDescription());
-		exImportHouseBl.setFirstRegisterDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
 
 		exImportHouseBlRepository.save(exImportHouseBl);
 
