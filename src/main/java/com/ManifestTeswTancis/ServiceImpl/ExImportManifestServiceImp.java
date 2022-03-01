@@ -1,6 +1,5 @@
 package com.ManifestTeswTancis.ServiceImpl;
 
-import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.*;
 import com.ManifestTeswTancis.Entity.*;
 import com.ManifestTeswTancis.Repository.*;
@@ -116,9 +115,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			ExImportBlContainer cnEn = new ExImportBlContainer();
 			Map<String, String> blMap = containerBlMap.get(container.getContainerNo());
 			Map<String, String> msnMap = msnHsnMap.get(container.getContainerNo());
-			if (container.getHouseBillOfLading() != null) {
-				cnEn.setHouseBillOfLading(container.getHouseBillOfLading());
-			}
 			if (!blMap.isEmpty()) {
 				cnEn.setMrn(mrn);
 				cnEn.setContainerNo(container.getContainerNo());
@@ -252,14 +248,10 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportMasterBl.setOilType(blMeasurement.getOilType());
 		exImportMasterBl.setImdgclass(blMeasurement.getImdgClass());
 		exImportMasterBl.setBlDescription(bl.getBlDescription());
-		exImportMasterBl.setFirstRegisterDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
 		if(bl.getGoodDetails()!=null){
+			goodItemsEntity.setMrn(mrn);
 			goodItemsEntity.setMasterBillOfLading(bl.getMasterBillOfLading());
-			if(bl.getHouseBillOfLading()==null){
-				goodItemsEntity.setHouseBillOfLading("SIMPLE");
-			}else {
-				goodItemsEntity.setHouseBillOfLading(bl.getHouseBillOfLading());
-			}
+			goodItemsEntity.setHouseBillOfLading(bl.getHouseBillOfLading());
 			for(GoodsDto goodsDto:bl.getGoodDetails()){
 				goodItemsEntity.setPackageType(goodsDto.getPackageType());
 				goodItemsEntity.setDescription(goodsDto.getDescription());
@@ -287,10 +279,9 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				goodItemsEntity.setVehicleVIN(goodsDto.getVehicleVIN());
 				goodItemsEntity.setVehicleModel(goodsDto.getVehicleModel());
 				goodItemsEntity.setVehicleMake(goodsDto.getVehicleMake());
-				goodItemsEntity.setVehicleOwnDrive(goodsDto.getVehicleOwnDrive());
-				goodItemsEntity.setFirstRegisterId("TESWS");
 				goodItemsEntity.setLastUpdateId("TESWS");
-				goodItemsEntity.setMrn(mrn);
+				goodItemsEntity.setFirstRegisterId("TESWS");
+				goodItemsEntity.setVehicleOwnDrive(goodsDto.getVehicleOwnDrive());
 				if(goodsDto.getDangerousGoodsInformation()!=null){
 					goodItemsEntity.setClassCode(goodsDto.getDangerousGoodsInformation().getClassCode());
 					goodItemsEntity.setDescription(goodsDto.getDangerousGoodsInformation().getDescription());
@@ -351,6 +342,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportHouseBl.setOilType(blMeasurement.getOilType());
 		exImportHouseBl.setImdgclass(blMeasurement.getImdgClass());
 		exImportHouseBl.setDescription(bl.getBlDescription());
+
 
 		exImportHouseBlRepository.save(exImportHouseBl);
 

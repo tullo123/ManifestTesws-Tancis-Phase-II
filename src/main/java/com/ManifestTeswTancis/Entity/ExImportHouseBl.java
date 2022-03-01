@@ -41,9 +41,6 @@ public class ExImportHouseBl {
 	@Column(name = "HSN")
 	private String hsn;
 
-	@Column(name = "TASAC_CONTROL_NUMBER")
-	private String tasacControlNumber;
-
 	@Column(name = "PACKAGE_UNIT")
 	private String packageUnit;
 
@@ -148,11 +145,17 @@ public class ExImportHouseBl {
 	@Column(name = "DESTINATION_PLACE")
 	private String placeOfDestination;
 
+	@Column(name = "AUDIT_STATUS")
+	private String auditStatus;
+
+	@Column(name = "TASAC_CONTROL_NUMBER")
+	private String tasacControlNumber;
+
 
 	public ExImportHouseBl(BillOfLadingDto billOfLadingDto) {
 		this.houseBillOfLading = billOfLadingDto.getHouseBillOfLading();
+		this.tasacControlNumber=billOfLadingDto.getTasacControlNumber();
 		this.masterBillOfLading = billOfLadingDto.getMasterBillOfLading();
-		this.tasacControlNumber = billOfLadingDto.getTasacControlNumber();
 		this.exporterName = billOfLadingDto.getExporterName();
 		this.exporterTel = billOfLadingDto.getExporterTel();
 		this.exporterAddress = billOfLadingDto.getExporterAddress();
@@ -176,6 +179,7 @@ public class ExImportHouseBl {
 		this.placeOfDestination = billOfLadingDto.getPlaceOfDestination();
 		this.blGrossWeight =billOfLadingDto.getBlSummary().getBlGrossWeight();
 		this.blNetWeight =billOfLadingDto.getBlSummary().getBlNetWeight();
+		this.auditStatus="NA";
 	}
 
 }
