@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 @Entity
+@DynamicUpdate
 @Table(name = "TANCISEXT.EX_MF_IMPORT_MASTER_BL")
 @IdClass(MasterBlId.class)
 public class ExImportMasterBl {

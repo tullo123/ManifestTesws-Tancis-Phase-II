@@ -149,7 +149,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				cnEn.setMinimumTemperature(container.getMinimumTemperature());
 				cnEn.setFirstRegisterId("TESWS");
 				cnEn.setLastUpdateId("TESWS");
-				cnEn.setFirstRegisterDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
 
 				if(container.getTemperatureType() != null) {
 					cnEn.setReferPlugYn(container.getTemperatureType().contentEquals("1")?"Y":"N");
