@@ -102,6 +102,8 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			blContainer.setHouseBillOfLading(houseBl);
 			blContainer.setMsn(msn);
 			blContainer.setHsn(msnMap.get(msn));
+			blContainer.setLastUpdateId("TESWS");
+			blContainer.setFirstRegisterId("TESWS");
 
 			exImportBlContainerRepository.save(blContainer);
 		}
@@ -238,6 +240,8 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportMasterBl.setMsn(msn);
 		exImportMasterBl.setAuditStatus("NA");
 		exImportMasterBl.setTradeType(getTradeType(bl));
+		exImportMasterBl.setBlType(getBlType(bl));
+		exImportMasterBl.setConsolidatedStatus(getConsolidatedStatus(bl));
 		exImportMasterBl.setBlPackage(blMeasurement.getPkQuantity());
 		exImportMasterBl.setPackageUnit(blMeasurement.getPkType());
 		exImportMasterBl.setGrossWeightUnit(blMeasurement.getWeightUnit());
@@ -316,7 +320,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 
 
 	}
-
 
 
 	private void saveHouseBl(
@@ -454,6 +457,28 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		}
 
 	}
+	private String getBlType(BillOfLadingDto bl) {
+		String blType = bl.getBlType();
+		if(blType != null && blType.equalsIgnoreCase("SIMPLE") ){
+			return "S";
+		} else if(blType!=null && blType.equalsIgnoreCase("CONSOLIDATED")){
+			return "C";
+		}else{
+			return bl.getBlType();
+		}
+	}
+
+	private String getConsolidatedStatus(BillOfLadingDto bl) {
+		if(bl.getBlType()!= null && bl.getBlType().equalsIgnoreCase("SIMPLE")){
+			return "U";
+		}else if(bl.getBlType()!= null && bl.getBlType().equalsIgnoreCase("CONSOLIDATED")){
+			return "C";
+		}else {
+			return bl.getBlType();
+		}
+	}
+
+
 	private void createEdNotice(ExImportManifest exImportManifest) throws InterruptedException {
 
 		EdNoticeEntity edNotice = new EdNoticeEntity();

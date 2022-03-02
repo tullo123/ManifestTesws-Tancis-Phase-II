@@ -92,9 +92,6 @@ public class ExImportBlContainer {
 	@Column(name = "MAXMUM_TEMPERATURE")
 	private Double maximumTemperature;
 
-	@Column(name = "TASAC_CONTROL_NUMBER")
-	private String tasacControlNumber;
-
 	@Column(name = "FIRST_REGISTER_DT")
 	@CreationTimestamp
 	private Date firstRegisterDate;
