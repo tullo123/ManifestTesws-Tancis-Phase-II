@@ -151,14 +151,24 @@ public class ExImportHouseBl {
 	@Column(name = "TASAC_CONTROL_NUMBER")
 	private String tasacControlNumber;
 
+	@Column(name="CONTAINER_COUNT")
+	private Integer numberOfContainers;
+
+	@Column(name = "SHIPPING_MARKS")
+	private String marksNumbers;
+
 
 	public ExImportHouseBl(BillOfLadingDto billOfLadingDto) {
 		this.houseBillOfLading = billOfLadingDto.getHouseBillOfLading();
 		this.tasacControlNumber=billOfLadingDto.getTasacControlNumber();
 		this.masterBillOfLading = billOfLadingDto.getMasterBillOfLading();
+		if(billOfLadingDto.getExporterName()==null){this.exporterName=billOfLadingDto.getConsignorName();}
 		this.exporterName = billOfLadingDto.getExporterName();
+		if (billOfLadingDto.getExporterTel()==null){this.exporterTel=billOfLadingDto.getConsignorTel();}
 		this.exporterTel = billOfLadingDto.getExporterTel();
+		if(billOfLadingDto.getExporterAddress()==null){this.exporterAddress=billOfLadingDto.getConsignorAddress();}
 		this.exporterAddress = billOfLadingDto.getExporterAddress();
+		if(billOfLadingDto.getExporterTin()==null){this.exporterTin=billOfLadingDto.getConsignorTin();}
 		this.exporterTin = billOfLadingDto.getExporterTin();
 		this.consigneeName = billOfLadingDto.getConsigneeName();
 		this.consigneeTel = billOfLadingDto.getConsigneeTel();
@@ -180,6 +190,7 @@ public class ExImportHouseBl {
 		this.blGrossWeight =billOfLadingDto.getBlSummary().getBlGrossWeight();
 		this.blNetWeight =billOfLadingDto.getBlSummary().getBlNetWeight();
 		this.auditStatus="NA";
+		this.numberOfContainers=billOfLadingDto.getBlSummary().getNumberOfContainers();
 	}
 
 }

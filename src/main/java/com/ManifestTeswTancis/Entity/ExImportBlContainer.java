@@ -10,7 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -94,7 +94,7 @@ public class ExImportBlContainer {
 
 	@Column(name = "FIRST_REGISTER_DT")
 	@CreationTimestamp
-	private Date firstRegisterDate;
+	private LocalDateTime firstRegisterDate;
 
 	@Column(name = "FIRST_REGISTER_ID")
 	private String firstRegisterId;
@@ -104,6 +104,12 @@ public class ExImportBlContainer {
 
 	@Column(name = "LAST_UPDATE_DT")
 	@UpdateTimestamp
-	private Date lastUpdateDate;
+	private LocalDateTime lastUpdateDate;
+
+	@Column(name="CONTAINER_PACKAGE")
+	private Double containerPackage;
+
+	@Column(name="PACKAGE_UNIT")
+	private String packageUnit;
 
 }

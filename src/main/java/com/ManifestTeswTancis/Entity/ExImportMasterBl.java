@@ -183,6 +183,9 @@ public class ExImportMasterBl {
 	@Column(name = "CONTAINER_COUNT")
 	private Integer containerCount;
 
+	@Column(name="HOUSE_BL_COUNT")
+	private Integer houseBlCount;
+
 
 	public ExImportMasterBl(BillOfLadingDto billOfLadingDto) {
 		this.masterBillOfLading = billOfLadingDto.getMasterBillOfLading();
@@ -215,9 +218,11 @@ public class ExImportMasterBl {
 		this.freightCurrency = billOfLadingDto.getFreightCurrency();
 		//this.blType = (billOfLadingDto.getHouseBillOfLading() != null)?"C":"S";
 		//this.consolidatedStatus = (billOfLadingDto.getHouseBillOfLading() != null)?"Y":"N";
-		this.marksNumbers =billOfLadingDto.getMarksNumbers();
+		//this.marksNumbers =billOfLadingDto.getMarksNumbers();
 		this.blGrossWeight=billOfLadingDto.getBlSummary().getBlGrossWeight();
 		this.blNetWeight= billOfLadingDto.getBlSummary().getBlNetWeight();
+		this.containerCount=billOfLadingDto.getBlSummary().getNumberOfContainers();
+		this.houseBlCount=billOfLadingDto.getBlSummary().getNumberOfHouseBl();
 	}
 
 }

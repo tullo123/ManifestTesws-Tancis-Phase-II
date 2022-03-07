@@ -19,4 +19,9 @@ public class BlMeasurement {
     private String oilType;
     private String packingType;
     private String imdgClass;
+    private String invoiceCurrency;
+    private String freightCurrency;
+    private Double invoiceValue;
+    private Double freightCharge;
+    private String marksNumbers;
 }

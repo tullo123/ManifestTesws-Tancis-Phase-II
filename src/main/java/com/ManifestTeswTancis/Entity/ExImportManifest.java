@@ -183,7 +183,7 @@ public class ExImportManifest implements Serializable {
 	private String boardingYn;
 
 	@Column(name="BOARDING_DT")
-	private Date boardingDt;
+	private LocalDateTime boardingDt;
 
 	@Column(name="SUBMIT_DT")
 	private Date submitDt;

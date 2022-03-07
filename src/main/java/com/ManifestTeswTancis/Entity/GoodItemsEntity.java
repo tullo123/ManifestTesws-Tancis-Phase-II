@@ -1,6 +1,9 @@
 package com.ManifestTeswTancis.Entity;
 
 
+import com.ManifestTeswTancis.dtos.BillOfLadingDto;
+import com.ManifestTeswTancis.dtos.GoodPlacementDto;
+import com.ManifestTeswTancis.dtos.GoodsDto;
 import com.ManifestTeswTancis.idEntities.GoodItemsId;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
@@ -170,4 +173,68 @@ public class GoodItemsEntity implements Serializable {
     @Column(name = "LAST_UPDATE_ID")
     private String lastUpdateId;
 
+    public GoodItemsEntity(BillOfLadingDto bl) {
+        this.masterBillOfLading = bl.getMasterBillOfLading();
+        this.houseBillOfLading = bl.getHouseBillOfLading();
+        if (bl.getGoodDetails() != null) {
+            for (GoodsDto goodsDto : bl.getGoodDetails()) {
+                this.packageType = goodsDto.getPackageType();
+                this.description = goodsDto.getDescription();
+                this.goodsItemNo = goodsDto.getGoodsItemNo();
+                this.packingType = goodsDto.getPackingType();
+                this.packageQuantity = goodsDto.getPackageQuantity();
+                this.oilType = goodsDto.getOilType();
+                this.invoiceValue = goodsDto.getInvoiceValue();
+                this.invoiceCurrency = goodsDto.getInvoiceCurrency();
+                this.freightCharge = goodsDto.getFreightCharge();
+                this.freightCurrency = goodsDto.getFreightCurrency();
+                this.grossWeight = goodsDto.getGrossWeight();
+                this.grossWeightUnit = "KG";
+                this.netWeight = goodsDto.getNetWeight();
+                this.netWeightUnit = "KG";
+                this.volume = goodsDto.getVolume();
+                this.volumeUnit = "CBM";
+                this.length = goodsDto.getLength();
+                this.lengthUnit = goodsDto.getLengthUnit();
+                this.width = goodsDto.getWidth();
+                this.widthUnit = goodsDto.getWidthUnit();
+                this.height = goodsDto.getHeight();
+                this.heightUnit = goodsDto.getHeightUnit();
+                this.marksNumbers = goodsDto.getMarksNumbers();
+                this.vehicleVIN = goodsDto.getVehicleVIN();
+                this.vehicleModel = goodsDto.getVehicleModel();
+                this.vehicleMake = goodsDto.getVehicleMake();
+                this.lastUpdateId = "TESWS";
+                this.firstRegisterId = "TESWS";
+                this.vehicleOwnDrive = goodsDto.getVehicleOwnDrive();
+                if (goodsDto.getDangerousGoodsInformation() != null) {
+                    this.classCode = goodsDto.getDangerousGoodsInformation().getClassCode();
+                    this.description = goodsDto.getDangerousGoodsInformation().getDescription();
+                    this.packingGroup = goodsDto.getDangerousGoodsInformation().getPackingGroup();
+                    this.marPolCategory = goodsDto.getDangerousGoodsInformation().getMarPolCategory();
+                    this.imdgpage = goodsDto.getDangerousGoodsInformation().getImdgpage();
+                    this.imdgclass = goodsDto.getDangerousGoodsInformation().getImdgclass();
+                    this.unnumber = goodsDto.getDangerousGoodsInformation().getUnnumber();
+                    this.tremcard = goodsDto.getDangerousGoodsInformation().getTremcard();
+                    this.mfag = goodsDto.getDangerousGoodsInformation().getMfag();
+                    this.ems = goodsDto.getDangerousGoodsInformation().getEms();
+                    this.flashpointValue = goodsDto.getDangerousGoodsInformation().getFlashpointValue();
+                    this.shipmFlashptValue = goodsDto.getDangerousGoodsInformation().getShipmFlashptValue();
+                    this.shipmFlashptUnit = goodsDto.getDangerousGoodsInformation().getShipmFlashptUnit();
+                }
+                if (goodsDto.getPlacements().isEmpty() && bl.getBlPackingType().equalsIgnoreCase("B")) {
+                    this.containerNo = "LIQUID BULK";
+                } else if (goodsDto.getPlacements().isEmpty() || goodsDto.getPlacements() == null) {
+                    this.containerNo = "LOOSE";
+                } else if (goodsDto.getPackingType().equalsIgnoreCase("V") && goodsDto.getVehicleVIN() != null) {
+                    this.containerNo = goodsDto.getVehicleVIN();
+                }
+                if(goodsDto.getPlacements()!=null)
+                for (GoodPlacementDto containerDto : goodsDto.getPlacements()) {
+                    this.containerNo = containerDto.getContainerNo();
+                }
+            }
+
+        }
+    }
 }

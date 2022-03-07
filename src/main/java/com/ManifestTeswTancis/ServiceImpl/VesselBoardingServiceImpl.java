@@ -36,7 +36,8 @@ public class VesselBoardingServiceImpl implements VesselBoardingService {
             if(optional.isPresent()){
                 ExImportManifest inImportManifest=optional.get();
                 inImportManifest.setBoardingYn("Y");
-                inImportManifest.setBoardingDt(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
+                LocalDateTime localDateTime = LocalDateTime.now();
+                inImportManifest.setBoardingDt(localDateTime);
                 exImportManifestRepository.save(inImportManifest);
             }
 
