@@ -1,10 +1,9 @@
 package com.ManifestTeswTancis.Entity;
 
-
 import com.ManifestTeswTancis.dtos.BillOfLadingDto;
 import com.ManifestTeswTancis.dtos.GoodPlacementDto;
 import com.ManifestTeswTancis.dtos.GoodsDto;
-import com.ManifestTeswTancis.idEntities.GoodItemsId;
+import com.ManifestTeswTancis.idEntities.HouseBlGoodItemsId;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,16 +16,15 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Entity
 @DynamicUpdate
-@Table(name ="TANCISINT.CM_MF_IMPORT_GOODS_ITEMS")
-@IdClass(GoodItemsId.class)
-public class GoodItemsEntity implements Serializable {
+@Table(name ="TANCISINT.CM_MF_IMPORT_HOUSE_BL_GOODS")
+@IdClass(HouseBlGoodItemsId.class)
+public class HouseBlGoodItemsEntity implements Serializable {
     @Id
     @Column(name = "MRN")
     private String mrn;
@@ -173,9 +171,9 @@ public class GoodItemsEntity implements Serializable {
     @Column(name = "LAST_UPDATE_ID")
     private String lastUpdateId;
 
-    public GoodItemsEntity(BillOfLadingDto bl) {
+
+    public HouseBlGoodItemsEntity(BillOfLadingDto bl) {
         this.masterBillOfLading = bl.getMasterBillOfLading();
-        this.houseBillOfLading = bl.getHouseBillOfLading();
         if (bl.getGoodDetails() != null) {
             for (GoodsDto goodsDto : bl.getGoodDetails()) {
                 this.packageType = goodsDto.getPackageType();
@@ -230,9 +228,9 @@ public class GoodItemsEntity implements Serializable {
                     this.containerNo = goodsDto.getVehicleVIN();
                 }
                 if(goodsDto.getPlacements()!=null)
-                for (GoodPlacementDto containerDto : goodsDto.getPlacements()) {
-                    this.containerNo = containerDto.getContainerNo();
-                }
+                    for (GoodPlacementDto containerDto : goodsDto.getPlacements()) {
+                        this.containerNo = containerDto.getContainerNo();
+                    }
             }
 
         }

@@ -17,7 +17,7 @@ import java.util.*;
 @Transactional
 public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendService {
     final AmendItemContainerRepository amendItemContainerRepository;
-    final BlGoodItemsRepository blGoodItemsRepository;
+    final MasterBlGoodItemsRepository masterBlGoodItemsRepository;
     final EdNoticeRepository edNoticeRepository;
     final ExImportAmendGeneralRepository exImportAmendGeneralRepository;
     final ExImportAmendItemRepository importAmendItemRepository;
@@ -32,9 +32,9 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
     final ExImportHouseBlRepository exImportHouseBlRepository;
 
     @Autowired
-    public ExImportManifestAmendServiceImpl(AmendItemContainerRepository amendItemContainerRepository, BlGoodItemsRepository blGoodItemsRepository, EdNoticeRepository edNoticeRepository, ExImportAmendGeneralRepository exImportAmendGeneralRepository, ExImportAmendItemRepository importAmendItemRepository, ExImportAmendBlRepository exImportAmendBlRepository, ExImportManifestRepository exImportManifestRepository, CoCompanyCodeRepository coCompanyCodeRepository, CommonOrdinalRepository commonOrdinalRepository, InImportManifestRepository inImportManifestRepository, ExImportMasterBlRepository exImportMasterBlRepository, ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository, ExImportBlContainerRepository exImportBlContainerRepository, ExImportHouseBlRepository exImportHouseBlRepository) {
+    public ExImportManifestAmendServiceImpl(AmendItemContainerRepository amendItemContainerRepository, MasterBlGoodItemsRepository masterBlGoodItemsRepository, EdNoticeRepository edNoticeRepository, ExImportAmendGeneralRepository exImportAmendGeneralRepository, ExImportAmendItemRepository importAmendItemRepository, ExImportAmendBlRepository exImportAmendBlRepository, ExImportManifestRepository exImportManifestRepository, CoCompanyCodeRepository coCompanyCodeRepository, CommonOrdinalRepository commonOrdinalRepository, InImportManifestRepository inImportManifestRepository, ExImportMasterBlRepository exImportMasterBlRepository, ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository, ExImportBlContainerRepository exImportBlContainerRepository, ExImportHouseBlRepository exImportHouseBlRepository) {
         this.amendItemContainerRepository = amendItemContainerRepository;
-        this.blGoodItemsRepository = blGoodItemsRepository;
+        this.masterBlGoodItemsRepository = masterBlGoodItemsRepository;
         this.edNoticeRepository = edNoticeRepository;
         this.exImportAmendGeneralRepository = exImportAmendGeneralRepository;
         this.importAmendItemRepository = importAmendItemRepository;
