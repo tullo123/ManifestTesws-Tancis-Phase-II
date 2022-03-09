@@ -367,7 +367,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 					msnMap.put(gd.getVehicleVIN(),map);
 				}
 			}
-			int i =1;
 			for (GoodPlacementDto pc : gd.getPlacements()) {
 				if(bl.getBlType().equalsIgnoreCase("CONSOLIDATED"))
 					continue;

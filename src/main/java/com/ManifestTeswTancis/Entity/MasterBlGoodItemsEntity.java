@@ -5,7 +5,7 @@ import com.ManifestTeswTancis.dtos.BillOfLadingDto;
 import com.ManifestTeswTancis.dtos.GoodPlacementDto;
 import com.ManifestTeswTancis.dtos.GoodsDto;
 import com.ManifestTeswTancis.idEntities.MasterBlGoodItemsId;
-import com.sun.istack.NotNull;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -161,14 +161,14 @@ public class MasterBlGoodItemsEntity implements Serializable {
 
     @Column(name = "FIRST_REGISTER_DT")
     @CreationTimestamp
-    private Date firstRegisterDate;
+    private LocalDateTime firstRegisterDate;
 
     @Column(name = "FIRST_REGISTER_ID")
     private String firstRegisterId;
 
     @Column(name = "LAST_UPDATE_DT")
     @UpdateTimestamp
-    private Date lastUpdateDate;
+    private LocalDateTime lastUpdateDate;
 
     @Column(name = "LAST_UPDATE_ID")
     private String lastUpdateId;
