@@ -21,7 +21,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Table(name = "TANCISINT.LIQUID_BK_QUALITY_REPORT")
 public class LiquidBulkQualityReportEntity implements Serializable {
-	private static final long serialVersionUID = -1865713825376141569L;
 
 	@Id
 	@Column(name = "TBS_CD_NO")
@@ -132,7 +131,7 @@ public class LiquidBulkQualityReportEntity implements Serializable {
 	@Column(name = "PASSFAIL_APPEARANCE")
 	private String passFailAppearance;
 
-	@Column(name = "FIRST_REGISTER_DT")
+	@Column(name = "FIRST_REGISTER_DT", nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime firstRegisterDate;
 

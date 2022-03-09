@@ -140,7 +140,7 @@ public class ExportManifest implements Serializable {
 	@Column(name="FIRST_REGISTER_ID")
     private String firstRegisterId;
 
-	@Column(name="FIRST_REGISTER_DT")
+	@Column(name="FIRST_REGISTER_DT", nullable = false, updatable = false)
     @CreationTimestamp
     private Date firstRegisterDate;
 

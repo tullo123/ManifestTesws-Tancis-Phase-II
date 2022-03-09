@@ -87,7 +87,7 @@ public class InImportManifest implements Serializable {
     @Column(name = "PROCESSING_STATUS")
     private String processingStatus;
 
-    @Column(name = "FIRST_REGISTER_DT")
+    @Column(name = "FIRST_REGISTER_DT", nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime firstRegisterDate;
 

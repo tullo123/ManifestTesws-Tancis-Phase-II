@@ -159,7 +159,7 @@ public class MasterBlGoodItemsEntity implements Serializable {
     @Column(name = "CONTAINER_NO")
     private String containerNo;
 
-    @Column(name = "FIRST_REGISTER_DT")
+    @Column(name = "FIRST_REGISTER_DT",nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime firstRegisterDate;
 
@@ -187,7 +187,7 @@ public class MasterBlGoodItemsEntity implements Serializable {
                 this.invoiceCurrency = goodsDto.getInvoiceCurrency();
                 this.freightCharge = goodsDto.getFreightCharge();
                 this.freightCurrency = goodsDto.getFreightCurrency();
-                this.grossWeight = goodsDto.getGrossWeight();
+                this.grossWeight = bl.getBlSummary().getBlGrossWeight();
                 this.grossWeightUnit = "KG";
                 this.netWeight = goodsDto.getNetWeight();
                 this.netWeightUnit = "KG";

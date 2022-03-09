@@ -166,7 +166,7 @@ public class ExImportMasterBl {
 	@Column(name="CONSOLIDATED_STATUS")
 	private String consolidatedStatus;
 
-	@Column(name="FIRST_REGISTER_DT")
+	@Column(name="FIRST_REGISTER_DT", nullable = false, updatable = false)
 	@CreationTimestamp
 	private Date firstRegisterDate;
 

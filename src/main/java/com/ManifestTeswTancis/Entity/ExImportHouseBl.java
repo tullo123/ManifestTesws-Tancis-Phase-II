@@ -116,7 +116,7 @@ public class ExImportHouseBl {
 	@Column(name = "OIL_TYPE")
 	private String oilType;
 
-	@Column(name = "FIRST_REGISTER_DT")
+	@Column(name = "FIRST_REGISTER_DT", nullable = false, updatable = false)
 	@CreationTimestamp
 	private Date firstRegisterDate;
 

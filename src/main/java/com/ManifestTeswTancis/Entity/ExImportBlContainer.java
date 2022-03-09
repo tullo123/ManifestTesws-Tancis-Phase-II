@@ -102,7 +102,7 @@ public class ExImportBlContainer {
 	@Column(name = "LAST_UPDATE_ID")
 	private String lastUpdateId;
 
-	@Column(name = "LAST_UPDATE_DT")
+	@Column(name = "LAST_UPDATE_DT", nullable = false, updatable = false)
 	@UpdateTimestamp
 	private LocalDateTime lastUpdateDate;
 

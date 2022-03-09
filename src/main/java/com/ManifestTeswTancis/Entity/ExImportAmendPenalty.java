@@ -19,7 +19,6 @@ import java.util.Date;
 @Table(name = "TANCISEXT.EX_MF_IMPORT_AMEND_PENALTY")
 @IdClass(AmendPenaltyId.class)
 public class ExImportAmendPenalty implements Serializable {
-	private static final long serialVersionUID = 799316793616301227L;
 	@Id
 	@NotNull
 	@Column(name = "DECLARANT_TIN")

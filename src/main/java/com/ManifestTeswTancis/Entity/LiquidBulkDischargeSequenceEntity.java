@@ -73,7 +73,7 @@ public class LiquidBulkDischargeSequenceEntity implements Serializable {
 	@Column(name="STATUS")
 	private String status;
 
-	@Column(name="FIRST_REGISTER_DT")
+	@Column(name="FIRST_REGISTER_DT", nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime firstRegisterDate;
 

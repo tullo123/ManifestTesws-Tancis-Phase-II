@@ -157,7 +157,7 @@ public class HouseBlGoodItemsEntity implements Serializable {
     @Column(name = "CONTAINER_NO")
     private String containerNo;
 
-    @Column(name = "FIRST_REGISTER_DT")
+    @Column(name = "FIRST_REGISTER_DT",nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime firstRegisterDate;
 

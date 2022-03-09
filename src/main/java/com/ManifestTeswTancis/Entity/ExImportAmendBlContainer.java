@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 @Table(name = "TANCISEXT.EX_MF_IMPORT_AMEND_BL_CONT")
 @IdClass(ContainerAmendId.class)
 public class ExImportAmendBlContainer implements Serializable {
-	private static final long serialVersionUID = 3300232137526405825L;
 
 	@Id
 	@NotNull
@@ -108,7 +107,7 @@ public class ExImportAmendBlContainer implements Serializable {
 	@Column(name = "FIRST_REGISTER_ID")
 	private String firstRegisterId;
 
-	@Column(name="FIRST_REGISTER_DT")
+	@Column(name="FIRST_REGISTER_DT", nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime firstRegisterDate;
 

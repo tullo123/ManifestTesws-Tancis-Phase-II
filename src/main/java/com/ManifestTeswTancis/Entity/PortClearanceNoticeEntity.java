@@ -38,7 +38,7 @@ public class PortClearanceNoticeEntity implements Serializable {
 	@Column(name = "NOTICE_DATE")
 	private String noticeDate;
 
-	@Column(name="FIRST_REGISTER_DT")
+	@Column(name="FIRST_REGISTER_DT", nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime firstRegisterDate;
 

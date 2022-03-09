@@ -50,7 +50,7 @@ public class ManifestAmendmentApprovalStatus {
     @Column(name="RECEIVED_NOTICE_DT")
     private String receivedNoticeDate;
 
-    @Column(name="FIRST_REGISTER_DT")
+    @Column(name="FIRST_REGISTER_DT", nullable = false, updatable = false)
     @CreationTimestamp
     private Date firstRegisterDate;
 
