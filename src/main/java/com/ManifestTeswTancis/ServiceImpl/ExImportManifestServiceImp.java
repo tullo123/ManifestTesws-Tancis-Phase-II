@@ -56,11 +56,12 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				Map<String, Map<String, String>> containerBlMap = new HashMap<>();
 				Map<String,Map<ContainerDto, Map<String, String>>> containerSaveMap = new HashMap<>();
 				Map<String, Map<String, String>> msnMap = new HashMap<>();
+				Map<String, String> hsnMap = new HashMap<>();
 				Map<String, Map<String, String>> vehicleMap = new HashMap<>();
 
-				setConsignments(billOfLadingDtos, infEntity.getMrn(), containerBlMap,vehicleMap,msnMap,containerSaveMap,manifestDto.getContainers());
+				setConsignments(billOfLadingDtos, infEntity.getMrn(), hsnMap,containerBlMap,vehicleMap,msnMap,containerSaveMap,manifestDto.getContainers());
 				List<ContainerDto> containerDtos = manifestDto.getContainers();
-				if (!containerDtos.isEmpty()) { saveContainers(msnMap, infEntity.getMrn(),containerSaveMap); }
+				if (!containerDtos.isEmpty()) { saveContainers(msnMap,hsnMap, infEntity.getMrn(),containerSaveMap); }
 				if(!vehicleMap.isEmpty()){ saveVehicles(vehicleMap, msnMap, infEntity.getMrn()); }
 				this.createEdNotice(infEntity);
 			}
@@ -111,105 +112,104 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 	}
 
 	private void saveContainers(
-			Map<String, Map<String, String>> msnHsnMap, String mrn,
+			Map<String, Map<String, String>> msnMap, Map<String, String> hsnMap,String mrn,
 			Map<String,Map<ContainerDto, Map<String, String>>> containerSaveMap) {
-	     	containerSaveMap.forEach((key,contMap)->{
-			contMap.forEach((container,blMap)->{
-			ExImportBlContainer cnEn = new ExImportBlContainer();
-			BlMeasurement blMeasurement =new  BlMeasurement();
-			Map<String, String> msnMap = msnHsnMap.get(container.getContainerNo());
-			if (!blMap.isEmpty()) {
-				cnEn.setMrn(mrn);
-				cnEn.setContainerNo(container.getContainerNo());
-				cnEn.setContainerSize(container.getContainerSize());
-				cnEn.setTypeOfContainer("C");
+	     	containerSaveMap.forEach((key,contMap)-> contMap.forEach((container, blMap)->{
+			 ExImportBlContainer cnEn = new ExImportBlContainer();
+			 BlMeasurement blMeasurement =new  BlMeasurement();
+			 Map<String, String> msns = msnMap.get(container.getContainerNo());
+			 if (!blMap.isEmpty()) {
+				 cnEn.setMrn(mrn);
+				 cnEn.setContainerNo(container.getContainerNo());
+				 cnEn.setContainerSize(container.getContainerSize());
+				 cnEn.setTypeOfContainer("C");
 
-				Set<String> mblset = blMap.keySet();
-				Iterator<String> iter = mblset.iterator();
-				String mBl = iter.next();
-				String hBl = (blMap.get(mBl) != null)?blMap.get(mBl):"SIMPLE";
+				 Set<String> mblset = blMap.keySet();
+				 Iterator<String> iter = mblset.iterator();
+				 String mBl = iter.next();
+				 String hBl = (blMap.get(mBl) != null)?blMap.get(mBl):"SIMPLE";
 
-				Set<String> msnSet = msnMap.keySet();
-				Iterator<String> msnInter = msnSet.iterator();
-				String msn = msnInter.next();
+				 String msn = msns.get(mBl);
 
-				cnEn.setMasterBillOfLading(mBl);
-				cnEn.setHouseBillOfLading(hBl);
-				cnEn.setMsn(msn);
-				cnEn.setHsn(msnMap.get(msn));
+				 cnEn.setMasterBillOfLading(mBl);
+				 cnEn.setHouseBillOfLading(hBl);
+				 cnEn.setMsn(msn);
+				 cnEn.setHsn(hsnMap.get(hBl));
 
-				cnEn.setFreightIndicator(container.getFreightIndicator());
-				cnEn.setWeight(container.getWeight());
-				cnEn.setWeightUnit(fixUnit(container.getWeightUnit()));
-				cnEn.setWeightUnit(fixUnit(container.getGrossWeightUnit()));
-				cnEn.setVolume(container.getVolume());
-				cnEn.setVolumeUnit("CBM");
-				cnEn.setMaximumTemperature(container.getMaximumTemperature());
-				cnEn.setMinimumTemperature(container.getMinimumTemperature());
-				cnEn.setLastUpdateId("TESWS");
-				cnEn.setFirstRegisterId("TESWS");
-				cnEn.setContainerPackage(blMeasurement.getPkQuantity());
-				cnEn.setPackageUnit(blMeasurement.getPkType());
+				 cnEn.setFreightIndicator(container.getFreightIndicator());
+				 cnEn.setWeight(container.getWeight());
+				 cnEn.setWeightUnit(fixUnit(container.getWeightUnit()));
+				 cnEn.setWeightUnit(fixUnit(container.getGrossWeightUnit()));
+				 cnEn.setVolume(container.getVolume());
+				 cnEn.setVolumeUnit("CBM");
+				 cnEn.setMaximumTemperature(container.getMaximumTemperature());
+				 cnEn.setMinimumTemperature(container.getMinimumTemperature());
+				 cnEn.setLastUpdateId("TESWS");
+				 cnEn.setFirstRegisterId("TESWS");
+				 cnEn.setContainerPackage(blMeasurement.getPkQuantity());
+				 cnEn.setPackageUnit(blMeasurement.getPkType());
 
-				if(container.getTemperatureType() != null && container.getTemperatureType().contentEquals("1")) {
-					cnEn.setReferPlugYn("Y");
-				} else
-					cnEn.setReferPlugYn("N");
+				 if(container.getTemperatureType() != null && container.getTemperatureType().contentEquals("1")) {
+					 cnEn.setReferPlugYn("Y");
+				 } else
+					 cnEn.setReferPlugYn("N");
 
 
-				int i = 0;
-				int l = 0;
-				if (container.getSealNumbers() != null && !container.getSealNumbers().isEmpty()) {
+				 int i = 0;
+				 int l = 0;
+				 if (container.getSealNumbers() != null && !container.getSealNumbers().isEmpty()) {
 
-					for (SealNumberDto sealNumber : container.getSealNumbers()) {
-						if (sealNumber.getSealNumberIssuerType() != null
-								&& sealNumber.getSealNumberIssuerType().contentEquals("CU")) {
-							if (i == 0) {
-								cnEn.setCustomSealNumberOne(sealNumber.getSealNumber());
-								i++;
-							} else if (i == 1) {
-								cnEn.setCustomSealNumberTwo(sealNumber.getSealNumber());
-								i++;
-							} else if (i == 2) {
-								cnEn.setCustomSealNumberThree(sealNumber.getSealNumber());
-								i++;
-							}
-						} else {
-							if (l == 0) {
-								cnEn.setSealNumber(sealNumber.getSealNumber());
-								l++;
-							} else if (l == 1) {
-								cnEn.setSealNumberTwo(sealNumber.getSealNumber());
-								l++;
-							} else if (l == 2) {
-								cnEn.setSealNumberThree(sealNumber.getSealNumber());
-								l++;
-							}
-						}
+					 for (SealNumberDto sealNumber : container.getSealNumbers()) {
+						 if (sealNumber.getSealNumberIssuerType() != null
+								 && sealNumber.getSealNumberIssuerType().contentEquals("CU")) {
+							 if (i == 0) {
+								 cnEn.setCustomSealNumberOne(sealNumber.getSealNumber());
+								 i++;
+							 } else if (i == 1) {
+								 cnEn.setCustomSealNumberTwo(sealNumber.getSealNumber());
+								 i++;
+							 } else if (i == 2) {
+								 cnEn.setCustomSealNumberThree(sealNumber.getSealNumber());
+								 i++;
+							 }
+						 } else {
+							 if (l == 0) {
+								 cnEn.setSealNumber(sealNumber.getSealNumber());
+								 l++;
+							 } else if (l == 1) {
+								 cnEn.setSealNumberTwo(sealNumber.getSealNumber());
+								 l++;
+							 } else if (l == 2) {
+								 cnEn.setSealNumberThree(sealNumber.getSealNumber());
+								 l++;
+							 }
+						 }
 
-					}
-				}
-				exImportBlContainerRepository.save(cnEn);
-			}
-			});
-		});
+					 }
+				 }
+				 exImportBlContainerRepository.save(cnEn);
+			 }
+			 }));
 	}
 
 	private void setConsignments(
 			List<BillOfLadingDto> billOfLadingDtos,
 			String mrn,
+			Map<String, String> hsnMap,
 			Map<String, Map<String, String>> containerBlMap,
 			Map<String, Map<String, String>> vehicleMap,
 			Map<String, Map<String, String>> msnMap, Map<String,Map<ContainerDto, Map<String, String>>> containerSaveMap,
 			List<ContainerDto> containers) {
 		int i = 1;
 		int j = 1;
-		Map<String, String> msns = new HashMap<>();
+
 		for (BillOfLadingDto bl : billOfLadingDtos) {
+			Map<String, String> msns = new HashMap<>();
 			String msn = String.format("%04d", i);
 			msns.put(bl.getMasterBillOfLading(), msn);
 			if (bl.getHouseBillOfLading() == null || bl.getHouseBillOfLading().contentEquals(bl.getMasterBillOfLading())) {
-				saveMasterBl(bl, mrn, msn, containerBlMap, vehicleMap, msnMap,containerSaveMap,containers);
+				msnMap.put(bl.getMasterBillOfLading(),msns);
+				saveMasterBl(bl, mrn, msn,hsnMap, containerBlMap, vehicleMap, msnMap,containerSaveMap,containers);
 				i++;
 			}
 			if (bl.getGoodDetails() != null && bl.getMasterBillOfLading() != null) {
@@ -220,10 +220,12 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		for (BillOfLadingDto bl : billOfLadingDtos) {
 			if (bl.getHouseBillOfLading() != null && !bl.getHouseBillOfLading().isEmpty()
 					&& !bl.getHouseBillOfLading().contentEquals(bl.getMasterBillOfLading())) {
+				Map<String, String> msns = msnMap.get(bl.getMasterBillOfLading());
 				String msn = msns.get(bl.getMasterBillOfLading());
 				System.out.println("msn =" + msn + " and Master =" + bl.getMasterBillOfLading());
 				String hsn = String.format("%03d", j);
-				saveHouseBl(bl, mrn, msn, hsn, containerBlMap, vehicleMap, msnMap,containerSaveMap,containers);
+				hsnMap.put(bl.getHouseBillOfLading(),hsn);
+				saveHouseBl(bl, mrn, msn, hsnMap, containerBlMap, vehicleMap, msnMap,containerSaveMap,containers);
 				j++;
 
 			}
@@ -243,11 +245,12 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			BillOfLadingDto bl,
 			String mrn,
 			String msn,
+			Map<String, String> hsnMap,
 			Map<String, Map<String, String>> containerBlMap,
 			Map<String, Map<String, String>> vehicleMap,
 			Map<String, Map<String, String>> msnMap,Map<String,Map<ContainerDto, Map<String, String>>> containerSaveMap,
 			List<ContainerDto> containers) {
-		BlMeasurement blMeasurement = getBlMeasurement(bl, msn, "   ", containerBlMap,vehicleMap,msnMap,containerSaveMap,containers);
+		BlMeasurement blMeasurement = getBlMeasurement(bl, hsnMap, containerBlMap,vehicleMap,msnMap,containerSaveMap,containers);
 		System.out.println("generated msn:" + msn);
 		ExImportMasterBl exImportMasterBl = new ExImportMasterBl(bl);
 		exImportMasterBl.setMrn(mrn);
@@ -281,17 +284,17 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 	private void saveHouseBl(
 			BillOfLadingDto bl,
 			String mrn, String msn,
-			String hsn,
+			Map<String, String> hsnMap,
 			Map<String, Map<String, String>> containerBlMap,
 			Map<String, Map<String, String>> vehicleMap,
 			Map<String, Map<String, String>> msnMap, Map<String,Map<ContainerDto, Map<String, String>>> containerSaveMap,
 			List<ContainerDto> containers) {
 
-		BlMeasurement blMeasurement = getBlMeasurement(bl,msn,hsn,containerBlMap,vehicleMap,msnMap,containerSaveMap,containers);
+		BlMeasurement blMeasurement = getBlMeasurement(bl,hsnMap,containerBlMap,vehicleMap,msnMap,containerSaveMap,containers);
 		ExImportHouseBl exImportHouseBl = new ExImportHouseBl(bl);
 		exImportHouseBl.setMrn(mrn);
 		exImportHouseBl.setMsn(msn);
-		exImportHouseBl.setHsn(hsn);
+		exImportHouseBl.setHsn(hsnMap.get(bl.getHouseBillOfLading()));
 		exImportHouseBl.setTradeType((getTradeType(bl)));
 		exImportHouseBl.setBlPackage(blMeasurement.getPkQuantity());
 		exImportHouseBl.setPackageUnit(blMeasurement.getPkType());
@@ -315,7 +318,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 
 	private BlMeasurement getBlMeasurement(
 			BillOfLadingDto bl,
-			String msn, String hsn,
+			Map<String, String> hsnMap,
 			Map<String, Map<String, String>> containerBlMap ,
 			Map<String, Map<String, String>> vehicleMap,
 			Map<String, Map<String, String>> msnMap, Map<String,Map<ContainerDto, Map<String, String>>> containerSaveMap,
@@ -336,8 +339,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		String oilType = null;
 		String packingType = "";
 		String imdgClass = "";
-		Map<String, String> map = new HashMap<>();
-		map.put(msn,hsn);
 		for (GoodsDto gd : bl.getGoodDetails()) {
 			pkQuantity += (gd.getPackageQuantity()!=null)?gd.getPackageQuantity():0;
 			invoiceValue +=(gd.getInvoiceValue()!=null)?gd.getInvoiceValue():0;
@@ -364,7 +365,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 					Map<String, String> blMap = new HashMap<>();
 					blMap.put(bl.getMasterBillOfLading(), bl.getHouseBillOfLading());
 					vehicleMap.put(gd.getVehicleVIN(),blMap);
-					msnMap.put(gd.getVehicleVIN(),map);
+					msnMap.put(gd.getVehicleVIN(),msnMap.get(bl.getMasterBillOfLading()));
 				}
 			}
 			for (GoodPlacementDto pc : gd.getPlacements()) {
@@ -378,7 +379,8 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				String key = bl.getMasterBillOfLading()+"-"+pc.getContainerNo()+"-"+(bl.getHouseBillOfLading() != null ? "-"+bl.getHouseBillOfLading():"");
 				cmap.put(container,blMap);
 				containerSaveMap.put(key,cmap);
-				msnMap.put(pc.getContainerNo(),map);
+				msnMap.put(pc.getContainerNo(),msnMap.get(bl.getMasterBillOfLading()));
+				hsnMap.put(pc.getContainerNo(),hsnMap.get(bl.getHouseBillOfLading()));
 			}
 		}
 
