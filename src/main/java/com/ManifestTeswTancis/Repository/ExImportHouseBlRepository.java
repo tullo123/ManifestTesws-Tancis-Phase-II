@@ -10,8 +10,6 @@ import java.util.Optional;
 public interface ExImportHouseBlRepository extends JpaRepository<ExImportHouseBl, HouseBlId> {
 
 	List<ExImportHouseBl> findByMrn(String mrn);
-	
-	Optional<ExImportHouseBl> findByMrnAndMasterBillOfLading(String mrn, String mbl);
 
     Optional<ExImportHouseBl> findByMrnAndMasterBillOfLadingAndHouseBillOfLading(String mrn, String masterBillOfLading, String houseBillOfLading);
 }

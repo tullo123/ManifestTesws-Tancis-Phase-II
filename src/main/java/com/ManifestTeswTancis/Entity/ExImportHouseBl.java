@@ -11,7 +11,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -118,7 +118,7 @@ public class ExImportHouseBl {
 
 	@Column(name = "FIRST_REGISTER_DT", nullable = false, updatable = false)
 	@CreationTimestamp
-	private Date firstRegisterDate;
+	private LocalDateTime firstRegisterDate;
 
 	@Column(name = "FIRST_REGISTER_ID")
 	private String firstRegisterId;
@@ -128,7 +128,7 @@ public class ExImportHouseBl {
 
 	@Column(name = "LAST_UPDATE_DT")
 	@UpdateTimestamp
-	private Date lastUpdateDate;
+	private LocalDateTime lastUpdateDate;
 
 	@Column(name = "INVOICE_VALUE")
 	private Double invoiceValue;
