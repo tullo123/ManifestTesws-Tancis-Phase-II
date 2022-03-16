@@ -16,6 +16,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,6 +34,7 @@ import java.util.List;
 @Component
 @Service
 public class CheckApprovedCustomClearanceStatusImpl {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckApprovedCustomClearanceStatusImpl.class);
     @Value("${spring.rabbitmq.exchange.out}")
     private String OUTBOUND_EXCHANGE;
     final MessageProducer rabbitMqMessageProducer;
@@ -68,7 +71,7 @@ public class CheckApprovedCustomClearanceStatusImpl {
                     ca.setApprovedStatus(true);
                     customClearanceApprovalRepository.save(ca);
                     String response = sendApprovalNoticeToQueue(customClearanceApprovalResponse);
-                    System.out.println("---Approval Notice---\n" + response);
+                    LOGGER.info("---Approval Notice---\n" + response);
                 }
 
                 if(ClearanceStatus.REJECTED.equals(cs.getProcessingStatus())){
@@ -83,8 +86,7 @@ public class CheckApprovedCustomClearanceStatusImpl {
                     ca.setApprovedStatus(true);
                     customClearanceApprovalRepository.save(ca);
                     String response = sendApprovalNoticeToQueue(customClearanceApprovalResponse);
-                    System.out.println("---Rejection Notice---\n" + response);
-
+                    LOGGER.info("---Rejection Notice---\n" + response);
                 }
             }
         }
@@ -94,7 +96,7 @@ public class CheckApprovedCustomClearanceStatusImpl {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String payload = mapper.writeValueAsString(customClearanceApprovalResponse);
-            System.out.println("----Custom Clearance Approval Notice ----\n" + payload);
+            LOGGER.info("----Custom Clearance Approval Notice ----\n" + payload);
             MessageDto messageDto = new MessageDto();
             ResponseClearanceMessageDto responseClearanceMessageDto = new ResponseClearanceMessageDto();
             responseClearanceMessageDto.setMessageName(MessageNames.CUSTOM_CLEARANCE_NOTICE);

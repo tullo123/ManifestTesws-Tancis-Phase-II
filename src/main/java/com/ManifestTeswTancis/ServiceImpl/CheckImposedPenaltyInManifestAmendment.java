@@ -13,6 +13,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -29,6 +31,7 @@ import java.util.Optional;
 @Component
 @Service
 public class CheckImposedPenaltyInManifestAmendment {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckImposedPenaltyInManifestAmendment.class);
     @Value("${spring.rabbitmq.exchange.out}")
     private String OUTBOUND_EXCHANGE;
     @Value("http://192.168.30.200:7074/GetId")
@@ -39,14 +42,16 @@ public class CheckImposedPenaltyInManifestAmendment {
     final QueueMessageStatusRepository queueMessageStatusRepository;
     final BillGeneralRepository billGeneralRepository;
     final BillGePGRepository billGePGRepository;
+    final CoCompanyCodeRepository coCompanyCodeRepository;
 
-    public CheckImposedPenaltyInManifestAmendment(MessageProducer rabbitMqMessageProducer, ExImportAmendPenaltyRepository exImportAmendPenaltyRepository, ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository, QueueMessageStatusRepository queueMessageStatusRepository, BillGeneralRepository billGeneralRepository, BillGePGRepository billGePGRepository) {
+    public CheckImposedPenaltyInManifestAmendment(MessageProducer rabbitMqMessageProducer, ExImportAmendPenaltyRepository exImportAmendPenaltyRepository, ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository, QueueMessageStatusRepository queueMessageStatusRepository, BillGeneralRepository billGeneralRepository, BillGePGRepository billGePGRepository, CoCompanyCodeRepository coCompanyCodeRepository) {
         this.rabbitMqMessageProducer = rabbitMqMessageProducer;
         this.exImportAmendPenaltyRepository = exImportAmendPenaltyRepository;
         this.manifestAmendmentApprovalStatusRepository = manifestAmendmentApprovalStatusRepository;
         this.queueMessageStatusRepository = queueMessageStatusRepository;
         this.billGeneralRepository = billGeneralRepository;
         this.billGePGRepository = billGePGRepository;
+        this.coCompanyCodeRepository = coCompanyCodeRepository;
     }
 
     @Transactional
@@ -64,10 +69,16 @@ public class CheckImposedPenaltyInManifestAmendment {
                     List<BillItem> billItems = new ArrayList<>();
                     BillItem billItem = new BillItem();
                     manifestAmendmentBillNotice.setMsgRefNumb(ma.getAmendReference());
-                    manifestAmendmentBillNotice.setBillReference(ma.getCommunicationAgreedId());
+                    manifestAmendmentBillNotice.setBillReference(ma.getMrn());
                     manifestAmendmentBillNotice.setBillReferenceType("MANIFEST_AMENDMENT");
                     manifestAmendmentBillNotice.setGeneratedDate(penalty.getBillDate().toString());
-                    manifestAmendmentBillNotice.setPayerInstitutionalCode(penalty.getPayerName());
+                    Optional<CoCompanyCodeEntity> code = coCompanyCodeRepository.findByTin(penalty.getPayerTin());
+                        if (code.isPresent()) {
+                            CoCompanyCodeEntity companyCode= code.get();
+                            manifestAmendmentBillNotice.setPayerInstitutionalCode(companyCode.getCompanyCode());
+                        }else{
+                            manifestAmendmentBillNotice.setPayerInstitutionalCode("Payer Institutional Code not Registered in TANCIS");
+                        }
                     manifestAmendmentBillNotice.setPayeeInstitutionalCode("TRA");
                     manifestAmendmentBillNotice.setBillId(penalty.getBillRegisterId());
                     manifestAmendmentBillNotice.setBillAmount(penalty.getTotalBillTaxAmt());
@@ -92,8 +103,8 @@ public class CheckImposedPenaltyInManifestAmendment {
                     ma.setAmount(penalty.getTotalBillTaxAmt());
                     manifestAmendmentApprovalStatusRepository.save(ma);
                     String response = sendBillNoticeToQueue(manifestAmendmentBillNotice);
-                    System.out.println("--Bill Notice--\n" + response);
-                }
+                    LOGGER.info("--Bill Notice--\n" + response);
+                  }
 
                 }
             }
@@ -104,7 +115,7 @@ public class CheckImposedPenaltyInManifestAmendment {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String payload = mapper.writeValueAsString(manifestAmendmentBillNotice);
-            System.out.println("--Bill Notice--\n" + payload);
+            LOGGER.info("--Bill Notice--\n" + payload);
             MessageDto messageDto = new MessageDto();
             BillNoticeMessageDto billNoticeMessageDto = new BillNoticeMessageDto();
             billNoticeMessageDto.setMessageName(MessageNames.TESWS_BILL_NOTICE);

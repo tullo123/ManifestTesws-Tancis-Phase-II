@@ -16,6 +16,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -32,6 +34,7 @@ import java.util.Optional;
 @Component
 @Service
 public class CheckPaidPenaltyInManifestAmendment {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckPaidPenaltyInManifestAmendment.class);
     @Value("${spring.rabbitmq.exchange.out}")
     private String OUTBOUND_EXCHANGE;
     @Value("http://192.168.30.200:7074/GetId")
@@ -81,8 +84,7 @@ public class CheckPaidPenaltyInManifestAmendment {
                         ma.setPenaltyPaid(true);
                         manifestAmendmentApprovalStatusRepository.save(ma);
                         String response = sendPaymentNoticeToQueue(manifestAmendmentPaymentNotice);
-                        System.out.println("--Payment Notice--\n" + response);
-
+                        LOGGER.info("--Payment Notice--\n" + response);
                     }
                 }
             }
@@ -93,7 +95,7 @@ public class CheckPaidPenaltyInManifestAmendment {
         ObjectMapper mapper = new ObjectMapper();
         try{
             String payload = mapper.writeValueAsString(manifestAmendmentPaymentNotice);
-            System.out.println("--Payment Notice--\n" + payload);
+            LOGGER.info("--Payment Notice--\n" + payload);
             MessageDto messageDto = new MessageDto();
             PaymentNoticeMessageDto paymentNoticeMessageDto = new PaymentNoticeMessageDto();
             paymentNoticeMessageDto.setMessageName(MessageNames.TESWS_PAYMENT_NOTICE);

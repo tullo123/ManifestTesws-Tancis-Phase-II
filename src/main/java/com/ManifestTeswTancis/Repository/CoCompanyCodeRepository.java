@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface CoCompanyCodeRepository extends JpaRepository<CoCompanyCodeEntity, String> {
 
     Optional<CoCompanyCodeEntity> findByCompanyCode(String shippingAgentCode);
+
+    Optional<CoCompanyCodeEntity> findByTin(String payerTin);
 }
