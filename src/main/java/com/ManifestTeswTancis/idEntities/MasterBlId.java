@@ -11,8 +11,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 public class MasterBlId  implements Serializable{
-	private static final long serialVersionUID = 2492961508424042418L;
 	private String masterBillOfLading;
 	private String mrn;
-	
 }

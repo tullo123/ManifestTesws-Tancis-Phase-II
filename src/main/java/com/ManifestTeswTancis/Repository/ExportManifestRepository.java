@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface ExportManifestRepository extends JpaRepository<ExportManifest,String> {
 
     Optional<ExportManifest> findFirstByCommunicationAgreedId(String communicationAgreedId);
+
+    Optional<ExportManifest> findFirstByMrnOut(String manifestReferenceNumber);
 }
