@@ -86,4 +86,16 @@ public class ManifestApprovalStatus {
 	@Column(name="REJECTED_YN")
 	private String rejectedYN;
 
+	@Column(name="EXPORT_APPROVED_STATUS")
+	private boolean exportApprovedStatus;
+
+	@Column(name="EXPORT_APPROVED_DT")
+	private String exportApprovedDate;
+
+	@Column(name="EXPORT_RECEIVED_STATUS")
+	private boolean exportReceivedStatus;
+
+	@Column(name="EXPORT_RECEIVED_DT")
+	private String exportReceivedDate;
+
 }

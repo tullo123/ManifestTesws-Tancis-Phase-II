@@ -106,6 +106,7 @@ public class CheckApprovedCustomClearanceStatusImpl {
             AcknowledgementDto queueResponse = rabbitMqMessageProducer.
                     sendMessage(OUTBOUND_EXCHANGE, MessageNames.CUSTOM_CLEARANCE_NOTICE, responseClearanceMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
             System.out.println(queueResponse);
+
             QueueMessageStatusEntity queueMessage = new QueueMessageStatusEntity();
             queueMessage.setMessageId(customClearanceApprovalResponse.getCommunicationAgreedId());
             queueMessage.setReferenceId(responseClearanceMessageDto.getRequestId());

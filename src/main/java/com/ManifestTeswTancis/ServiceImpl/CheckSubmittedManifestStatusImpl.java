@@ -65,7 +65,9 @@ public class CheckSubmittedManifestStatusImpl {
                     submittedManifestStatusResponse.setStatus(getStatus(callInf.getProcessingStatus()));
                     mf.setProcessingStatus(getStatus(callInf.getProcessingStatus()));
                     mf.setReceivedNoticeSent(true);
-                    mf.setNoticeDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
+                    LocalDateTime localDateTime = LocalDateTime.now();
+                    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+                    mf.setNoticeDate(localDateTime.format(format));
                     statusRepository.save(mf);
                     String response = sendSubmittedManifestStatusToQueue(submittedManifestStatusResponse);
                     System.out.println("--- Approval Notice---\n" + response);

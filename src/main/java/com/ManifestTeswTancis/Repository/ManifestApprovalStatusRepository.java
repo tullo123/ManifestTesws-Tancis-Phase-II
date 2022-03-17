@@ -16,4 +16,8 @@ public interface ManifestApprovalStatusRepository
 	Optional<ManifestApprovalStatus> findFirstByMrn(String mrn);
 
     List<ManifestApprovalStatus> findByReceivedNoticeSentFalse();
+
+    List<ManifestApprovalStatus> findByExportApprovedStatusFalse();
+
+	List<ManifestApprovalStatus> findByExportReceivedStatusFalse();
 }
