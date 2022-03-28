@@ -17,7 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "ETAC.TAX_CLEARANCE_CERTIFICATE")
+@Table(name = "TAX_CLEARANCE_CERTIFICATE", schema = "ETAC")
 public class TaxClearanceCertificateEntity implements Serializable {
     @Id
     @NotNull

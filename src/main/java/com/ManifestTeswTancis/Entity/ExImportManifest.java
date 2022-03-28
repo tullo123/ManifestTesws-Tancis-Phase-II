@@ -26,7 +26,6 @@ import java.util.Date;
 @DynamicUpdate //added 28-May-2021
 @Table(name = "TANCISEXT.EX_MF_IMPORT_MANIFEST")
 public class ExImportManifest implements Serializable {
-	private static final long serialVersionUID = 3455649652992287788L;
 	@Id
 	@NotNull
 	@Column(name = "MRN", unique = true)

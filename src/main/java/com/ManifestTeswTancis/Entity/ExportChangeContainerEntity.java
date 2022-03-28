@@ -1,14 +1,11 @@
 package com.ManifestTeswTancis.Entity;
 
-import com.ManifestTeswTancis.dtos.ExportContainersDto;
-import com.ManifestTeswTancis.idEntities.ExportContainerId;
+import com.ManifestTeswTancis.idEntities.ExportChangeContainerId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,30 +16,36 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @DynamicUpdate
-@Table(name = "TANCISEXT.EX_MF_EXPORT_BL_CONTAINER")
-@IdClass(ExportContainerId.class)
-public class ExportContainerEntity implements Serializable {
+@Table(name = "TANCISEXT.EX_DL_LOADING_CHANGE_CONT")
+@IdClass(ExportChangeContainerId.class)
+public class ExportChangeContainerEntity implements Serializable {
     @Id
-    @Column(name="MRN")
-    private String mrn;
+    @Column(name="DECLARANT_TIN")
+    private String declarantTin;
 
-    @Id
+    @Column(name="DECLARANT_YEAR")
+    private String declarantYear;
+
+    @Column(name="PROCESS_TYPE")
+    private String processType;
+
+    @Column(name="DECLARANT_SERIAL_NO")
+    private String declarantSerialNo;
+
+    @Column(name="WAREHOUSE_CD")
+    private String warehouseCode;
+
+    @Column(name="DECLARATION_NO")
+    private String declarationNo;
+
     @Column(name="MASTER_BL_NO")
     private String masterBillOfLading;
 
-    @Id
     @Column(name="HOUSE_BL_NO")
     private String houseBillOfLading;
 
-    @Id
     @Column(name="CONTAINER_NO")
     private String containerNo;
-
-    @Column(name="MSN")
-    private String msn;
-
-    @Column(name="HSN")
-    private String hsn;
 
     @Column(name="CONTAINER_SIZE")
     private String containerSize;
@@ -58,6 +61,15 @@ public class ExportContainerEntity implements Serializable {
 
     @Column(name="SEAL_NO_3")
     private String sealNumberThree;
+
+    @Column(name="CUSTOMS_SEAL_NO_1")
+    private String customSealNumberOne;
+
+    @Column(name="CUSTOMS_SEAL_NO_2")
+    private String customSealNumberTwo;
+
+    @Column(name="CUSTOMS_SEAL_NO_3")
+    private String customSealNumberThree;
 
     @Column(name="CONTAINER_PACKAGE")
     private Integer containerPackage;
@@ -77,32 +89,18 @@ public class ExportContainerEntity implements Serializable {
     @Column(name="VOLUME_UNIT")
     private String volumeUnit;
 
-    @Column(name="FREIGHT_INDICATOR")
-    private String freightIndicator;
-
-    @Column(name="MINMUM_TEMPERATURE")
-    private Double minimumTemperature;
-
-    @Column(name="MAXMUM_TEMPERATURE")
-    private Double maximumTemperature;
-
-    @Column(name="REFER_PLUG_YN")
-    private String referPlugYn;
-
-    @Column(name="IMDG_CD")
-    private String imdgCode;
-
     @Column(name="FIRST_REGISTER_ID")
     private String firstRegisterId;
 
-    @Column(name="FIRST_REGISTER_DT",nullable = false, updatable = false)
-    @CreationTimestamp
-    private LocalDateTime firstRegisterDt;
+    @Column(name="FIRST_REGISTER_DT")
+    private LocalDateTime firstRegisterDate;
 
     @Column(name="LAST_UPDATE_ID")
     private String lastUpdateId;
 
     @Column(name="LAST_UPDATE_DT")
-    @UpdateTimestamp
     private LocalDateTime lastUpdateDate;
+
+    @Column(name="FREIGHT_INDICATOR")
+    private String freightIndicator;
 }

@@ -104,7 +104,7 @@ public class CheckPaidPenaltyInManifestAmendment {
             messageDto.setPayload(manifestAmendmentPaymentNotice);
             AcknowledgementDto queueResponse = rabbitMqMessageProducer.
                     sendMessage(OUTBOUND_EXCHANGE, MessageNames.TESWS_PAYMENT_NOTICE, paymentNoticeMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
-            System.out.println(queueResponse);
+            LOGGER.info("---RabbitMQ Response---\n"+queueResponse);
             QueueMessageStatusEntity queueMessage = new QueueMessageStatusEntity();
             queueMessage.setMessageId(manifestAmendmentPaymentNotice.getBillId());
             queueMessage.setReferenceId(paymentNoticeMessageDto.getRequestId());
