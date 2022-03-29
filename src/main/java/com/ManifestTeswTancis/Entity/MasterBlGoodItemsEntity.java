@@ -222,7 +222,7 @@ public class MasterBlGoodItemsEntity implements Serializable {
                     this.shipmFlashptUnit = goodsDto.getDangerousGoodsInformation().getShipmFlashptUnit();
                 }
                 if (goodsDto.getPlacements().isEmpty() && bl.getBlPackingType().equalsIgnoreCase("B")) {
-                    this.containerNo = "LIQUID BULK";
+                    this.containerNo = "BULK";
                 } else if (goodsDto.getPlacements().isEmpty() || goodsDto.getPlacements() == null) {
                     this.containerNo = "LOOSE";
                 } else if (goodsDto.getPackingType().equalsIgnoreCase("V") && goodsDto.getVehicleVIN() != null) {

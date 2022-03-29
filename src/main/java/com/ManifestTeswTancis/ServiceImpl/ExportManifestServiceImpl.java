@@ -88,7 +88,7 @@ public class ExportManifestServiceImpl implements ExportManifestService {
             blContainer.setMasterBillOfLading(masterBl);
             blContainer.setHouseBillOfLading(houseBl);
             blContainer.setMsn(msn);
-            blContainer.setHsn(msnMap.get(msn));
+            blContainer.setHsn((msnMap.get(msn)!=null)?msnMap.get(msn):"   ");
             blContainer.setLastUpdateId("TESWS");
             blContainer.setFirstRegisterId("TESWS");
             LocalDateTime localDateTime = LocalDateTime.now();
@@ -123,7 +123,7 @@ public class ExportManifestServiceImpl implements ExportManifestService {
                 cont.setMasterBillOfLading(mBl);
                 cont.setHouseBillOfLading(hBl);
                 cont.setMsn(msn);
-                cont.setHsn(hsnMap.get(hBl));
+                cont.setHsn((hsnMap.get(hBl)!=null)?hsnMap.get(hBl):"   ");
 
                 cont.setFreightIndicator(container.getFreightIndicator());
                 cont.setContainerWeight(container.getWeight());
