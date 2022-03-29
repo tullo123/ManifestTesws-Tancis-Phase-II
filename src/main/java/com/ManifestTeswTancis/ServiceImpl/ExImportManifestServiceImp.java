@@ -103,7 +103,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			blContainer.setMasterBillOfLading(masterBl);
 			blContainer.setHouseBillOfLading(houseBl);
 			blContainer.setMsn(msn);
-			blContainer.setHsn(msnMap.get(msn));
+			blContainer.setHsn((msnMap.get(msn) != null)?msnMap.get(msn):"   ");
 			blContainer.setLastUpdateId("TESWS");
 			blContainer.setFirstRegisterId("TESWS");
 
@@ -141,11 +141,12 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			blContainer.setMasterBillOfLading(masterBl.getMasterBillOfLading());
 			blContainer.setHouseBillOfLading(houseBl);
 			blContainer.setMsn(msn);
-			blContainer.setHsn(msnMap.get(msn));
+			blContainer.setHsn((msnMap.get(msn) != null)?msnMap.get(msn):"   ");
 			blContainer.setLastUpdateId("TESWS");
 			blContainer.setFirstRegisterId("TESWS");
 			blContainer.setWeight(masterBl.getBlSummary().getBlGrossWeight());
 			blContainer.setWeightUnit("KG");
+			blContainer.setReferPlugYn("N");
 			blContainer.setContainerNo((masterBl.getBlPackingType().equalsIgnoreCase("B"))?"BULK":"LOOSE");
 
 			LocalDateTime localDateTime = LocalDateTime.now();
@@ -180,7 +181,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				 cnEn.setMasterBillOfLading(mBl);
 				 cnEn.setHouseBillOfLading(hBl);
 				 cnEn.setMsn(msn);
-				 cnEn.setHsn(hsnMap.get(hBl));
+				 cnEn.setHsn((hsnMap.get(hBl)!=null)?hsnMap.get(hBl):"   ");
 
 				 cnEn.setFreightIndicator(container.getFreightIndicator());
 				 cnEn.setWeight(container.getGrossWeight());
@@ -423,7 +424,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 					Map<BillOfLadingDto, Map<String, String>> gMap = new HashMap<>();
 					gMap.put(bl,blMap);
 					blMap.put(bl.getMasterBillOfLading(), bl.getHouseBillOfLading());
-					//String key = bl.getMasterBillOfLading()+"-"+(bl.getHouseBillOfLading() != null ? "-"+bl.getHouseBillOfLading():"");
 					consignmentMap.put(bl.getMasterBillOfLading(), gMap);
 					msnMap.put(bl.getMasterBillOfLading(),msnMap.get(bl.getMasterBillOfLading()));
 				}
