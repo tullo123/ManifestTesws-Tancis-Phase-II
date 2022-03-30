@@ -1,9 +1,6 @@
 package com.ManifestTeswTancis.ServiceImpl;
 
-import com.ManifestTeswTancis.Entity.BillGePGEntity;
-import com.ManifestTeswTancis.Entity.BillGeneralEntity;
-import com.ManifestTeswTancis.Entity.ManifestAmendmentApprovalStatus;
-import com.ManifestTeswTancis.Entity.QueueMessageStatusEntity;
+import com.ManifestTeswTancis.Entity.*;
 import com.ManifestTeswTancis.RabbitConfigurations.*;
 import com.ManifestTeswTancis.Repository.*;
 import com.ManifestTeswTancis.Response.ManifestAmendmentPaymentNotice;
@@ -44,13 +41,15 @@ public class CheckPaidPenaltyInManifestAmendment {
     final QueueMessageStatusRepository queueMessageStatusRepository;
     final BillGeneralRepository billGeneralRepository;
     final BillGePGRepository billGePGRepository;
+    final ExImportAmendPenaltyRepository exImportAmendPenaltyRepository;
 
-    public CheckPaidPenaltyInManifestAmendment(MessageProducer rabbitMqMessageProducer, ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository, QueueMessageStatusRepository queueMessageStatusRepository, BillGeneralRepository billGeneralRepository, BillGePGRepository billGePGRepository) {
+    public CheckPaidPenaltyInManifestAmendment(MessageProducer rabbitMqMessageProducer, ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository, QueueMessageStatusRepository queueMessageStatusRepository, BillGeneralRepository billGeneralRepository, BillGePGRepository billGePGRepository, ExImportAmendPenaltyRepository exImportAmendPenaltyRepository) {
         this.rabbitMqMessageProducer = rabbitMqMessageProducer;
         this.manifestAmendmentApprovalStatusRepository = manifestAmendmentApprovalStatusRepository;
         this.queueMessageStatusRepository = queueMessageStatusRepository;
         this.billGeneralRepository = billGeneralRepository;
         this.billGePGRepository = billGePGRepository;
+        this.exImportAmendPenaltyRepository = exImportAmendPenaltyRepository;
     }
     @Transactional
     @Scheduled(fixedRate = 600000)
@@ -73,6 +72,13 @@ public class CheckPaidPenaltyInManifestAmendment {
                         if(bill.isPresent()){
                             BillGePGEntity gepgControlNumber=bill.get();
                             manifestAmendmentPaymentNotice.setControlNumber(gepgControlNumber.getGepgControlNo());
+                        }else{
+                            Optional<ExImportAmendPenalty> opt=exImportAmendPenaltyRepository.
+                                    findFirstByDeclarantTinAndAmendYearAndAmendSerialNumber(ma.getDeclarantTin(),ma.getAmendYear(),ma.getAmendSerialNo());
+                            if(opt.isPresent()){
+                                ExImportAmendPenalty exImportAmendPenalty = opt.get();
+                                manifestAmendmentPaymentNotice.setControlNumber(exImportAmendPenalty.getInvoiceNumber()+"/" + exImportAmendPenalty.getBillNumber());
+                            }
                         }
                         manifestAmendmentPaymentNotice.setPayerName(penalty.getPayerName());
                         manifestAmendmentPaymentNotice.setPayerPhoneNumber(penalty.getPayerTin());

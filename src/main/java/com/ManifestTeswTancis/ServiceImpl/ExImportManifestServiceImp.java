@@ -91,10 +91,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			String masterBl = iter.next();
 			String houseBl = (blMap.get(masterBl) != null)?blMap.get(masterBl):"SIMPLE";
 
-			Set<String> msnSet = msnMap.keySet();
-			Iterator<String> msnInter = msnSet.iterator();
-			String msn = msnInter.next();
-
 			ExImportBlContainer blContainer = new ExImportBlContainer();
 			blContainer.setMrn(mrn);
 			blContainer.setContainerNo(set.getKey());
@@ -102,13 +98,11 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			blContainer.setTypeOfContainer("V");
 			blContainer.setMasterBillOfLading(masterBl);
 			blContainer.setHouseBillOfLading(houseBl);
-			blContainer.setMsn(msn);
-			blContainer.setHsn((msnMap.get(msn) != null)?msnMap.get(msn):"   ");
+			System.out.println(msnMap);
+			blContainer.setMsn(msnMap.get(masterBl));
+			blContainer.setHsn("   ");
 			blContainer.setLastUpdateId("TESWS");
 			blContainer.setFirstRegisterId("TESWS");
-
-			LocalDateTime localDateTime = LocalDateTime.now();
-			blContainer.setFirstRegisterDate(localDateTime);
 
 			exImportBlContainerRepository.save(blContainer);
 		}
@@ -148,9 +142,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			blContainer.setWeightUnit("KG");
 			blContainer.setReferPlugYn("N");
 			blContainer.setContainerNo((masterBl.getBlPackingType().equalsIgnoreCase("B"))?"BULK":"LOOSE");
-
-			LocalDateTime localDateTime = LocalDateTime.now();
-			blContainer.setFirstRegisterDate(localDateTime);
 
 			exImportBlContainerRepository.save(blContainer);
 		}

@@ -92,7 +92,7 @@ public class ExImportBlContainer {
 	@Column(name = "MAXMUM_TEMPERATURE")
 	private Double maximumTemperature;
 
-	@Column(name = "FIRST_REGISTER_DT")
+	@Column(name = "FIRST_REGISTER_DT",nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime firstRegisterDate;
 
@@ -102,7 +102,7 @@ public class ExImportBlContainer {
 	@Column(name = "LAST_UPDATE_ID")
 	private String lastUpdateId;
 
-	@Column(name = "LAST_UPDATE_DT", nullable = false, updatable = false)
+	@Column(name = "LAST_UPDATE_DT")
 	@UpdateTimestamp
 	private LocalDateTime lastUpdateDate;
 

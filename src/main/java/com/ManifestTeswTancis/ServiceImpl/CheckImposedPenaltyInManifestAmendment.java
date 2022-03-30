@@ -88,7 +88,8 @@ public class CheckImposedPenaltyInManifestAmendment {
                         BillGePGEntity gepgControlNumber=bill.get();
                         manifestAmendmentBillNotice.setControlNumber(gepgControlNumber.getGepgControlNo());
                     }else{
-                        Optional<ExImportAmendPenalty> opt=exImportAmendPenaltyRepository.findByDeclarantTin(penalty.getPayerTin());
+                        Optional<ExImportAmendPenalty> opt=exImportAmendPenaltyRepository.
+                                findFirstByDeclarantTinAndAmendYearAndAmendSerialNumber(ma.getDeclarantTin(),ma.getAmendYear(),ma.getAmendSerialNo());
                         if(opt.isPresent()){
                             ExImportAmendPenalty exImportAmendPenalty = opt.get();
                             manifestAmendmentBillNotice.setControlNumber(exImportAmendPenalty.getInvoiceNumber()+"/" + exImportAmendPenalty.getBillNumber());
