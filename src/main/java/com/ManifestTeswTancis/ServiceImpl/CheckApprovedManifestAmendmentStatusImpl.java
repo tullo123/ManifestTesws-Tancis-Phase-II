@@ -15,6 +15,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -31,6 +33,7 @@ import java.util.Optional;
 @Component
 @Service
 public class CheckApprovedManifestAmendmentStatusImpl {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckApprovedManifestAmendmentStatusImpl.class);
     @Value("${spring.rabbitmq.exchange.out}")
     private String OUTBOUND_EXCHANGE;
     final MessageProducer rabbitMqMessageProducer;
@@ -76,7 +79,7 @@ public class CheckApprovedManifestAmendmentStatusImpl {
                         ma.setApprovedStatus(true);
                         manifestAmendmentApprovalStatusRepository.save(ma);
                         String response = sendApprovalNoticeToQueue(manifestAmendmentApprovalStatusResponse);
-                        System.out.println("---- Approval Notice  -----\n" + response);
+                        LOGGER.info("--- Approval Notice ---\n" + response);
 
                     }
 
@@ -100,7 +103,7 @@ public class CheckApprovedManifestAmendmentStatusImpl {
                         ma.setApprovedStatus(true);
                         manifestAmendmentApprovalStatusRepository.save(ma);
                         String response = sendApprovalNoticeToQueue(manifestAmendmentApprovalStatusResponse);
-                        System.out.println("----- Rejection Notice ------\n" + response);
+                        LOGGER.info("---Rejection Notice---\n" + response);
 
                     }
                 }
@@ -112,7 +115,7 @@ public class CheckApprovedManifestAmendmentStatusImpl {
         ObjectMapper mapper = new ObjectMapper();
         try{
             String payload = mapper.writeValueAsString(manifestAmendmentApprovalStatusResponse);
-            System.out.println("------- Approval notice payload -------\n"+payload);
+            LOGGER.info("---Approval notice payload ---\n"+payload);
             MessageDto messageDto = new MessageDto();
             ManifestAmendmentNoticeMessageDto manifestAmendmentNoticeMessageDto = new ManifestAmendmentNoticeMessageDto();
             manifestAmendmentNoticeMessageDto.setMessageName(MessageNames.MANIFEST_AMENDMENT_NOTICE);

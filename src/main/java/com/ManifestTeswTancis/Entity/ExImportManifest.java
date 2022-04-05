@@ -38,8 +38,6 @@ public class ExImportManifest implements Serializable {
 	@Column(name = "CONTROL_REFERENCE_NO")
 	private String controlReferenceNumber;
 
-	@Column(name = "APPLICATION_REFERENCE_NO")
-	private String applicationReferenceNumber;
 
 	@Column(name = "TERMINAL_OPERATOR_CD")
 	private String terminalOperatorCode;
@@ -113,7 +111,7 @@ public class ExImportManifest implements Serializable {
 	private LocalDateTime lastUpdateDate;
 
 	@Column(name = "PROCESSING_DT")
-	private Date processingDate;
+	private LocalDateTime processingDate;
 
 	@Column(name = "PROCESSING_ID")
 	private String processingId;
@@ -185,9 +183,10 @@ public class ExImportManifest implements Serializable {
 	private LocalDateTime boardingDt;
 
 	@Column(name="SUBMIT_DT")
-	private Date submitDt;
+	private LocalDateTime submitDt;
 
 	public ExImportManifest(PortCallIdRequestModel callInfDetails) {
+		LocalDateTime localDateTime = LocalDateTime.now();
 		this.customOfficeCode = callInfDetails.getCustomOfficeCode();
 		this.controlReferenceNumber = callInfDetails.getControlReferenceNumber();
 		this.terminalOperatorCode = callInfDetails.getTerminalOperatorCode();
@@ -201,19 +200,20 @@ public class ExImportManifest implements Serializable {
 		this.transportMeansName = callInfDetails.getTransportMeansName();
 		this.callSign=callInfDetails.getCallSign();
 		this.nextPortOfCall = callInfDetails.getNextPortOfCall();
-		this.actualDateTimeOfArrival = DateFormatter.getDateFromLocalDateTime(callInfDetails.getActualDatetimeOfArrival());
+		this.actualDateTimeOfArrival = DateFormatter.getDateFromLocalDateTime(callInfDetails.getEstimatedDatetimeOfArrival());
 		this.actualDatetimeOfDeparture = DateFormatter.getDateFromLocalDateTime(callInfDetails.getActualDatetimeOfDeparture());
-		this.processingDate=DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
+
+		this.processingDate=localDateTime;
 		this.transportMeansNationality = callInfDetails.getTransportMeansNationality();
 		this.destinationPort = callInfDetails.getDestinationPort();
-		this.submitDt =DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
+
+		this.submitDt =localDateTime;
 		this.portOfCall = callInfDetails.getPortOfCall();
 		this.processingStatus = "1";
-		this.applicationReferenceNumber=callInfDetails.getApplicationReferenceNumber();
 		this.firstRegisterId = "TESWS";
 		this.processingId = "SYSTEM";
 		this.lastUpdateId ="TESWS";
-		this.messageReferenceNumber=callInfDetails.getMessageReferenceNumber();
+		this.messageReferenceNumber=callInfDetails.getMessageTypeId();
 		this.carQuantityLoaded = callInfDetails.getCarQuantityLoaded();
 		this.carWeightLoaded = callInfDetails.getCarWeightLoaded();
 		this.cnQuantityLoaded = callInfDetails.getCnQuantityLoaded();
@@ -233,6 +233,7 @@ public class ExImportManifest implements Serializable {
 		this.bkQuantityAtDestination = callInfDetails.getBkQuantityAtDestination();
 		this.bkWeightAtDestination = callInfDetails.getBkWeightAtDestination();
 		this.estimatedDatetimeOfArrival = DateFormatter.getDateFromLocalDateTime(callInfDetails.getEstimatedDatetimeOfArrival());
+		this.estimatedDatetimeOfDeparture=DateFormatter.getDateFromLocalDateTime(callInfDetails.getActualDatetimeOfDeparture());
 	}
 
 }

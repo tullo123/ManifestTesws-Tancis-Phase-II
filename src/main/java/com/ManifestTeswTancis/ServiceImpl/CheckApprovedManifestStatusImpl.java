@@ -13,6 +13,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,6 +31,7 @@ import java.util.List;
 @Component
 @Service
 public class CheckApprovedManifestStatusImpl {
+	private static final Logger LOGGER = LoggerFactory.getLogger(CheckApprovedManifestStatusImpl.class);
 	@Value("${spring.rabbitmq.exchange.out}")
 	private String OUTBOUND_EXCHANGE;
 	final QueueMessageStatusRepository queueMessageStatusRepository;
@@ -53,10 +56,10 @@ public class CheckApprovedManifestStatusImpl {
 	@Scheduled(fixedRate = 150000)
 	public void checkManifestStatus() {
 		List<ManifestApprovalStatus> manifestStatusEntities = statusRepository.findByApprovedStatusFalse();
-			System.err.println("------ Checking for approved manifest ----------");
+			LOGGER.info("--- Checking for approved manifest-----");
 		for (ManifestApprovalStatus mf : manifestStatusEntities) {
 			if (!mf.isApprovedStatus()) {
-				System.err.println("------ Approving Manifest with Voyage No. " + mf.getVoyageNumber()+ "----");
+				LOGGER.info("--- Approving Manifest with Voyage No. " + mf.getVoyageNumber()+ "----");
 				ExImportManifest callInf = exImportManifestRepository.findByMrn(mf.getMrn());
 				if (ManifestStatus.APPROVED.equals(callInf.getProcessingStatus())) {
 					ManifestNotice manifestNotice = new ManifestNotice();
@@ -78,7 +81,7 @@ public class CheckApprovedManifestStatusImpl {
 					mf.setRejectedYN("N");
 					statusRepository.save(mf);
 					String response = sendApprovedNoticeToQueue(manifestNotice);
-					System.out.println("--- Approval Notice ---\n" + response);
+					LOGGER.info("--- Approval Notice ---\n" + response);
 				}
 
 				if(ManifestStatus.REJECTED.equals(callInf.getProcessingStatus())){
@@ -98,7 +101,7 @@ public class CheckApprovedManifestStatusImpl {
 					mf.setApprovedNoticeStatus(true);
 					statusRepository.save(mf);
 					String response = sendApprovedNoticeToQueue(manifestNotice);
-					System.out.println("--- Rejection Notice ---\n" + response);
+					LOGGER.info("--- Rejection Notice ---\n" + response);
 				}
 			}
 		}
@@ -140,7 +143,7 @@ public class CheckApprovedManifestStatusImpl {
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			String payload = mapper.writeValueAsString(manifestNotice);
-			System.out.println("---- Approval notice payload ----\n"+payload);
+			LOGGER.info("---- Approval notice payload ----\n"+payload);
 			MessageDto messageDto = new MessageDto();
 			ManifestNoticeMessageDto manifestNoticeMessageDto = new ManifestNoticeMessageDto();
 			manifestNoticeMessageDto.setMessageName(MessageNames.MANIFEST_APPROVAL_NOTICE);
@@ -149,7 +152,7 @@ public class CheckApprovedManifestStatusImpl {
 			messageDto.setPayload(manifestNotice);
 			AcknowledgementDto queueResponse = rabbitMqMessageProducer.
 					sendMessage(OUTBOUND_EXCHANGE, MessageNames.MANIFEST_APPROVAL_NOTICE, manifestNoticeMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
-			System.out.println(queueResponse);
+			LOGGER.info("[payload Submitted To RabbitMQ]"+queueResponse);
 			QueueMessageStatusEntity queueMessage = new QueueMessageStatusEntity();
 			queueMessage.setMessageId(manifestNotice.getCommunicationAgreedId());
 			queueMessage.setReferenceId(manifestNoticeMessageDto.getRequestId());

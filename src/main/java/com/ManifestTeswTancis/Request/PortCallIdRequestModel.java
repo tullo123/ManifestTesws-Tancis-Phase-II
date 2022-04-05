@@ -17,7 +17,7 @@ public class PortCallIdRequestModel {
 	private String vesselMaster;
 	private String vesselMasterAddress;
 	private String agentCode;
-	private String messageReferenceNumber;
+	private String messageTypeId;
 	private String applicationReferenceNumber;
 	private LocalDateTime processingDate;
 	private LocalDateTime lastUpdateDate;

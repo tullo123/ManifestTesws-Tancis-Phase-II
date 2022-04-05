@@ -47,8 +47,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		responseData.setAckType("CUSTOMS_MANIFEST");
 
 		try {
-			Optional<ExImportManifest> callInfEntity = exImportManifestRepository
-					.findFirstByMrn(manifestDto.getManifestReferenceNumber());
+			Optional<ExImportManifest> callInfEntity = exImportManifestRepository.findFirstByMrn(manifestDto.getManifestReferenceNumber());
 			if (callInfEntity.isPresent()) {
 				System.out.print("-----------------Saving Manifest method called------------------------");
 				ExImportManifest infEntity = callInfEntity.get();
@@ -67,14 +66,15 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				if(!consignmentMap.isEmpty()) {saveGeneralConsignment(consignmentMap,msnMap,infEntity.getMrn());}
 				this.createEdNotice(infEntity);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			responseData.setDescription("Error In saving manifest\n" + e.getMessage());
-			responseData.setCode(500);
+		       } catch (Exception e) {
+			   e.printStackTrace();
+			   responseData.setDescription("Error In saving manifest\n" + e.getMessage());
+			   responseData.setCode(500);
 		}
 
 		return responseData;
 	}
+
 
 
 

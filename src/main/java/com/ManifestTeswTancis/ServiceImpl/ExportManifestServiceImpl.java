@@ -91,8 +91,9 @@ public class ExportManifestServiceImpl implements ExportManifestService {
             blContainer.setHsn((msnMap.get(msn)!=null)?msnMap.get(msn):"   ");
             blContainer.setLastUpdateId("TESWS");
             blContainer.setFirstRegisterId("TESWS");
-            LocalDateTime localDateTime = LocalDateTime.now();
-            blContainer.setFirstRegisterDt(localDateTime);
+
+
+
 
             exportContainerRepository.save(blContainer);
         }
