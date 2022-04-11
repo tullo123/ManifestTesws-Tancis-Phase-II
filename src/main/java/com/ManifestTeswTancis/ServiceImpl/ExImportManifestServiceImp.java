@@ -419,9 +419,22 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 					msnMap.put(bl.getMasterBillOfLading(),msnMap.get(bl.getMasterBillOfLading()));
 				}
 			}
+//			for (GoodPlacementDto pc : gd.getPlacements()) {
+//				if(bl.getBlType().equalsIgnoreCase("CONSOLIDATED"))
+//					continue;
+//				Map<String, String> blMap = new HashMap<>();
+//				Map<ContainerDto,Map<String, String>> cmap = new HashMap<>();
+//				blMap.put(bl.getMasterBillOfLading(), bl.getHouseBillOfLading());
+//				containerBlMap.put(pc.getContainerNo(), blMap);
+//				ContainerDto container = containers.stream().filter(c->c.getContainerNo().equalsIgnoreCase(pc.getContainerNo())).findAny().get();
+//				String key = bl.getMasterBillOfLading()+"-"+pc.getContainerNo()+"-"+(bl.getHouseBillOfLading() != null ? "-"+bl.getHouseBillOfLading():"");
+//				cmap.put(container,blMap);
+//				containerSaveMap.put(key,cmap);
+//				msnMap.put(pc.getContainerNo(),msnMap.get(bl.getMasterBillOfLading()));
+//				hsnMap.put(pc.getContainerNo(),hsnMap.get(bl.getHouseBillOfLading()));
+//			}
+
 			for (GoodPlacementDto pc : gd.getPlacements()) {
-				if(bl.getBlType().equalsIgnoreCase("CONSOLIDATED"))
-					continue;
 				Map<String, String> blMap = new HashMap<>();
 				Map<ContainerDto,Map<String, String>> cmap = new HashMap<>();
 				blMap.put(bl.getMasterBillOfLading(), bl.getHouseBillOfLading());
