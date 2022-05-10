@@ -37,6 +37,8 @@ import java.util.Optional;
 public  class PortCallIdServiceImpl implements PortCallIdService {
 	@Value("${spring.rabbitmq.exchange.out}")
 	private String OUTBOUND_EXCHANGE;
+	@Value("${url}")
+	private String url;
     final MessageProducer rabbitMqMessageProducer;
 	final ExportManifestRepository exportManifestRepository;
 	private final ExImportManifestRepository exImportManifestRepository;
@@ -138,7 +140,6 @@ public  class PortCallIdServiceImpl implements PortCallIdService {
 		return "success";
 	}
 	private String getId() throws IOException {
-		String url = "http://192.168.30.200:7074/GetId";
 		HttpGet request = new HttpGet(url);
 		CloseableHttpClient client = HttpClients.createDefault();
 		CloseableHttpResponse response = client.execute(request);

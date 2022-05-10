@@ -35,6 +35,8 @@ public class CheckApprovedExportManifestStatusImpl {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckApprovedExportManifestStatusImpl.class);
     @Value("${spring.rabbitmq.exchange.out}")
     private String OUTBOUND_EXCHANGE;
+    @Value("${url}")
+    private String url;
     final QueueMessageStatusRepository queueMessageStatusRepository;
     final MessageProducer rabbitMqMessageProducer;
     final ManifestApprovalStatusRepository statusRepository;
@@ -125,7 +127,6 @@ public class CheckApprovedExportManifestStatusImpl {
     }
 
     private String getId() throws IOException {
-        String url = "http://192.168.30.200:7074/GetId";
         HttpGet request = new HttpGet(url);
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = client.execute(request);

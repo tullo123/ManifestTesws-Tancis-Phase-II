@@ -37,6 +37,8 @@ public class CheckApprovedCustomClearanceStatusImpl {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckApprovedCustomClearanceStatusImpl.class);
     @Value("${spring.rabbitmq.exchange.out}")
     private String OUTBOUND_EXCHANGE;
+    @Value("${url}")
+    private String url;
     final MessageProducer rabbitMqMessageProducer;
     final CustomClearanceRepository customClearanceRepository;
     final CustomClearanceApprovalRepository customClearanceApprovalRepository;
@@ -54,10 +56,10 @@ public class CheckApprovedCustomClearanceStatusImpl {
     @Scheduled(fixedRate = 240000)
     public void CheckCustomClearanceApprovalStatusServiceImpl() {
         List<CustomClearanceApprovalStatus> status = customClearanceApprovalRepository.findByApprovedStatusFalse();
-        System.out.println("--------------- Checking for approved  Custom Clearance ---------------");
+        LOGGER.info("--- Checking for approved  Custom Clearance ---");
         for (CustomClearanceApprovalStatus ca : status) {
             if (!ca.isApprovedStatus()) {
-                System.out.println("---------- Approving custom clearance with CallId" + ca.getCommunicationAgreedId() + "----------");
+                LOGGER.info("--- Approving custom clearance with CallId" + ca.getCommunicationAgreedId() + "----");
                 CustomClearanceEntity cs = customClearanceRepository.findFirstByCommunicationAgreedId(ca.getCommunicationAgreedId());
                 if (ClearanceStatus.APPROVED.equals(cs.getProcessingStatus())) {
                     CustomClearanceApprovalResponse customClearanceApprovalResponse = new CustomClearanceApprovalResponse();
@@ -128,7 +130,6 @@ public class CheckApprovedCustomClearanceStatusImpl {
     }
 
     private String getId() throws IOException {
-        String url = "http://192.168.30.200:7074/GetId";
         HttpGet request = new HttpGet(url);
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = client.execute(request);

@@ -16,6 +16,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -31,8 +33,11 @@ import java.util.List;
 @Component
 @Service
 public class CheckReceivedCustomClearanceStatusImpl {
-        @Value("${spring.rabbitmq.exchange.out}")
-        private String OUTBOUND_EXCHANGE;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckReceivedCustomClearanceStatusImpl.class);
+    @Value("${spring.rabbitmq.exchange.out}")
+    private String OUTBOUND_EXCHANGE;
+    @Value("${url}")
+    private String url;
     final CustomClearanceRepository customClearanceRepository;
     final CustomClearanceApprovalRepository customClearanceApprovalRepository;
     final MessageProducer rabbitMqMessageProducer;
@@ -63,7 +68,7 @@ public class CheckReceivedCustomClearanceStatusImpl {
                     ca.setReceivedNoticeSent(true);
                     customClearanceApprovalRepository.save(ca);
                     String response = sendCustomsClearanceStatusNoticeToQueue(customClearanceStatus);
-                    System.out.println("---Received Notice ---\n" + response);
+                    LOGGER.info("---Received Notice ---\n" + response);
                 }
             }
 
@@ -74,7 +79,7 @@ public class CheckReceivedCustomClearanceStatusImpl {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String payload = mapper.writeValueAsString(customClearanceStatus);
-            System.out.println("---- Custom Clearance Status ---\n"+payload);
+            LOGGER.info("---- Custom Clearance Status ---\n"+payload);
             MessageDto messageDto = new MessageDto();
             CustomClearanceMessageStatusDto customClearanceMessageStatusDto = new CustomClearanceMessageStatusDto();
             customClearanceMessageStatusDto.setMessageName(MessageNames.CUSTOM_CLEARANCE_STATUS);
@@ -112,7 +117,6 @@ public class CheckReceivedCustomClearanceStatusImpl {
         else return processingStatus;
     }
     private String getId() throws IOException {
-        String url = "http://192.168.30.200:7074/GetId";
         HttpGet request = new HttpGet(url);
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = client.execute(request);

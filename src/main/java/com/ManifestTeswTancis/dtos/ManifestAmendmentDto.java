@@ -16,6 +16,7 @@ import java.util.List;
 public class ManifestAmendmentDto implements Serializable {
    private String communicationAgreedId;
    private String amendmentReference;
+   private String modifier;
    private String amendDate;
    private String mrn;
    private String voyageNumber;

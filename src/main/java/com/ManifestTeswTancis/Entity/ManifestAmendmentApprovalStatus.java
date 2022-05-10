@@ -12,6 +12,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 @Data
@@ -22,7 +23,7 @@ import java.util.Date;
 @DynamicUpdate
 @Table(name = "TANCISINT.CM_MF_AMENDMENT_STG_TBL")
 @IdClass(ManifestAmendStagingTblId.class)
-public class ManifestAmendmentApprovalStatus {
+public class ManifestAmendmentApprovalStatus implements Serializable {
     @Id
     @Column(name="MRN")
     private String mrn;

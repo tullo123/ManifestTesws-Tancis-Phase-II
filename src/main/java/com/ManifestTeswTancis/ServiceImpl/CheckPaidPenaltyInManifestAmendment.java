@@ -34,7 +34,7 @@ public class CheckPaidPenaltyInManifestAmendment {
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckPaidPenaltyInManifestAmendment.class);
     @Value("${spring.rabbitmq.exchange.out}")
     private String OUTBOUND_EXCHANGE;
-    @Value("http://192.168.30.200:7074/GetId")
+    @Value("${url}")
     private String url;
     final MessageProducer rabbitMqMessageProducer;
     final ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository;

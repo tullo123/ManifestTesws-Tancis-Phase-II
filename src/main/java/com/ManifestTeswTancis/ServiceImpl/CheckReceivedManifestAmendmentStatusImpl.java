@@ -35,6 +35,8 @@ import java.util.Optional;
 public class CheckReceivedManifestAmendmentStatusImpl {
     @Value("${spring.rabbitmq.exchange.out}")
     private String OUTBOUND_EXCHANGE;
+    @Value("${url}")
+    private String url;
     final MessageProducer rabbitMqMessageProducer;
     final QueueMessageStatusRepository queueMessageStatusRepository;
     final ManifestAmendmentApprovalStatusRepository manifestAmendmentApprovalStatusRepository;
@@ -121,7 +123,6 @@ public class CheckReceivedManifestAmendmentStatusImpl {
     }
 
     private String getId() throws IOException {
-        String url = "http://192.168.30.200:7074/GetId";
         HttpGet request = new HttpGet(url);
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = client.execute(request);
