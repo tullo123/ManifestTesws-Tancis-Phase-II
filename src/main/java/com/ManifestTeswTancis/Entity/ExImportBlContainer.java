@@ -107,7 +107,7 @@ public class ExImportBlContainer {
 	private LocalDateTime lastUpdateDate;
 
 	@Column(name="CONTAINER_PACKAGE")
-	private Double containerPackage;
+	private Integer containerPackage;
 
 	@Column(name="PACKAGE_UNIT")
 	private String packageUnit;

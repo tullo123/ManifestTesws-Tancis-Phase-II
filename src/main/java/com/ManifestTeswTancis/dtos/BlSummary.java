@@ -17,4 +17,5 @@ public class BlSummary implements Serializable {
     private Integer numberOfContainers;
     private Double blGrossWeight;
     private Double blNetWeight;
+    private Integer totalBlPackage;
 }

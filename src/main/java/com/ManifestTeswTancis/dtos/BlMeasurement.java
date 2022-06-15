@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BlMeasurement {
-    private Double pkQuantity;
+    private Integer pkQuantity;
     private String pkType;
     private String description;
     private Double grossWeight;

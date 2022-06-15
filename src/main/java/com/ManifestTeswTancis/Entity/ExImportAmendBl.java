@@ -47,7 +47,7 @@ public class ExImportAmendBl implements Serializable {
 	private String PackageUnit;
 
 	@Column(name = "BL_PACKAGE")
-	private Double blPackage;
+	private Integer blPackage;
 
 	@Column(name = "CARGO_CLASSIFICATION")
 	private String tradeType;

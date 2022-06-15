@@ -17,7 +17,7 @@ public class GoodDetails implements Serializable {
     private String goodsItemNo;
     private String description;
     private String packingType;
-    private String packageQuantity;
+    private Integer packageQuantity;
     private String packageType;
     private String oilType;
     private Double invoiceValue;
@@ -26,11 +26,11 @@ public class GoodDetails implements Serializable {
     private String insuranceCurrency;
     private Double freightCharge;
     private String freightCurrency;
-    private String grossWeight;
+    private Double grossWeight;
     private String grossWeightUnit;
-    private String netWeight;
+    private Double netWeight;
     private String netWeightUnit;
-    private String volume;
+    private Double volume;
     private String volumeUnit;
     private String length;
     private String lengthUnit;

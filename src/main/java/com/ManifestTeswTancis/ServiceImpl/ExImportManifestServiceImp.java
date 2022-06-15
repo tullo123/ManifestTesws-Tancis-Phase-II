@@ -100,6 +100,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			blContainer.setHouseBillOfLading(houseBl);
 			System.out.println(msnMap);
 			blContainer.setMsn(msnMap.get(masterBl));
+			//blContainer.setHsn(msnMap.get(houseBl));
 			blContainer.setHsn("   ");
 			blContainer.setLastUpdateId("TESWS");
 			blContainer.setFirstRegisterId("TESWS");
@@ -139,6 +140,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			blContainer.setLastUpdateId("TESWS");
 			blContainer.setFirstRegisterId("TESWS");
 			blContainer.setWeight(masterBl.getBlSummary().getBlGrossWeight());
+			blContainer.setContainerPackage(masterBl.getBlSummary().getTotalBlPackage());
 			blContainer.setWeightUnit("KG");
 			blContainer.setReferPlugYn("N");
 			blContainer.setContainerNo((masterBl.getBlPackingType().equalsIgnoreCase("B"))?"BULK":"LOOSE");
@@ -154,7 +156,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 					            Map<String, String>>> containerSaveMap) {
 	     	containerSaveMap.forEach((key,contMap)-> contMap.forEach((container, blMap)->{
 			 ExImportBlContainer cnEn = new ExImportBlContainer();
-			 BlMeasurement blMeasurement =new  BlMeasurement();
 			 Map<String, String> msns = msnMap.get(container.getContainerNo());
 			 if (!blMap.isEmpty()) {
 				 cnEn.setMrn(mrn);
@@ -174,6 +175,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				 cnEn.setMsn(msn);
 				 cnEn.setHsn((hsnMap.get(hBl)!=null)?hsnMap.get(hBl):"   ");
 
+				 cnEn.setContainerPackage(container.getPackageQuantity());
 				 cnEn.setFreightIndicator(container.getFreightIndicator());
 				 cnEn.setWeight(container.getGrossWeight());
 				 cnEn.setWeightUnit(fixUnit(container.getGrossWeightUnit()));
@@ -183,8 +185,6 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				 cnEn.setMinimumTemperature(container.getMinimumTemperature());
 				 cnEn.setLastUpdateId("TESWS");
 				 cnEn.setFirstRegisterId("TESWS");
-				 cnEn.setContainerPackage(blMeasurement.getPkQuantity());
-				 cnEn.setPackageUnit(blMeasurement.getPkType());
 
 				 if(container.getTemperatureType() != null && container.getTemperatureType().contentEquals("1")) {
 					 cnEn.setReferPlugYn("Y");
@@ -365,7 +365,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			Map<String, Map<String, String>> msnMap, Map<String,Map<ContainerDto, Map<String, String>>> containerSaveMap,
 			Map<String,Map<BillOfLadingDto, Map<String, String>>> consignmentMap,
 			List<ContainerDto> containers) {
-		double pkQuantity = 0.0;
+		int pkQuantity = 0;
 		String pkType = "PK";
 		String description = "";
 		String invoiceCurrency="";
@@ -441,6 +441,7 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				containerBlMap.put(pc.getContainerNo(), blMap);
 				ContainerDto container = containers.stream().filter(c->c.getContainerNo().equalsIgnoreCase(pc.getContainerNo())).findAny().get();
 				String key = bl.getMasterBillOfLading()+"-"+pc.getContainerNo()+"-"+(bl.getHouseBillOfLading() != null ? "-"+bl.getHouseBillOfLading():"");
+				container.setPackageQuantity(bl.getBlSummary().getTotalBlPackage());
 				cmap.put(container,blMap);
 				containerSaveMap.put(key,cmap);
 				msnMap.put(pc.getContainerNo(),msnMap.get(bl.getMasterBillOfLading()));

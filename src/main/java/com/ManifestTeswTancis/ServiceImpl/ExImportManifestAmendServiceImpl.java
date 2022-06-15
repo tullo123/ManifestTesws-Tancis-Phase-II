@@ -2,7 +2,6 @@ package com.ManifestTeswTancis.ServiceImpl;
 import com.ManifestTeswTancis.Entity.*;
 import com.ManifestTeswTancis.Repository.*;
 import com.ManifestTeswTancis.Service.ExImportManifestAmendService;
-import com.ManifestTeswTancis.Util.DateFormatter;
 import com.ManifestTeswTancis.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
-@Transactional
 public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendService {
     final AmendItemContainerRepository amendItemContainerRepository;
     final MasterBlGoodItemsRepository masterBlGoodItemsRepository;
@@ -52,6 +50,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
     }
 
     @Override
+    @Transactional
     public TeswsResponse amendManifest(ManifestAmendmentDto manifestAmendmentDto) {
         TeswsResponse responseData = new TeswsResponse();
         LocalDateTime localDateTime = LocalDateTime.now();
@@ -67,11 +66,10 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
                     BlDto bl = manifestAmendmentDto.getBl();
                     List<Containers> containers = manifestAmendmentDto.getContainers();
                     saveGeneralAmendment(bl, manifestAmendmentDto);
-                    if (manifestAmendmentDto.getBl() != null && manifestAmendmentDto.getAmendType().
-                            equalsIgnoreCase("AMEND_BL")) {
+                    if (manifestAmendmentDto.getBl() != null && manifestAmendmentDto.getAmendType().equalsIgnoreCase("AMEND_BL")) {
                         saveAmendBl(bl, manifestAmendmentDto);
-                    } else if (manifestAmendmentDto.getBl() != null) {
-                        saveAddedBl(bl, manifestAmendmentDto);
+                    } else if (manifestAmendmentDto.getBl() != null && manifestAmendmentDto.getAmendType().equalsIgnoreCase("ADD_BL")) {
+                        addBl(bl, manifestAmendmentDto);
                     }
                     if (!manifestAmendmentDto.getContainers().isEmpty() && manifestAmendmentDto.getAmendType().
                             equalsIgnoreCase("AMEND_CONTAINER")) {
@@ -123,7 +121,6 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         amendGeneral.setAmendYear(df.format(Calendar.getInstance().getTime()));
         amendGeneral.setProcessType("M");
         amendGeneral.setProcessingStatus("1");
-        amendGeneral.setProcessingDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
         amendGeneral.setProcessingId("SYSTEM");
         Optional<InImportManifest> option = inImportManifestRepository.findFirstByCommunicationAgreedId(manifestAmendmentDto.getCommunicationAgreedId());
         if (option.isPresent()) {
@@ -186,8 +183,10 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         amendGeneral.setDeclarantCode(bl.getShippingAgentCode());
         amendGeneral.setDeclarantName(bl.getShippingAgentName());
         amendGeneral.setFirstRegisterId("TESWS");
-        amendGeneral.setSubmitDate(DateFormatter.getDateFromLocalDateTime(LocalDateTime.now()));
         amendGeneral.setLastUpdateId("TESWS");
+
+        amendGeneral.setProcessingDate(new java.sql.Date(System.currentTimeMillis()));
+
         exImportAmendGeneralRepository.save(amendGeneral);
 
         ManifestAmendmentApprovalStatus manifestAmendmentApprovalStatus= new ManifestAmendmentApprovalStatus(manifestAmendmentDto);
@@ -202,7 +201,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
 
     }
 
-    private void saveAddedBl(BlDto bl, ManifestAmendmentDto manifestAmendmentDto) {
+    private void addBl(BlDto bl, ManifestAmendmentDto manifestAmendmentDto) {
         ExImportAmendBl amendBl = new ExImportAmendBl();
         BlMeasurement blMeasurement = new BlMeasurement();
         Optional<CoCompanyCodeEntity> optional = coCompanyCodeRepository.findByCompanyCode(bl.getShippingAgentCode());
@@ -219,10 +218,10 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
             amendBl.setBillOfLading(bl.getMasterBillOfLading());
         }
         amendBl.setTradeType(getTradeType(bl));
-        if (bl.getHouseBillOfLading() != null) {
-            amendBl.setBlType("C");
-        } else {
+        if(bl.getBlType().equalsIgnoreCase("SIMPLE")){
             amendBl.setBlType("S");
+        } else if(bl.getBlType().equalsIgnoreCase("CONSOLIDATED")){
+            amendBl.setBlType("C");
         }
         amendBl.setShippingAgentCode(bl.getShippingAgentCode());
         amendBl.setForwarderCode(bl.getForwarderCode());
@@ -256,6 +255,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         amendBl.setPlaceOfDestination(bl.getPlaceOfDestination());
         amendBl.setPlaceOfDestination(bl.getPlaceOfDestination());
         amendBl.setPlaceOfDelivery(bl.getPlaceOfDelivery());
+
         for (GoodDetails goodsDto : bl.getGoodDetails()) {
             amendBl.setInvoiceValue(goodsDto.getInvoiceValue());
             amendBl.setMarksNumbers(goodsDto.getMarksNumbers());
@@ -338,7 +338,7 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
                     amendItem.setItemNumber("M22");
                     amendItems.add(amendItem);
                 }
-                if(blMeasurement.getPkQuantity()!=null && !blMeasurement.getPkQuantity().equals(blItem.getBlPackage())){
+                if(bl.getBlSummary()!=null  && bl.getBlSummary().getTotalBlPackage()!=null && !bl.getBlSummary().getTotalBlPackage().equals(blItem.getBlPackage()) ){
                     amendItem= new ExImportAmendItem();
                     amendItem.setBeforeItemComments(blItem.getBlPackage().toString());
                     amendItem.setAfterItemComments(blMeasurement.getPkQuantity().toString());

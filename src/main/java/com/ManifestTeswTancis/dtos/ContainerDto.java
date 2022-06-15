@@ -40,6 +40,7 @@ public class ContainerDto implements Serializable {
 	private Double minimumTemperature;
 	private Double maximumTemperature;
 	private String amendSerialNumber;
+	private Integer packageQuantity;
 	private List<SealNumberDto> sealNumbers= new ArrayList<>();
 
 }

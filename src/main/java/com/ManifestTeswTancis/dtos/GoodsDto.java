@@ -16,7 +16,7 @@ public class GoodsDto implements Serializable {
 	 private String goodsItemNo;
      private String description;
      private String packingType;
-     private Double packageQuantity;
+     private Integer packageQuantity;
      private String packageType;
      private String oilType;
      private Double invoiceValue;

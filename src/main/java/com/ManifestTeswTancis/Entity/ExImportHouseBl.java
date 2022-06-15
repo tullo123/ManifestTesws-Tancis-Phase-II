@@ -45,7 +45,7 @@ public class ExImportHouseBl {
 	private String packageUnit;
 
 	@Column(name = "BL_PACKAGE")
-	private Double blPackage;
+	private Integer blPackage;
 
 	@Column(name = "CARGO_CLASSIFICATION")
 	private String tradeType;

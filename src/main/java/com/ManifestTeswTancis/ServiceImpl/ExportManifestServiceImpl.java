@@ -303,7 +303,7 @@ public class ExportManifestServiceImpl implements ExportManifestService {
                                            Map<String, Map<String, String>> msnMap,
                                            Map<String, Map<ContainerDto, Map<String, String>>> containerSaveMap,
                                            List<ContainerDto> containers) {
-        double pkQuantity = 0.0;
+        int pkQuantity = 0;
         String pkType = "PK";
         String description = "";
         String invoiceCurrency="";

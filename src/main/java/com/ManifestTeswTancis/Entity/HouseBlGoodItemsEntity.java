@@ -47,7 +47,7 @@ public class HouseBlGoodItemsEntity implements Serializable {
     private String packingType;
 
     @Column(name = "GOOD_PACKAGE_QUANTITY")
-    private Double packageQuantity;
+    private Integer packageQuantity;
 
     @Column(name = "GOOD_PACKAGE_TYPE")
     private String packageType;

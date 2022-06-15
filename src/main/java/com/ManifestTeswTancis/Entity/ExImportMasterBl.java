@@ -42,7 +42,7 @@ public class ExImportMasterBl {
 	private String tasacControlNumber;
 
 	@Column(name = "BL_PACKAGE")
-	private Double blPackage;
+	private Integer blPackage;
 
 	@Column(name = "CARGO_CLASSIFICATION")
 	private String tradeType;
@@ -222,8 +222,12 @@ public class ExImportMasterBl {
 		//this.marksNumbers =billOfLadingDto.getMarksNumbers();
 		this.blGrossWeight=billOfLadingDto.getBlSummary().getBlGrossWeight();
 		this.blNetWeight= billOfLadingDto.getBlSummary().getBlNetWeight();
-		this.containerCount=billOfLadingDto.getBlSummary().getNumberOfContainers();
-		this.houseBlCount=billOfLadingDto.getBlSummary().getNumberOfHouseBl();
+		if(billOfLadingDto.getBlSummary()!=null && billOfLadingDto.getBlSummary().getNumberOfContainers()!=null &&  billOfLadingDto.getBlSummary().getNumberOfContainers()!=0)
+		{this.containerCount=billOfLadingDto.getBlSummary().getNumberOfContainers();}
+		if(billOfLadingDto.getBlSummary()!=null && billOfLadingDto.getBlSummary().getNumberOfHouseBl()!=null && billOfLadingDto.getBlSummary().getNumberOfHouseBl()!=0)
+		{this.houseBlCount=billOfLadingDto.getBlSummary().getNumberOfHouseBl();}
+
+
 	}
 
 }

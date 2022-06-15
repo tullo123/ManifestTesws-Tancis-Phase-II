@@ -92,7 +92,7 @@ public class ExportMasterBlEntity implements Serializable {
     private String blDescription;
 
 	@Column(name="BL_PACKAGE")
-    private Double blPackage;
+    private Integer blPackage;
 
 	@Column(name="PACKAGE_UNIT")
     private String packageUnit;
