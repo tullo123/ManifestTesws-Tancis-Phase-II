@@ -355,7 +355,7 @@ public class ExportManifestServiceImpl implements ExportManifestService {
                 Map<ContainerDto,Map<String, String>> cmap = new HashMap<>();
                 blMap.put(bl.getMasterBillOfLading(), bl.getHouseBillOfLading());
                 containerBlMap.put(pc.getContainerNo(), blMap);
-                ContainerDto container = containers.stream().filter(c->c.getContainerNo().equalsIgnoreCase(pc.getContainerNo())).findAny().get();
+                ContainerDto container = containers.stream().filter(c->c.getContainerNo().equalsIgnoreCase(pc.getContainerNo())).findAny().orElse(null);
                 String key = bl.getMasterBillOfLading()+"-"+pc.getContainerNo()+"-"+(bl.getHouseBillOfLading() != null ? "-"+bl.getHouseBillOfLading():"");
                 cmap.put(container,blMap);
                 containerSaveMap.put(key,cmap);

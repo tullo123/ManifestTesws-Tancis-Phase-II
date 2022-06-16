@@ -1,5 +1,6 @@
 package com.ManifestTeswTancis.ServiceImpl;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import javax.transaction.Transactional;
 
 import com.ManifestTeswTancis.Entity.LiquidBulkDischargeSequenceEntity;
@@ -13,9 +14,10 @@ import org.springframework.stereotype.Service;
 
 
 @Service
+@Transactional
 public class LiquidBulkDischargeSequenceServiceImpl implements LiquidBulkDischargeSequenceService {
 
-    final LiquidBulkDischargeSequenceRepository liquidBulkDischargeSequenceRepository;
+	final LiquidBulkDischargeSequenceRepository liquidBulkDischargeSequenceRepository;
 
 	public LiquidBulkDischargeSequenceServiceImpl(LiquidBulkDischargeSequenceRepository liquidBulkDischargeSequenceRepository) {
 		this.liquidBulkDischargeSequenceRepository = liquidBulkDischargeSequenceRepository;
@@ -31,28 +33,35 @@ public class LiquidBulkDischargeSequenceServiceImpl implements LiquidBulkDischar
 		response.setRefId(liquidBulkDischargeSequenceDto.getRefNo());
 		response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
 		response.setDescription("Liquid Bulk Discharge Sequence Received");
-		
-		LiquidBulkDischargeSequenceEntity lq=new LiquidBulkDischargeSequenceEntity();
-		lq.setRefNo(liquidBulkDischargeSequenceDto.getRefNo());
-		lq.setVoyageNo(liquidBulkDischargeSequenceDto.getVoyageNo());
-		lq.setVesselName(liquidBulkDischargeSequenceDto.getVesselName());
-		lq.setImoNo(liquidBulkDischargeSequenceDto.getImoNo());
-		lq.setCallSign(liquidBulkDischargeSequenceDto.getCallSign());
-		lq.setDestinationPort(liquidBulkDischargeSequenceDto.getDestinationPort());
-		lq.setRefDate(liquidBulkDischargeSequenceDto.getRefDate());
-		lq.setBlQnt(liquidBulkDischargeSequenceDto.getBlQnt());
-		lq.setOilType(liquidBulkDischargeSequenceDto.getOilType());
-		lq.setFirstRegisterId("TESWS");
-		lq.setLastUpdateId("TESWS");
-		
-	for (PumpingSequenceDto sq : liquidBulkDischargeSequenceDto.getPumpingSequence()) {
-		lq.setTerminal(sq.getTerminal());
-		lq.setQuantity(sq.getQuantity());
-		}
+		try {
+			Optional<LiquidBulkDischargeSequenceEntity> optional = liquidBulkDischargeSequenceRepository.
+					findByRefNo(liquidBulkDischargeSequenceDto.getRefNo());
+			if (!optional.isPresent()) {
+				LiquidBulkDischargeSequenceEntity lq = new LiquidBulkDischargeSequenceEntity();
+				lq.setRefNo(liquidBulkDischargeSequenceDto.getRefNo());
+				lq.setVoyageNo(liquidBulkDischargeSequenceDto.getVoyageNo());
+				lq.setVesselName(liquidBulkDischargeSequenceDto.getVesselName());
+				lq.setImoNo(liquidBulkDischargeSequenceDto.getImoNo());
+				lq.setCallSign(liquidBulkDischargeSequenceDto.getCallSign());
+				lq.setDestinationPort(liquidBulkDischargeSequenceDto.getDestinationPort());
+				lq.setRefDate(liquidBulkDischargeSequenceDto.getRefDate());
+				lq.setBlQnt(liquidBulkDischargeSequenceDto.getBlQnt());
+				lq.setOilType(liquidBulkDischargeSequenceDto.getOilType());
+				lq.setLastUpdateId("TESWS");
+				lq.setFirstRegisterId("TESWS");
+				for (PumpingSequenceDto sq : liquidBulkDischargeSequenceDto.getPumpingSequence()) {
+					lq.setTerminal(sq.getTerminal());
+					lq.setQuantity(sq.getQuantity());
+				}
 
-		liquidBulkDischargeSequenceRepository.save(lq);
-		
+				liquidBulkDischargeSequenceRepository.save(lq);
+
+				return response;
+			}
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
 		return response;
 	}
-
 }

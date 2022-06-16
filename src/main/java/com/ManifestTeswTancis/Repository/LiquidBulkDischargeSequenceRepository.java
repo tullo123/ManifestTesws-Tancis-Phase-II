@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface LiquidBulkDischargeSequenceRepository extends JpaRepository<LiquidBulkDischargeSequenceEntity, String> {
 
     Optional<LiquidBulkDischargeSequenceEntity> findFirstByRefNo(String refNo);
+
+    Optional<LiquidBulkDischargeSequenceEntity> findByRefNo(String refNo);
 }
