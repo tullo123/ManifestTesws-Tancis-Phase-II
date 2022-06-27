@@ -200,7 +200,9 @@ public class ExImportManifest implements Serializable {
 		this.callSign=callInfDetails.getCallSign();
 		this.nextPortOfCall = callInfDetails.getNextPortOfCall();
 		this.actualDateTimeOfArrival = DateFormatter.getDateFromLocalDateTime(callInfDetails.getEstimatedDatetimeOfArrival());
-		this.actualDatetimeOfDeparture = DateFormatter.getDateFromLocalDateTime(callInfDetails.getEstimatedDatetimeOfArrival());
+		if(callInfDetails.getEstimatedDatetimeOfDeparture()!=null)
+		{this.actualDatetimeOfDeparture = DateFormatter.getDateFromLocalDateTime(callInfDetails.getEstimatedDatetimeOfDeparture());}
+		else{this.actualDatetimeOfDeparture = DateFormatter.getDateFromLocalDateTime(callInfDetails.getEstimatedDatetimeOfArrival());}
 		this.processingDate=DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
 		this.transportMeansNationality = callInfDetails.getTransportMeansNationality();
 		this.destinationPort = callInfDetails.getDestinationPort();
@@ -231,6 +233,8 @@ public class ExImportManifest implements Serializable {
 		this.bkWeightAtDestination = callInfDetails.getBkWeightAtDestination();
 		this.estimatedDatetimeOfArrival = DateFormatter.getDateFromLocalDateTime(callInfDetails.getEstimatedDatetimeOfArrival());
 		this.estimatedDatetimeOfDeparture=DateFormatter.getDateFromLocalDateTime(callInfDetails.getActualDatetimeOfDeparture());
+		if(callInfDetails.getBallast().equalsIgnoreCase("true")){this.ballast="Y";}
+		if(callInfDetails.getBallast().equalsIgnoreCase("false")){this.ballast="N";}
 	}
 
 }

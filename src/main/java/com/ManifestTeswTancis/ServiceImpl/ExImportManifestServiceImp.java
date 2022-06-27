@@ -94,14 +94,13 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 			ExImportBlContainer blContainer = new ExImportBlContainer();
 			blContainer.setMrn(mrn);
 			blContainer.setContainerNo(set.getKey());
-			blContainer.setContainerSize("VH");
 			blContainer.setTypeOfContainer("V");
 			blContainer.setMasterBillOfLading(masterBl);
 			blContainer.setHouseBillOfLading(houseBl);
 			System.out.println(msnMap);
 			blContainer.setMsn(msnMap.get(masterBl));
-			//blContainer.setHsn(msnMap.get(houseBl));
-			blContainer.setHsn("   ");
+			blContainer.setHsn((msnMap.get(houseBl) != null)?msnMap.get(houseBl):"   ");
+			//blContainer.setHsn("   ");
 			blContainer.setLastUpdateId("TESWS");
 			blContainer.setFirstRegisterId("TESWS");
 
@@ -311,8 +310,8 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportMasterBl.setBlDescription(bl.getBlDescription());
 		exImportMasterBl.setInvoiceCurrency(blMeasurement.getInvoiceCurrency());
 		exImportMasterBl.setFreightCurrency(blMeasurement.getFreightCurrency());
-		exImportMasterBl.setInvoiceValue(blMeasurement.getInvoiceValue());
-		exImportMasterBl.setFreightCharge(blMeasurement.getFreightCharge());
+		if(blMeasurement.getInvoiceValue()!=0){exImportMasterBl.setInvoiceValue(blMeasurement.getInvoiceValue());}
+		if(blMeasurement.getFreightCharge()!=0){exImportMasterBl.setFreightCharge(blMeasurement.getFreightCharge());}
 		exImportMasterBl.setMarksNumbers(blMeasurement.getMarksNumbers());
 
 		exImportMasterBlRepository.save(exImportMasterBl);
@@ -348,8 +347,8 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 		exImportHouseBl.setDescription(bl.getBlDescription());
 		exImportHouseBl.setInvoiceCurrency(blMeasurement.getInvoiceCurrency());
 		exImportHouseBl.setFreightCurrency(blMeasurement.getFreightCurrency());
-		exImportHouseBl.setInvoiceValue(blMeasurement.getInvoiceValue());
-		exImportHouseBl.setFreightCharge(blMeasurement.getFreightCharge());
+		if(blMeasurement.getInvoiceValue()!=0){exImportHouseBl.setInvoiceValue(blMeasurement.getInvoiceValue());}
+		if(blMeasurement.getFreightCharge()!=0){exImportHouseBl.setFreightCharge(blMeasurement.getFreightCharge());}
 		exImportHouseBl.setMarksNumbers(blMeasurement.getMarksNumbers());
 
 
@@ -439,8 +438,9 @@ public class ExImportManifestServiceImp implements ExImportManifestService {
 				Map<ContainerDto,Map<String, String>> cmap = new HashMap<>();
 				blMap.put(bl.getMasterBillOfLading(), bl.getHouseBillOfLading());
 				containerBlMap.put(pc.getContainerNo(), blMap);
-				ContainerDto container = containers.stream().filter(c->c.getContainerNo().equalsIgnoreCase(pc.getContainerNo())).findAny().get();
+				ContainerDto container = containers.stream().filter(c->c.getContainerNo().equalsIgnoreCase(pc.getContainerNo())).findAny().orElse(null);
 				String key = bl.getMasterBillOfLading()+"-"+pc.getContainerNo()+"-"+(bl.getHouseBillOfLading() != null ? "-"+bl.getHouseBillOfLading():"");
+				assert container!=null;
 				container.setPackageQuantity(bl.getBlSummary().getTotalBlPackage());
 				cmap.put(container,blMap);
 				containerSaveMap.put(key,cmap);

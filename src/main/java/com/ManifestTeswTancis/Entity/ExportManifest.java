@@ -186,6 +186,9 @@ public class ExportManifest implements Serializable {
         this.processingDate=DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
         this.submitDt =DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
         this.estimatedDatetimeOfDeparture=callInfDetails.getEstimatedDatetimeOfDeparture();
+        if(callInfDetails.isOutwardCargo()){this.ballast="N";}
+        if(!callInfDetails.isOutwardCargo()){this.ballast="Y";}
+
 
     }
 

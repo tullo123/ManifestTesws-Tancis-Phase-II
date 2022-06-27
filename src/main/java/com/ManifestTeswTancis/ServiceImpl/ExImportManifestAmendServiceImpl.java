@@ -184,7 +184,6 @@ public class ExImportManifestAmendServiceImpl implements ExImportManifestAmendSe
         amendGeneral.setDeclarantName(bl.getShippingAgentName());
         amendGeneral.setFirstRegisterId("TESWS");
         amendGeneral.setLastUpdateId("TESWS");
-
         amendGeneral.setProcessingDate(new java.sql.Date(System.currentTimeMillis()));
 
         exImportAmendGeneralRepository.save(amendGeneral);
