@@ -1,7 +1,6 @@
 package com.ManifestTeswTancis.Entity;
 
 import com.ManifestTeswTancis.Request.PortCallIdRequestModel;
-import com.ManifestTeswTancis.Util.DateFormatter;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -142,14 +141,14 @@ public class ExportManifest implements Serializable {
 
 	@Column(name="FIRST_REGISTER_DT", nullable = false, updatable = false)
     @CreationTimestamp
-    private Date firstRegisterDate;
+    private LocalDateTime firstRegisterDate;
 
 	@Column(name="LAST_UPDATE_ID")
     private String lastUpdateId;
 
 	@Column(name="LAST_UPDATE_DT")
     @UpdateTimestamp
-    private Date lastUpdateDt;
+    private LocalDateTime lastUpdateDate;
 
 	@Column(name="EXPECTED_DEPARTURE_DT")
     private LocalDateTime estimatedDatetimeOfDeparture;
@@ -173,22 +172,19 @@ public class ExportManifest implements Serializable {
 	    this.transportMeansId=callInfDetails.getTransportMeansId();
 	    this.processingStatus="1";
 	    this.auditor="NA";
+        this.submitDt= new Date();
+        this.processingDate= new Date();
 	    this.processingId="SYSTEM";
 	    this.lastUpdateId="TESWS";
 	    this.firstRegisterId="TESWS";
-        this.processingDate=DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
-        this.firstRegisterDate=DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
         this.transportMeansNationality=callInfDetails.getTransportMeansNationality();
         this.transportMeansName=callInfDetails.getTransportMeansName();
         this.terminal=callInfDetails.getTerminal();
         this.terminalOperatorCode=callInfDetails.getTerminalOperatorCode();
         this.modeOfTransport= callInfDetails.getModeOfTransport();
-        this.processingDate=DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
-        this.submitDt =DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
         this.estimatedDatetimeOfDeparture=callInfDetails.getEstimatedDatetimeOfDeparture();
         if(callInfDetails.isOutwardCargo()){this.ballast="N";}
         if(!callInfDetails.isOutwardCargo()){this.ballast="Y";}
-
 
     }
 

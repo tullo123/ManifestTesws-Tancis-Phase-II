@@ -203,10 +203,10 @@ public class ExImportManifest implements Serializable {
 		if(callInfDetails.getEstimatedDatetimeOfDeparture()!=null)
 		{this.actualDatetimeOfDeparture = DateFormatter.getDateFromLocalDateTime(callInfDetails.getEstimatedDatetimeOfDeparture());}
 		else{this.actualDatetimeOfDeparture = DateFormatter.getDateFromLocalDateTime(callInfDetails.getEstimatedDatetimeOfArrival());}
-		this.processingDate=DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
+		this.processingDate= new Date();
 		this.transportMeansNationality = callInfDetails.getTransportMeansNationality();
 		this.destinationPort = callInfDetails.getDestinationPort();
-		this.submitDt =DateFormatter.getDateFromLocalDateTime(LocalDateTime.now());
+		this.submitDt= new Date();
 		this.portOfCall = callInfDetails.getPortOfCall();
 		this.processingStatus = "1";
 		this.firstRegisterId = "TESWS";
