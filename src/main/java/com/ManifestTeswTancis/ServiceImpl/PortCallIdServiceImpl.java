@@ -74,32 +74,22 @@ public  class PortCallIdServiceImpl implements PortCallIdService {
 				ExportManifest exportManifest=new ExportManifest(callInfDetails);
 				exImportManifest.setMrn(generateMrn(exImportManifest.getCarrierId()));
 				exportManifest.setMrnOut(generateMrnOut(exportManifest.getCarrierId()));
-				if(exportManifest.getModeOfTransport().contentEquals("1")){
-					exportManifest.setModeOfTransport("10");
-				}
-				exportManifest.setBallast("N");
+				if(exportManifest.getModeOfTransport().contentEquals("1")){ exportManifest.setModeOfTransport("10"); }
 				exportManifestRepository.save(exportManifest);
-
-				if (exImportManifest.getModeOfTransport().contentEquals("1")) {
-						exImportManifest.setModeOfTransport("10");
-				}
+				if (exImportManifest.getModeOfTransport().contentEquals("1")) { exImportManifest.setModeOfTransport("10"); }
 				storedCallInfDetails = exImportManifestRepository.save(exImportManifest);
 				statusServiceImp.save(exImportManifest, callInfDetails.getControlReferenceNumber(), true, exportManifest);
 				submitCallInfoNotice(storedCallInfDetails,exportManifest);
-
 			} catch (Exception e) {
 				response.setDescription(e.getMessage());
-				e.printStackTrace();
-			}
-			return response;
-		}
-		response.setDescription("Vessel call with callId " + callInfDetails.getCommunicationAgreedId()
+				e.printStackTrace(); }
+			    return response;
+		    }
+		   response.setDescription("Vessel call with callId " + callInfDetails.getCommunicationAgreedId()
 				+ " is already approved and sent to Tesws");
-		response.setCode(405);
+		        response.setCode(405);
 		return response;
-
 	}
-
 
 
 	@Override
@@ -113,7 +103,7 @@ public  class PortCallIdServiceImpl implements PortCallIdService {
 
 		ObjectMapper mapper = new ObjectMapper();
 		String payload = mapper.writeValueAsString(returnValue);
-		System.out.println("--------------- Custom Vessel Reference ---------------\n"+payload);
+		System.out.println("---- Custom Vessel Reference----\n"+payload);
 		MessageDto messageDto = new MessageDto();
 		PortCallIdResponseMessageDto portCallIdResponseMessageDto = new PortCallIdResponseMessageDto();
 		portCallIdResponseMessageDto.setMessageName(MessageNames.CUSTOMS_VESSEL_REFERENCE);
@@ -143,27 +133,11 @@ public  class PortCallIdServiceImpl implements PortCallIdService {
 		CloseableHttpClient client = HttpClients.createDefault();
 		CloseableHttpResponse response = client.execute(request);
 		HttpEntity entity = response.getEntity();
-
 		return EntityUtils.toString(entity);
 	}
 
-//	private String generateMrn(String carrierCode) {
-//		Object nextval = exImportManifestRepository.getNextValue();
-//		String suffix = String.format("%06d", Long.valueOf(nextval.toString()));
-//		DateFormat df = new SimpleDateFormat("yy");
-//		String prefix = df.format(Calendar.getInstance().getTime());
-//		return prefix + carrierCode + suffix;
-//	}
-//
-//     private String generatemrnOut(String carrierId) {
-//		Object nextval = exImportManifestRepository.getNextValue();
-//		String suffix = String.format("%06d", Long.valueOf(nextval.toString()));
-//		DateFormat df = new SimpleDateFormat("yy");
-//		String prefix = df.format(Calendar.getInstance().getTime());
-//		return prefix + carrierId + suffix;
-//	}
 
-private String generateMrn(String carrierCode) {
+    private String generateMrn(String carrierCode) {
 	CommonOrdinalEntity commonOrdinalEntity;
 	DateFormat df = new SimpleDateFormat("yy");
 	String prefix= df.format(Calendar.getInstance().getTime()) +carrierCode;
