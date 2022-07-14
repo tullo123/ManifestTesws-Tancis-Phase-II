@@ -67,13 +67,10 @@ public class CheckApprovedManifestStatusImpl {
 					ManifestNotice manifestNotice = new ManifestNotice();
 					manifestNotice.setCommunicationAgreedId(callInf.getCommunicationAgreedId());
 					manifestNotice.setMessageReferenceNumber(callInf.getControlReferenceNumber());
-
 					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 					manifestNotice.setApprovalDate(formatter.format(callInf.getProcessingDate()));
 					manifestNotice.setMrn(mf.getMrn());
-					if (mf.getMrn() != null && mf.getMrnOut() != null) {
-						mf.setMrnStatus(true);
-					}
+					if (mf.getMrn() != null && mf.getMrnOut() != null) { mf.setMrnStatus(true); }
 					manifestNotice.setApprovalStatus(getStatus(callInf.getProcessingStatus()));
 					manifestNotice.setBls(getManifestNoticeBl(mf.getMrn()));
 					mf.setApprovedStatus(true);

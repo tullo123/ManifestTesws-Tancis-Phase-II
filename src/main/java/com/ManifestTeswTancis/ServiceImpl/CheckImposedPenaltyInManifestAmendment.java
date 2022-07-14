@@ -73,28 +73,22 @@ public class CheckImposedPenaltyInManifestAmendment {
                     manifestAmendmentBillNotice.setBillReferenceType("MANIFEST_AMENDMENT");
                     manifestAmendmentBillNotice.setGeneratedDate(penalty.getBillDate().toString());
                     Optional<CoCompanyCodeEntity> code = coCompanyCodeRepository.findByTin(penalty.getPayerTin());
-                        if (code.isPresent()) {
-                            CoCompanyCodeEntity companyCode= code.get();
-                            manifestAmendmentBillNotice.setPayerInstitutionalCode(companyCode.getCompanyCode());
-                        }else{
-                            manifestAmendmentBillNotice.setPayerInstitutionalCode("Payer Institutional Code not Registered in TANCIS");
-                        }
+                    if (code.isPresent()) { CoCompanyCodeEntity companyCode= code.get();
+                    manifestAmendmentBillNotice.setPayerInstitutionalCode(companyCode.getCompanyCode()); }
+                    else{ manifestAmendmentBillNotice.setPayerInstitutionalCode("Payer Institutional Code not Registered in TANCIS"); }
                     manifestAmendmentBillNotice.setPayeeInstitutionalCode("TRA");
                     manifestAmendmentBillNotice.setBillId(penalty.getBillRegisterId());
                     manifestAmendmentBillNotice.setBillAmount(penalty.getTotalBillTaxAmt());
                     manifestAmendmentBillNotice.setCcy("Tsh");
                     Optional<BillGePGEntity> bill=billGePGRepository.findByBillSerialNumberAndBillYear(penalty.getBillSerialNo(),penalty.getBillYy());
-                    if(bill.isPresent()){
-                        BillGePGEntity gepgControlNumber=bill.get();
-                        manifestAmendmentBillNotice.setControlNumber(gepgControlNumber.getGepgControlNo());
-                    }else{
+                    if(bill.isPresent()){ BillGePGEntity gepgControlNumber=bill.get();
+                        manifestAmendmentBillNotice.setControlNumber(gepgControlNumber.getGepgControlNo()); }
+                    else{
                         Optional<ExImportAmendPenalty> opt=exImportAmendPenaltyRepository.
                                 findFirstByDeclarantTinAndAmendYearAndAmendSerialNumber(ma.getDeclarantTin(),ma.getAmendYear(),ma.getAmendSerialNo());
                         if(opt.isPresent()){
                             ExImportAmendPenalty exImportAmendPenalty = opt.get();
-                            manifestAmendmentBillNotice.setControlNumber(exImportAmendPenalty.getInvoiceNumber()+"/" + exImportAmendPenalty.getBillNumber());
-                        }
-                    }
+                            manifestAmendmentBillNotice.setControlNumber(exImportAmendPenalty.getInvoiceNumber()+"/" + exImportAmendPenalty.getBillNumber()); } }
                     manifestAmendmentBillNotice.setGeneratedBy("TRA");
                     manifestAmendmentBillNotice.setApprovedBy("TRA");
                     manifestAmendmentBillNotice.setApprovedDate(penalty.getBillDate().toString());
@@ -129,7 +123,7 @@ public class CheckImposedPenaltyInManifestAmendment {
             messageDto.setPayload(manifestAmendmentBillNotice);
             AcknowledgementDto queueResponse = rabbitMqMessageProducer.
                     sendMessage(OUTBOUND_EXCHANGE, MessageNames.TESWS_BILL_NOTICE, billNoticeMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
-            System.out.println(queueResponse);
+            LOGGER.info("--Queue Response--\n" + queueResponse);
             QueueMessageStatusEntity queueMessage = new QueueMessageStatusEntity();
             queueMessage.setMessageId(manifestAmendmentBillNotice.getBillId());
             queueMessage.setReferenceId(billNoticeMessageDto.getRequestId());
