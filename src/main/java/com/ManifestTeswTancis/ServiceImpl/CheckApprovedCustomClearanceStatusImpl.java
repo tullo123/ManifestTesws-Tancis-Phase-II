@@ -98,7 +98,7 @@ public class CheckApprovedCustomClearanceStatusImpl {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String payload = mapper.writeValueAsString(customClearanceApprovalResponse);
-            LOGGER.info("----Custom Clearance Approval Notice ----\n" + payload);
+            LOGGER.info("---Custom Clearance Approval Notice ---\n" + payload);
             MessageDto messageDto = new MessageDto();
             ResponseClearanceMessageDto responseClearanceMessageDto = new ResponseClearanceMessageDto();
             responseClearanceMessageDto.setMessageName(MessageNames.CUSTOM_CLEARANCE_NOTICE);
@@ -107,8 +107,7 @@ public class CheckApprovedCustomClearanceStatusImpl {
             messageDto.setPayload(customClearanceApprovalResponse);
             AcknowledgementDto queueResponse = rabbitMqMessageProducer.
                     sendMessage(OUTBOUND_EXCHANGE, MessageNames.CUSTOM_CLEARANCE_NOTICE, responseClearanceMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
-            System.out.println(queueResponse);
-
+            LOGGER.info("[payload Submitted To RabbitMQ]" +queueResponse);
             QueueMessageStatusEntity queueMessage = new QueueMessageStatusEntity();
             queueMessage.setMessageId(customClearanceApprovalResponse.getCommunicationAgreedId());
             queueMessage.setReferenceId(responseClearanceMessageDto.getRequestId());
@@ -134,9 +133,9 @@ public class CheckApprovedCustomClearanceStatusImpl {
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = client.execute(request);
         HttpEntity entity = response.getEntity();
-
         return EntityUtils.toString(entity);
     }
+
     private String getStatus(String processingStatus) {
         if (processingStatus.contentEquals("D")) {
             return "A";

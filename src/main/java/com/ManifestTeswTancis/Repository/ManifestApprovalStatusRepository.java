@@ -11,13 +11,11 @@ public interface ManifestApprovalStatusRepository
 
 	List<ManifestApprovalStatus> findByApprovedStatusFalse();
 
-	List<ManifestApprovalStatus> findByMrnStatusFalse();
-
 	Optional<ManifestApprovalStatus> findFirstByMrn(String mrn);
 
     List<ManifestApprovalStatus> findByReceivedNoticeSentFalse();
 
-    List<ManifestApprovalStatus> findByExportApprovedStatusFalse();
+	List<ManifestApprovalStatus> findByExportManifestApprovedStatusFalse();
 
-	List<ManifestApprovalStatus> findByExportReceivedStatusFalse();
+	List<ManifestApprovalStatus> findByExportManifestReceivedStatusFalse();
 }

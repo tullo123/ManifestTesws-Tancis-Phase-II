@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.Optional;
 
 @Service
+@Transactional
 public  class PortCallIdServiceImpl implements PortCallIdService {
 	@Value("${spring.rabbitmq.exchange.out}")
 	private String OUTBOUND_EXCHANGE;
@@ -87,9 +88,8 @@ public  class PortCallIdServiceImpl implements PortCallIdService {
 			    return response;
 		    }
 		   response.setDescription("Vessel call with callId " + callInfDetails.getCommunicationAgreedId()
-				+ " is already approved and sent to Tesws");
-		        response.setCode(405);
-		return response;
+				+ " is already  sent to Single Window");
+		     return response;
 	}
 
 

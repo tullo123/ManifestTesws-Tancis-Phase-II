@@ -24,7 +24,7 @@ public class LiquidBulkQualityReportEntity implements Serializable {
 
 	@Id
 	@Column(name = "TBS_CD_NO")
-	private String tbsCodeNo;
+	private String tbsCodeNumber;
 
 	@Column(name = "MRN")
 	private String mrn;

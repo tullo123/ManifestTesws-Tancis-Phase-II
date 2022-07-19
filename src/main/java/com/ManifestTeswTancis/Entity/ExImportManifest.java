@@ -38,7 +38,6 @@ public class ExImportManifest implements Serializable {
 	@Column(name = "CONTROL_REFERENCE_NO")
 	private String controlReferenceNumber;
 
-
 	@Column(name = "TERMINAL_OPERATOR_CD")
 	private String terminalOperatorCode;
 

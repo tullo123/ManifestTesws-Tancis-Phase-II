@@ -57,9 +57,6 @@ public class ManifestApprovalStatus {
 	@Column(name = "PROCESSING_STATUS")
 	private String processingStatus;
 
-	@Column(name = "MESSAGE_REFERENCE_NUMBER")
-	private String messageReferenceNumber;
-
 	@Column(name = "FIRST_REGISTER_DT", nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime firstRegisterDate;
@@ -87,15 +84,15 @@ public class ManifestApprovalStatus {
 	private String rejectedYN;
 
 	@Column(name="EXPORT_APPROVED_STATUS")
-	private boolean exportApprovedStatus;
+	private boolean exportManifestApprovedStatus;
 
 	@Column(name="EXPORT_APPROVED_DT")
-	private String exportApprovedDate;
+	private String exportManifestApprovedDate;
 
 	@Column(name="EXPORT_RECEIVED_STATUS")
-	private boolean exportReceivedStatus;
+	private boolean exportManifestReceivedStatus;
 
 	@Column(name="EXPORT_RECEIVED_DT")
-	private String exportReceivedDate;
+	private String exportManifestReceivedDate;
 
 }

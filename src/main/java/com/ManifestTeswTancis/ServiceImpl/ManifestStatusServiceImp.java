@@ -7,9 +7,11 @@ import com.ManifestTeswTancis.Repository.ManifestApprovalStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ManifestStatusServiceImp {
 	private final ManifestApprovalStatusRepository statusRepository;
 
@@ -19,28 +21,25 @@ public class ManifestStatusServiceImp {
 	}
 
 	public ManifestApprovalStatus save(ExImportManifest exImportManifest, String refId, boolean mrn, ExportManifest exportManifest) {
-		ManifestApprovalStatus statusEntity=new ManifestApprovalStatus();
-		Optional<ManifestApprovalStatus> statusEntityo=statusRepository.findFirstByMrn(exImportManifest.getMrn());
-		if (statusEntityo.isPresent()) {
-			statusEntity=statusEntityo.get();
-			if (mrn) {
-				statusEntity.setMrnStatus(true);
-			}else {
-				statusEntity.setApprovedStatus(false);
-			}
+		ManifestApprovalStatus manifestApprovalStatus=new ManifestApprovalStatus();
+		Optional<ManifestApprovalStatus> status=statusRepository.findFirstByMrn(exImportManifest.getMrn());
+		if (status.isPresent()) {
+			manifestApprovalStatus=status.get();
+			if (mrn) { manifestApprovalStatus.setMrnStatus(true); }
+			else { manifestApprovalStatus.setApprovedStatus(false); }
 			
 		}else {
-			statusEntity.setMessageReferenceNumber(refId);
-			statusEntity.setCommunicationAgreedId(exImportManifest.getCommunicationAgreedId());
-			statusEntity.setMrn(exImportManifest.getMrn());
-			statusEntity.setTransportMeansId(exImportManifest.getTransportMeansId());
-			statusEntity.setVoyageNumber(exImportManifest.getVoyageNumber());
-			statusEntity.setMrnOut(exportManifest.getMrnOut());
-			statusEntity.setReceivedNoticeSent(false);
-			statusEntity.setExportReceivedStatus(false);
-			statusEntity.setExportApprovedStatus(false);
-			statusEntity.setControlReferenceNumber(exImportManifest.getControlReferenceNumber());
+			manifestApprovalStatus.setControlReferenceNumber(refId);
+			manifestApprovalStatus.setCommunicationAgreedId(exImportManifest.getCommunicationAgreedId());
+			manifestApprovalStatus.setMrn(exImportManifest.getMrn());
+			manifestApprovalStatus.setTransportMeansId(exImportManifest.getTransportMeansId());
+			manifestApprovalStatus.setVoyageNumber(exImportManifest.getVoyageNumber());
+			manifestApprovalStatus.setMrnOut(exportManifest.getMrnOut());
+			manifestApprovalStatus.setMrnStatus(true);
+			manifestApprovalStatus.setReceivedNoticeSent(false);
+			manifestApprovalStatus.setExportManifestReceivedStatus(false);
+			manifestApprovalStatus.setExportManifestApprovedStatus(false);
 		}
-		return statusRepository.save(statusEntity);
+		return statusRepository.save(manifestApprovalStatus);
 	}
 }

@@ -52,9 +52,9 @@ public class CheckReceivedExportManifestStatusImpl {
     @Transactional
     @Scheduled(fixedRate = 1500000)
     public void CheckReceivedExportManifest(){
-        List<ManifestApprovalStatus> exportManifest = statusRepository.findByExportReceivedStatusFalse();
+        List<ManifestApprovalStatus> exportManifest = statusRepository.findByExportManifestReceivedStatusFalse();
         for (ManifestApprovalStatus mf : exportManifest) {
-            if (mf.isExportApprovedStatus()) {
+            if (!mf.isExportManifestReceivedStatus()) {
                 Optional<ExportManifest> optional = exportManifestRepository.findFirstByMrnOut(mf.getMrnOut());
                 if (optional.isPresent()) {
                     ExportManifest export = optional.get();
@@ -68,7 +68,7 @@ public class CheckReceivedExportManifestStatusImpl {
                         submittedStatus.setVoyageNumber(export.getVoyageNumberOutbound());
                         submittedStatus.setCustomOfficeCode(export.getCustomOfficeCode());
                         submittedStatus.setStatus(getExportReceivedStatus(export.getProcessingStatus()));
-                        mf.setExportReceivedStatus(true);
+                        mf.setExportManifestReceivedStatus(true);
                         statusRepository.save(mf);
                         String response = sendExportManifestReceivedNoticeToQueue(submittedStatus);
                         LOGGER.info("[Export Manifest Received Notice]" + response);

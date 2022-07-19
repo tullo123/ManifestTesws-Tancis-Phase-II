@@ -52,9 +52,9 @@ public class CheckApprovedExportManifestStatusImpl {
     @Transactional
     @Scheduled(fixedRate = 1800000)
     public void CheckApprovedExportManifest() {
-        List<ManifestApprovalStatus> exportManifest = statusRepository.findByExportApprovedStatusFalse();
+        List<ManifestApprovalStatus> exportManifest = statusRepository.findByExportManifestApprovedStatusFalse();
         for (ManifestApprovalStatus mf : exportManifest) {
-            if (mf.isExportApprovedStatus()) {
+            if (!mf.isExportManifestApprovedStatus()) {
                 Optional<ExportManifest> optional = exportManifestRepository.findFirstByMrnOut(mf.getMrnOut());
                 if (optional.isPresent()) {
                     ExportManifest export = optional.get();
@@ -65,10 +65,10 @@ public class CheckApprovedExportManifestStatusImpl {
                         submittedNotice.setApprovalStatus(getExportStatus(export.getProcessingStatus()));
                         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                         submittedNotice.setApprovalDate(formatter.format(export.getProcessingDate()));
-                        mf.setExportApprovedStatus(true);
+                        mf.setExportManifestApprovedStatus(true);
                         LocalDateTime localDateTime = LocalDateTime.now();
                         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-                        mf.setExportApprovedDate(localDateTime.format(format));
+                        mf.setExportManifestApprovedDate(localDateTime.format(format));
                         statusRepository.save(mf);
                         String response = sendExportManifestApprovalNoticeToQueue(submittedNotice);
                         LOGGER.info("[Export Manifest Approval Notice]" + response);
@@ -94,7 +94,6 @@ public class CheckApprovedExportManifestStatusImpl {
             AcknowledgementDto queueResponse = rabbitMqMessageProducer.
                     sendMessage(OUTBOUND_EXCHANGE, MessageNames.EXPORT_MANIFEST_APPROVAL_NOTICE, exportManifestApprovalNoticeMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
             LOGGER.info("[payload Submitted To RabbitMQ]" + queueResponse);
-
             QueueMessageStatusEntity queueMessage = new QueueMessageStatusEntity();
             queueMessage.setMessageId(submittedNotice.getCommunicationAgreedId());
             queueMessage.setReferenceId(exportManifestApprovalNoticeMessageDto.getRequestId());
