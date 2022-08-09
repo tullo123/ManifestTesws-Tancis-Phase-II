@@ -36,7 +36,7 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="com.ManifestTeswTancis" level="INFO" additivity="FALSE">
+        <Logger name="com.TeSWS-TANCIS-MANIFEST" level="INFO" additivity="FALSE">
             <AppenderRef ref="console" />
             <AppenderRef ref="file" />
         </Logger>

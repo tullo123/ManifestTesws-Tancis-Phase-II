@@ -8,7 +8,7 @@ import com.ManifestTeswTancis.Request.PortCallIdRequestModel;
 import java.io.IOException;
 
 public interface PortCallIdService {
-	TeswsResponse createCallInfo(PortCallIdRequestModel callInfDetails);
+	TeswsResponse createCallInfo(PortCallIdRequestModel callInfDetails) throws IOException;
 
 	String submitCallInfoNotice(ExImportManifest storedCallInfDetails, ExportManifest exportManifest) throws IOException;
 

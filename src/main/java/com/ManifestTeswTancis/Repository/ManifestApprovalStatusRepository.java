@@ -18,4 +18,6 @@ public interface ManifestApprovalStatusRepository
 	List<ManifestApprovalStatus> findByExportManifestApprovedStatusFalse();
 
 	List<ManifestApprovalStatus> findByExportManifestReceivedStatusFalse();
+
+	Optional<ManifestApprovalStatus> findFirstByCommunicationAgreedId(String communicationAgreedId);
 }

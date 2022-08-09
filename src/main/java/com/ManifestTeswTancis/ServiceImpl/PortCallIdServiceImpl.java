@@ -1,17 +1,11 @@
 package com.ManifestTeswTancis.ServiceImpl;
 
-import com.ManifestTeswTancis.Entity.CommonOrdinalEntity;
-import com.ManifestTeswTancis.Entity.ExportManifest;
-import com.ManifestTeswTancis.Entity.QueueMessageStatusEntity;
+import com.ManifestTeswTancis.Entity.*;
 import com.ManifestTeswTancis.RabbitConfigurations.*;
-import com.ManifestTeswTancis.Repository.CommonOrdinalRepository;
-import com.ManifestTeswTancis.Repository.ExportManifestRepository;
-import com.ManifestTeswTancis.Repository.QueueMessageStatusRepository;
+import com.ManifestTeswTancis.Repository.*;
 import com.ManifestTeswTancis.dtos.TeswsResponse;
-import com.ManifestTeswTancis.Entity.ExImportManifest;
 import com.ManifestTeswTancis.Request.PortCallIdRequestModel;
 import com.ManifestTeswTancis.Response.PortCallIdResponse;
-import com.ManifestTeswTancis.Repository.ExImportManifestRepository;
 import com.ManifestTeswTancis.Service.PortCallIdService;
 import com.ManifestTeswTancis.Util.DateFormatter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,21 +41,23 @@ public  class PortCallIdServiceImpl implements PortCallIdService {
 	private final ManifestStatusServiceImp statusServiceImp;
 	final CommonOrdinalRepository commonOrdinalRepository;
 	final QueueMessageStatusRepository queueMessageStatusRepository;
+	final ManifestApprovalStatusRepository statusRepository;
 
 	@Autowired
 	public PortCallIdServiceImpl(ExImportManifestRepository exImportManifestRepository,
-								 ManifestStatusServiceImp statusServiceImp, ExportManifestRepository exportManifestRepository, MessageProducer rabbitMqMessageProducer, CommonOrdinalRepository commonOrdinalRepository, QueueMessageStatusRepository queueMessageStatusRepository) {
+								 ManifestStatusServiceImp statusServiceImp, ExportManifestRepository exportManifestRepository, MessageProducer rabbitMqMessageProducer, CommonOrdinalRepository commonOrdinalRepository, QueueMessageStatusRepository queueMessageStatusRepository, ManifestApprovalStatusRepository statusRepository) {
 		this.exImportManifestRepository = exImportManifestRepository;
 		this.statusServiceImp = statusServiceImp;
 		this.exportManifestRepository = exportManifestRepository;
 		this.rabbitMqMessageProducer = rabbitMqMessageProducer;
 		this.commonOrdinalRepository = commonOrdinalRepository;
 		this.queueMessageStatusRepository = queueMessageStatusRepository;
+		this.statusRepository = statusRepository;
 	}
 
 	@Override
 	@Transactional
-	public TeswsResponse createCallInfo(PortCallIdRequestModel callInfDetails) {
+	public TeswsResponse createCallInfo(PortCallIdRequestModel callInfDetails) throws IOException {
 		TeswsResponse response = new TeswsResponse();
 		response.setAckDate(DateFormatter.getTeSWSLocalDate(LocalDateTime.now()));
 		response.setRefId(callInfDetails.getControlReferenceNumber());
@@ -81,17 +77,32 @@ public  class PortCallIdServiceImpl implements PortCallIdService {
 				if (exImportManifest.getModeOfTransport().contentEquals("1")) { exImportManifest.setModeOfTransport("10"); }
 				storedCallInfDetails = exImportManifestRepository.save(exImportManifest);
 				statusServiceImp.save(exImportManifest, callInfDetails.getControlReferenceNumber(), true, exportManifest);
-				submitCallInfoNotice(storedCallInfDetails,exportManifest);
+			String payload=	submitCallInfoNotice(storedCallInfDetails,exportManifest);
+				System.out.println(payload);
 			} catch (Exception e) {
 				response.setDescription(e.getMessage());
 				e.printStackTrace(); }
-			    return response;
-		    }
+			    return response; }
+
+		else{
+			Optional<ManifestApprovalStatus> manifestStatus=statusRepository.
+					findFirstByCommunicationAgreedId(callInfDetails.getCommunicationAgreedId());
+			if(manifestStatus.isPresent()){
+				ManifestApprovalStatus status=manifestStatus.get();
+				PortCallIdResponse returnValue = new PortCallIdResponse();
+				returnValue.setMrnIn(status.getMrn());
+				returnValue.setMrnOut(status.getMrnOut());
+				returnValue.setMrnDate(status.getFirstRegisterDate().toString());
+				returnValue.setCustomOfficeCode(callInfDetails.getCustomOfficeCode());
+				returnValue.setCommunicationAgreedId(callInfDetails.getCommunicationAgreedId());
+				String resend= ResendingCustomVesselReference(returnValue);
+				System.out.println("Resend custom vessel reference" +resend);
+			}
+		}
 		   response.setDescription("Vessel call with callId " + callInfDetails.getCommunicationAgreedId()
 				+ " is already  sent to Single Window");
 		     return response;
 	}
-
 
 	@Override
 	public String submitCallInfoNotice(ExImportManifest storedCallInfDetails, ExportManifest exportManifest) throws IOException {
@@ -131,6 +142,37 @@ public  class PortCallIdServiceImpl implements PortCallIdService {
 
 		return "success";
 	}
+	private String ResendingCustomVesselReference(PortCallIdResponse returnValue) throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		String payload = mapper.writeValueAsString(returnValue);
+		System.out.println("---- Custom Vessel Reference----\n"+payload);
+		MessageDto messageDto = new MessageDto();
+		PortCallIdResponseMessageDto portCallIdResponseMessageDto = new PortCallIdResponseMessageDto();
+		portCallIdResponseMessageDto.setMessageName(MessageNames.CUSTOMS_VESSEL_REFERENCE);
+		RequestIdDto requestIdDto = mapper.readValue(getId(), RequestIdDto.class);
+		portCallIdResponseMessageDto.setRequestId(requestIdDto.getMessageId());
+		messageDto.setPayload(returnValue);
+		AcknowledgementDto queueResponse = rabbitMqMessageProducer.
+				sendMessage(OUTBOUND_EXCHANGE, MessageNames.CUSTOMS_VESSEL_REFERENCE, portCallIdResponseMessageDto.getRequestId(), messageDto.getCallbackUrl(), messageDto.getPayload());
+		System.out.println(queueResponse);
+		QueueMessageStatusEntity queueMessage = new QueueMessageStatusEntity();
+		queueMessage.setMessageId(returnValue.getCommunicationAgreedId());
+		queueMessage.setReferenceId(portCallIdResponseMessageDto.getRequestId());
+		queueMessage.setMessageName(MessageNames.CUSTOMS_VESSEL_REFERENCE_RESEND);
+		queueMessage.setProcessStatus("1");
+		queueMessage.setProcessId("TANCIS-TESWS.API");
+		queueMessage.setFirstRegistrationId("TANCIS-TESWS.API");
+		queueMessage.setLastUpdateId("TANCIS-TESWS.API");
+		LocalDateTime localDateTime = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+		queueMessage.setProcessingDate(localDateTime.format(formatter));
+		queueMessage.setFirstRegisterDate(localDateTime.format(formatter));
+		queueMessage.setLastUpdateDate(localDateTime.format(formatter));
+		queueMessageStatusRepository.save(queueMessage);
+
+		return "success";
+	}
+
 	private String getId() throws IOException {
 		HttpGet request = new HttpGet(url);
 		CloseableHttpClient client = HttpClients.createDefault();

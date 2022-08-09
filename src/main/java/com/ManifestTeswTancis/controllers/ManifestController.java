@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.ManifestTeswTancis.dtos.*;
 import javax.validation.Valid;
+import java.io.IOException;
 
 
 @RestController
@@ -64,7 +65,7 @@ public  class ManifestController  implements ManifestApi {
 
 	@Override
 	public ResponseEntity<TeswsResponse> createCallInfo(
-			@RequestBody @Valid PortCallIdRequestModel callInfDetails) {
+			@RequestBody @Valid PortCallIdRequestModel callInfDetails) throws IOException {
 		TeswsResponse response = portCallIdService.createCallInfo(callInfDetails);
 		return ResponseEntity.ok(response);
 	}

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.ManifestTeswTancis.dtos.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 
 @RequestMapping("/tancis/api")
@@ -23,7 +24,7 @@ public interface ManifestApi {
     @RequestMapping(value = "/callInf/v1", method = RequestMethod.POST,
             produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = { MediaType.APPLICATION_JSON_VALUE })
-    ResponseEntity<TeswsResponse> createCallInfo(@RequestBody @Valid PortCallIdRequestModel callInfDetails);
+    ResponseEntity<TeswsResponse> createCallInfo(@RequestBody @Valid PortCallIdRequestModel callInfDetails) throws IOException;
 
 
     @RequestMapping(value = "update/callInf/v1", method = RequestMethod.POST,
