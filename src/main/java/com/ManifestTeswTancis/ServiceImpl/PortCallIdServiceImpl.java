@@ -96,11 +96,9 @@ public  class PortCallIdServiceImpl implements PortCallIdService {
 				returnValue.setCustomOfficeCode(callInfDetails.getCustomOfficeCode());
 				returnValue.setCommunicationAgreedId(callInfDetails.getCommunicationAgreedId());
 				String resend= ResendingCustomVesselReference(returnValue);
-				System.out.println("Resend custom vessel reference" +resend);
+				System.out.println(resend);
 			}
 		}
-		   response.setDescription("Vessel call with callId " + callInfDetails.getCommunicationAgreedId()
-				+ " is already  sent to Single Window");
 		     return response;
 	}
 
